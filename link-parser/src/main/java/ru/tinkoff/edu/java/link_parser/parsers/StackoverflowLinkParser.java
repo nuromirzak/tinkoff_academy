@@ -11,6 +11,10 @@ public final class StackoverflowLinkParser implements LinkParser {
 
     @Override
     public Map<String, String> parse(String link) {
+        if (!canParse(link)) {
+            return null;
+        }
+
         Map<String, String> result = new HashMap<>();
 
         result.put("questionId", LinkParserHelper.getPathSegmentByIndex(link, 1));

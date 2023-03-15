@@ -10,6 +10,10 @@ public final class GithubLinkParser implements LinkParser {
     private static final GithubLinkValidator validator = new GithubLinkValidator();
     @Override
     public Map<String, String> parse(String link) {
+        if (!canParse(link)) {
+            return null;
+        }
+
         Map<String, String> result = new HashMap<>();
 
         result.put("owner", LinkParserHelper.getPathSegmentByIndex(link, 0));

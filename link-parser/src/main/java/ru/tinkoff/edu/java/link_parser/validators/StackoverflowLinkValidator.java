@@ -7,11 +7,19 @@ import java.net.URL;
 
 public class StackoverflowLinkValidator implements LinkValidator {
     @Override
-    public boolean validate(String link) {
+    public boolean throwExceptionIfInvalid(String link) {
         try {
             URL url = new URL(link);
         } catch (MalformedURLException e) {
             return false;
+        }
+
+        if (LinkParserHelper.containsSubdomain(link)) {
+            throw new IllegalArgumentException("Link contains subdomain: " + link);
+        }
+
+        if (!LinkParserHelper.getTopLevelDomain(link).equals("stackoverflow.com")) {
+            throw new IllegalArgumentException("Link does not contain stackoverflow.com as top level domain: " + link);
         }
 
         boolean hasAtLeastTwoPathSegments = LinkParserHelper.getAllPathSegments(link).size() >= 2;

@@ -15,7 +15,6 @@ public final class GlobalLinkParser implements LinkParser {
     @Override
     public Map<String, String> parse(String link) {
         return allImplementations.stream()
-                .filter(parser -> parser.canParse(link))
                 .map(parser -> parser.parse(link))
                 .filter(Objects::nonNull)
                 .findFirst()
