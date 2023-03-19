@@ -24,7 +24,11 @@ public final class StackoverflowLinkParser implements LinkParser {
 
     @Override
     public boolean canParse(String link) {
-        return validator.validate(link);
+        try {
+            return validator.validate(link);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
