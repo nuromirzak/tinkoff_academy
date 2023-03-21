@@ -4,3 +4,9 @@ app:
 springdoc:
   swagger-ui:
     path: /swagger-ui
+
+github:
+  base-url: https://api.github.com
+
+stackoverflow:
+    base-url: https://api.stackexchange.com/2.3
