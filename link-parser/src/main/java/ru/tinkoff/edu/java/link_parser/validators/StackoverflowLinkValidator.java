@@ -7,7 +7,7 @@ import java.net.URL;
 
 public class StackoverflowLinkValidator implements LinkValidator {
     @Override
-    public boolean throwExceptionIfInvalid(String link) {
+    public boolean validate(String link) {
         try {
             URL url = new URL(link);
         } catch (MalformedURLException e) {
@@ -23,9 +23,20 @@ public class StackoverflowLinkValidator implements LinkValidator {
         }
 
         boolean hasAtLeastTwoPathSegments = LinkParserHelper.getAllPathSegments(link).size() >= 2;
-        boolean hasValidPathSegment = hasAtLeastTwoPathSegments && LinkParserHelper.getPathSegmentByIndex(link, 0).equals("questions");
-        boolean hasValidPathSegment2 = hasAtLeastTwoPathSegments && LinkParserHelper.getPathSegmentByIndex(link, 1).matches("\\d+");
+        if (!hasAtLeastTwoPathSegments) {
+            throw new IllegalArgumentException("Link does not contain at least two path segments: " + link);
+        }
 
-        return hasAtLeastTwoPathSegments && hasValidPathSegment && hasValidPathSegment2;
+        boolean hasValidPathSegment = LinkParserHelper.getPathSegmentByIndex(link, 0).equals("questions");
+        if (!hasValidPathSegment) {
+            throw new IllegalArgumentException("Link does not contain questions as first path segment: " + link);
+        }
+
+        boolean hasValidPathSegment2 = LinkParserHelper.getPathSegmentByIndex(link, 1).matches("\\d+");
+        if (!hasValidPathSegment2) {
+            throw new IllegalArgumentException("Link does not contain number as second path segment: " + link);
+        }
+
+        return true;
     }
 }
