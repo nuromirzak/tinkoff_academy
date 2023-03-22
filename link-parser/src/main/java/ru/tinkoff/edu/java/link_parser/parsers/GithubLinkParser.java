@@ -8,6 +8,7 @@ import java.util.Map;
 
 public final class GithubLinkParser implements LinkParser {
     private static final GithubLinkValidator validator = new GithubLinkValidator();
+
     @Override
     public Map<String, String> parse(String link) {
         if (!canParse(link)) {
@@ -24,7 +25,11 @@ public final class GithubLinkParser implements LinkParser {
 
     @Override
     public boolean canParse(String link) {
-        return validator.validate(link);
+        try {
+            return validator.validate(link);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override

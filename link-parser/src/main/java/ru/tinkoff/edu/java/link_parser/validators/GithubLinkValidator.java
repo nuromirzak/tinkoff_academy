@@ -9,12 +9,13 @@ import java.util.List;
 import java.util.Set;
 
 public class GithubLinkValidator implements LinkValidator {
-    private static final Set<String> invalidPaths = Set.of("nonprofit", "issues", "sponsors", "codespaces", "new", "features", "trending",
-            "settings", "topics", "pricing", "security", "logout", "pulls", "collections", "explore", "events",
-            "marketplace", "login", "wiki", "notifications", "join", "customer-stories", "stars", "about", "contact", "blog");
+    private static final Set<String> invalidPaths = Set.of("ABOUT", "BLOG", "CODESPACES", "COLLECTIONS", "CONTACT",
+            "CUSTOMER-STORIES", "EVENTS", "EXPLORE", "FEATURES", "ISSUES", "JOIN", "LOGIN", "LOGOUT", "MARKETPLACE",
+            "NEW", "NONPROFIT", "NOTIFICATIONS", "PRICING", "PULLS", "SECURITY", "SETTINGS", "SPONSORS", "STARS",
+            "TOPICS", "TRENDING", "WIKI");
 
     @Override
-    public boolean throwExceptionIfInvalid(String link) {
+    public boolean validate(String link) {
         try {
             URL url = new URL(link);
         } catch (MalformedURLException e) {
@@ -30,8 +31,16 @@ public class GithubLinkValidator implements LinkValidator {
         }
 
         boolean hasAtLeastTwoPathSegments = LinkParserHelper.getAllPathSegments(link).size() >= 2;
-        boolean hasValidPathSegment = hasAtLeastTwoPathSegments && !invalidPaths.contains(LinkParserHelper.getPathSegmentByIndex(link, 0));
+        if (!hasAtLeastTwoPathSegments) {
+            throw new IllegalArgumentException("Link does not contain at least two path segments: " + link);
+        }
 
-        return hasAtLeastTwoPathSegments && hasValidPathSegment;
+        String firstPathSegment = LinkParserHelper.getPathSegmentByIndex(link, 0);
+        boolean hasValidPathSegment = !invalidPaths.contains(firstPathSegment.toUpperCase());
+        if (!hasValidPathSegment) {
+            throw new IllegalArgumentException("Link contains invalid path segment: " + link);
+        }
+
+        return true;
     }
 }

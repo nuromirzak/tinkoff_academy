@@ -9,12 +9,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StackoverflowLinkParserTest {
-    private LinkParser parser;
-
-    @BeforeEach
-    void setUp() {
-        parser = new StackoverflowLinkParser();
-    }
+    private static final LinkParser parser = new StackoverflowLinkParser();
 
     @Test
     public void parseValidLink() {

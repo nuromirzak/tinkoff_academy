@@ -4,15 +4,12 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Modifier;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public final class GlobalLinkParser implements LinkParser {
-    private final Set<LinkParser> allImplementations;
+public final class GlobalLinkParser {
+    private final List<LinkParser> allImplementations;
 
-    @Override
     public Map<String, String> parse(String link) {
         return allImplementations.stream()
                 .map(parser -> parser.parse(link))
@@ -21,22 +18,18 @@ public final class GlobalLinkParser implements LinkParser {
                 .orElse(null);
     }
 
-    @Override
-    public boolean canParse(String link) {
-        return allImplementations.stream()
-                .anyMatch(parser -> parser.canParse(link));
-    }
-
     public boolean addParser(LinkParser parser) {
         return allImplementations.add(parser);
     }
 
+    /**
+     * Этот конструктор ищет все классы, которые имплементируют LinkParser в своем пакете, и кладет их в allImplementations
+     */
     public GlobalLinkParser() {
         String currentPackageName = this.getClass().getPackage().getName();
         Set<Class> allClassesInCurrentPackage = findAllClassesUsingClassLoader(currentPackageName);
 
         allClassesInCurrentPackage = allClassesInCurrentPackage.stream()
-                .filter(clazz -> !clazz.equals(this.getClass()))
                 .filter(clazz -> !clazz.isInterface())
                 .filter(clazz -> !Modifier.isAbstract(clazz.getModifiers()))
                 .filter(LinkParser.class::isAssignableFrom)
@@ -51,23 +44,32 @@ public final class GlobalLinkParser implements LinkParser {
                         return null;
                     }
                 })
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         System.out.println("These implementations were found: " + allImplementations);
     }
 
+    /**
+     * @param packageName - имя пакета, в котором ищем классы
+     * @return Все классы, которые находятся в пакете packageName
+     */
     private Set<Class> findAllClassesUsingClassLoader(String packageName) {
         InputStream stream = ClassLoader.getSystemClassLoader()
                 .getResourceAsStream(packageName.replaceAll("[.]", "/"));
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         return reader.lines()
-                .filter(line -> line.endsWith(".class"))
-                .map(line -> getClass(line, packageName))
+                .filter(className -> className.endsWith(".class"))
+                .map(className -> getClass(className, packageName))
                 .collect(Collectors.toSet());
     }
 
-    private Class getClass(String line, String packageName) {
-        String className = line.substring(0, line.lastIndexOf('.'));
+    /**
+     * @param className  - имя класса, которые мы хотим получить
+     * @param packageName - имя пакета, в котором ищем класс
+     * @return Класс, который находится в пакете packageName и имеет имя className
+     */
+    private Class getClass(String className, String packageName) {
+        className = className.substring(0, className.lastIndexOf('.'));
         try {
             return Class.forName(packageName + "." + className);
         } catch (ClassNotFoundException e) {

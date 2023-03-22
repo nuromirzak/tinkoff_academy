@@ -10,12 +10,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GithubLinkParserTest {
-    private LinkParser parser;
-
-    @BeforeEach
-    void setUp() {
-        parser = new GithubLinkParser();
-    }
+    private static final LinkParser parser = new GithubLinkParser();
 
     @Test
     public void parseValidLink() {
