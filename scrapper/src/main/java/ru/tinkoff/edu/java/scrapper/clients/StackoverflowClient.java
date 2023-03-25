@@ -1,11 +1,11 @@
-package ru.tinkoff.edu.java.scrapper.services;
+package ru.tinkoff.edu.java.scrapper.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.tinkoff.edu.java.scrapper.dtos.StackoverflowQuestionResponse;
+import ru.tinkoff.edu.java.scrapper.clients.responses.StackoverflowQuestionResponse;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -72,6 +72,12 @@ public class StackoverflowClient {
                     Date date = new Date(creationDateNode.asLong() * 1000);
                     OffsetDateTime offsetDateTime = date.toInstant().atOffset(ZoneOffset.UTC);
                     question.setCreationDate(offsetDateTime);
+                }
+                JsonNode lastActivityDateNode = firstItem.get("last_activity_date");
+                if (lastActivityDateNode != null) {
+                    Date date = new Date(lastActivityDateNode.asLong() * 1000);
+                    OffsetDateTime offsetDateTime = date.toInstant().atOffset(ZoneOffset.UTC);
+                    question.setLastActivityDate(offsetDateTime);
                 }
             }
         }

@@ -1,10 +1,10 @@
-package ru.tinkoff.edu.java.scrapper.services;
+package ru.tinkoff.edu.java.scrapper.clients;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.tinkoff.edu.java.scrapper.dtos.GithubRepoResponse;
+import ru.tinkoff.edu.java.scrapper.clients.responses.GithubRepoResponse;
 
 @Service
 public class GitHubClient {

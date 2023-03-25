@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.dtos;
+package ru.tinkoff.edu.java.scrapper.clients.responses;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,4 +16,5 @@ public class StackoverflowQuestionResponse {
     private Integer score;
     private List<String> tags;
     private OffsetDateTime creationDate;
+    private OffsetDateTime lastActivityDate;
 }
