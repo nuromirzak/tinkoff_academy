@@ -7,6 +7,7 @@ import ru.tinkoff.edu.java.scrapper.dtos.ListLinkResponse;
 import ru.tinkoff.edu.java.scrapper.dtos.RemoveLinkRequest;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TelegramChatServiceStub implements TelegramChatService {
@@ -15,44 +16,33 @@ public class TelegramChatServiceStub implements TelegramChatService {
 
     @Override
     public void registerChat(String id) {
-        if (chatLinks.containsKey(id)) {
-            return;
-        }
-        chatLinks.put(id, new ArrayList<>());
+        chatLinks.putIfAbsent(id, new ArrayList<>());
     }
 
     @Override
     public boolean deleteChat(String id) {
-        if (!chatLinks.containsKey(id)) {
-            return false;
-        }
-        chatLinks.remove(id);
-        return true;
+        return chatLinks.remove(id) != null;
     }
 
     @Override
     public ListLinkResponse getLinks(String chatId) {
-        List<String> links = chatLinks.get(chatId);
+        List<String> links = chatLinks.getOrDefault(chatId, Collections.emptyList());
 
-        if (links == null) {
-            return new ListLinkResponse(Collections.emptyList(), 0);
-        }
+        List<LinkResponse> linkResponses = links.stream()
+                .map(link -> new LinkResponse(links.indexOf(link), link))
+                .collect(Collectors.toList());
 
-        List<LinkResponse> linkResponses = new ArrayList<>();
-        for (int i = 0; i < links.size(); i++) {
-            linkResponses.add(new LinkResponse(i, links.get(i)));
-        }
         return new ListLinkResponse(linkResponses, links.size());
     }
 
     @Override
     public void addLink(String chatId, AddLinkRequest addLinkRequest) {
-        List<String> links = chatLinks.get(chatId);
+        List<String> links = chatLinks.getOrDefault(chatId, new ArrayList<>());
         String link = addLinkRequest.link();
-        if (links == null || links.contains(link)) {
-            return;
+        if (!links.contains(link)) {
+            links.add(link);
+            chatLinks.put(chatId, links);
         }
-        links.add(link);
     }
 
     @Override

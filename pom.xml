@@ -18,6 +18,7 @@
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <jetbrains-annotations.version>23.1.0</jetbrains-annotations.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <springdoc-openapi-starter-webmvc-ui.version>2.0.2</springdoc-openapi-starter-webmvc-ui.version>
     </properties>
 
     <build>
@@ -90,6 +91,12 @@
                 <artifactId>annotations</artifactId>
                 <version>${jetbrains-annotations.version}</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

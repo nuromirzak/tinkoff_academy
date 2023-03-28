@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.tinkoff.edu.java.scrapper.clients.responses.StackoverflowQuestionResponse;
 
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,7 +14,12 @@ import java.util.List;
 
 @Service
 public class StackoverflowClient {
-    private WebClient webClient;
+    private final WebClient webClient;
+
+    @Autowired
+    public StackoverflowClient(@Qualifier("stackoverflowWebClient") WebClient webClient) {
+        this.webClient = webClient;
+    }
 
     public StackoverflowQuestionResponse getQuestionById(Long id) {
         return webClient.get()
@@ -30,63 +34,27 @@ public class StackoverflowClient {
 
     private StackoverflowQuestionResponse convertJsonToStackoverflowQuestion(JsonNode jsonNode) {
         StackoverflowQuestionResponse question = new StackoverflowQuestionResponse();
-        JsonNode itemsArray = jsonNode.get("items");
-        if (itemsArray != null && itemsArray.isArray() && itemsArray.size() > 0) {
-            JsonNode firstItem = itemsArray.get(0);
-            if (firstItem != null) {
-                JsonNode owner = firstItem.get("owner");
-                if (owner != null) {
-                    JsonNode userIdNode = owner.get("user_id");
-                    if (userIdNode != null) {
-                        question.setOwnerId(userIdNode.asLong());
-                    }
-                    JsonNode displayNameNode = owner.get("display_name");
-                    if (displayNameNode != null) {
-                        question.setOwnerName(displayNameNode.asText());
-                    }
-                }
-                JsonNode titleNode = firstItem.get("title");
-                if (titleNode != null) {
-                    question.setTitle(titleNode.asText());
-                }
-                JsonNode answerCountNode = firstItem.get("answer_count");
-                if (answerCountNode != null) {
-                    question.setAnswerCount(answerCountNode.asInt());
-                }
-                JsonNode scoreNode = firstItem.get("score");
-                if (scoreNode != null) {
-                    question.setScore(scoreNode.asInt());
-                }
-                JsonNode tags = firstItem.get("tags");
-                if (tags != null && tags.isArray()) {
-                    List<String> tagsList = new ArrayList<>();
-                    for (JsonNode tag : tags) {
-                        if (tag != null) {
-                            tagsList.add(tag.asText());
-                        }
-                    }
-                    question.setTags(tagsList);
-                }
-                JsonNode creationDateNode = firstItem.get("creation_date");
-                if (creationDateNode != null) {
-                    Date date = new Date(creationDateNode.asLong() * 1000);
-                    OffsetDateTime offsetDateTime = date.toInstant().atOffset(ZoneOffset.UTC);
-                    question.setCreationDate(offsetDateTime);
-                }
-                JsonNode lastActivityDateNode = firstItem.get("last_activity_date");
-                if (lastActivityDateNode != null) {
-                    Date date = new Date(lastActivityDateNode.asLong() * 1000);
-                    OffsetDateTime offsetDateTime = date.toInstant().atOffset(ZoneOffset.UTC);
-                    question.setLastActivityDate(offsetDateTime);
-                }
-            }
-        }
-        return question;
-    }
+        JsonNode itemsArray = jsonNode.path("items").get(0);
+        JsonNode owner = itemsArray.path("owner");
+        JsonNode tags = itemsArray.path("tags");
 
-    @Autowired
-    public void setWebClient(@Qualifier("stackoverflow_client") WebClient webClient) {
-        this.webClient = webClient;
+        question.setOwnerId(owner.path("user_id").asLong());
+        question.setOwnerName(owner.path("display_name").asText());
+        question.setTitle(itemsArray.path("title").asText());
+        question.setAnswerCount(itemsArray.path("answer_count").asInt());
+        question.setScore(itemsArray.path("score").asInt());
+
+        List<String> tagsList = new ArrayList<>();
+        tags.forEach(tag -> tagsList.add(tag.asText()));
+        question.setTags(tagsList);
+
+        Date creationDate = new Date(itemsArray.path("creation_date").asLong() * 1000);
+        question.setCreationDate(creationDate.toInstant().atOffset(ZoneOffset.UTC));
+
+        Date lastActivityDate = new Date(itemsArray.path("last_activity_date").asLong() * 1000);
+        question.setLastActivityDate(lastActivityDate.toInstant().atOffset(ZoneOffset.UTC));
+
+        return question;
     }
 }
 
