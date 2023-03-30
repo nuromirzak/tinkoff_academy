@@ -1,5 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.clients;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -7,19 +9,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 import ru.tinkoff.edu.java.scrapper.clients.responses.GithubRepoResponse;
 
 @Service
+@RequiredArgsConstructor
 public class GitHubClient {
-    private WebClient webClient;
+    private final WebClient githubWebClient;
 
     public GithubRepoResponse getRepo(String owner, String repo) {
-        return webClient.get()
+        return githubWebClient.get()
                 .uri("/repos/{owner}/{repo}", owner, repo)
                 .retrieve()
                 .bodyToMono(GithubRepoResponse.class)
                 .block();
-    }
-
-    @Autowired
-    public void setWebClient(@Qualifier("github_client") WebClient webClient) {
-        this.webClient = webClient;
     }
 }
