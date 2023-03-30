@@ -1,28 +1,27 @@
 package ru.tinkoff.edu.java.scrapper.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.tinkoff.edu.java.scrapper.clients.responses.StackoverflowQuestionResponse;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class StackoverflowClient {
-    private final WebClient webClient;
-
-    @Autowired
-    public StackoverflowClient(@Qualifier("stackoverflowWebClient") WebClient webClient) {
-        this.webClient = webClient;
-    }
+    private final WebClient stackoverflowWebClient;
 
     public StackoverflowQuestionResponse getQuestionById(Long id) {
-        return webClient.get()
+        return stackoverflowWebClient.get()
                 .uri(uri -> uri.path("/questions/{id}")
                         .queryParam("site", "stackoverflow")
                         .build(id))
@@ -48,8 +47,9 @@ public class StackoverflowClient {
         tags.forEach(tag -> tagsList.add(tag.asText()));
         question.setTags(tagsList);
 
-        Date creationDate = new Date(itemsArray.path("creation_date").asLong() * 1000);
-        question.setCreationDate(creationDate.toInstant().atOffset(ZoneOffset.UTC));
+        long creationDate = itemsArray.path("creation_date").asLong();
+        OffsetDateTime creationDateOffset = OffsetDateTime.ofInstant(Instant.ofEpochSecond(creationDate), ZoneOffset.UTC);
+        question.setCreationDate(creationDateOffset);
 
         Date lastActivityDate = new Date(itemsArray.path("last_activity_date").asLong() * 1000);
         question.setLastActivityDate(lastActivityDate.toInstant().atOffset(ZoneOffset.UTC));
