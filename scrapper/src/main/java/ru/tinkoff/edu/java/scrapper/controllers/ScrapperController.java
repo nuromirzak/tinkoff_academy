@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +15,10 @@ import ru.tinkoff.edu.java.scrapper.services.TelegramChatService;
 
 @RestController
 @Log4j2
+@RequiredArgsConstructor
 public class ScrapperController {
     private static final String CHAT_ID_HEADER = "Tg-Chat-Id";
-    private TelegramChatService telegramChatService;
+    private final TelegramChatService telegramChatService;
 
     @PostMapping("/tg-chat/{id}")
     @ApiResponses(value = {
@@ -86,9 +88,9 @@ public class ScrapperController {
         log.info("Adding link for chat: {}", chatId);
         log.info("Request: {}", request);
 
-        telegramChatService.addLink(chatId, request);
+        LinkResponse linkResponse = telegramChatService.addLink(chatId, request);
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(linkResponse);
     }
 
     @DeleteMapping("/links")
@@ -115,10 +117,5 @@ public class ScrapperController {
         }
 
         return ResponseEntity.ok(linkResponse);
-    }
-
-    @Autowired
-    public void setTelegramChatService(TelegramChatService telegramChatService) {
-        this.telegramChatService = telegramChatService;
     }
 }

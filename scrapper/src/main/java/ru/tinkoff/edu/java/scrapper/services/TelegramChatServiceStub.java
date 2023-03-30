@@ -46,13 +46,14 @@ public class TelegramChatServiceStub implements TelegramChatService {
     }
 
     @Override
-    public void addLink(String chatId, AddLinkRequest addLinkRequest) {
+    public LinkResponse addLink(String chatId, AddLinkRequest addLinkRequest) {
         List<String> links = chatLinks.get(chatId);
         String link = addLinkRequest.link();
         if (links == null || links.contains(link)) {
-            return;
+            return null;
         }
         links.add(link);
+        return new LinkResponse(links.size() - 1, link);
     }
 
     @Override

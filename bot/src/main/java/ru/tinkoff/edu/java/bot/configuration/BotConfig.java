@@ -1,6 +1,5 @@
 package ru.tinkoff.edu.java.bot.configuration;
 
-import lombok.Data;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

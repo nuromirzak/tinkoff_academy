@@ -35,14 +35,16 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        if (!update.hasMessage()) {
+            return;
+        }
+
         SendMessage message = new SendMessage();
         message.setChatId(update.getMessage().getChatId().toString());
 
-        if (update.hasMessage()) {
-            String messageText = update.getMessage().hasText() ? update.getMessage().getText() : null;
-            String answerText = textMessageHandler.handleTextMessage(update, messageText);
-            message.setText(answerText);
-        }
+        String messageText = update.getMessage().hasText() ? update.getMessage().getText() : null;
+        String answerText = textMessageHandler.handleTextMessage(update, messageText);
+        message.setText(answerText);
 
         try {
             log.info("Отправляем сообщение: {}", message.getText());

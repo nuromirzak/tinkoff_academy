@@ -12,7 +12,7 @@ public interface TelegramChatService {
 
     public ListLinkResponse getLinks(String chatId);
 
-    public void addLink(String chatId, AddLinkRequest addLinkRequest);
+    public LinkResponse addLink(String chatId, AddLinkRequest addLinkRequest);
 
     public LinkResponse deleteLink(String chatId, RemoveLinkRequest addLinkRequest);
 }

@@ -1,6 +1,5 @@
 package ru.tinkoff.edu.java.bot.controllers;
 
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,7 +9,6 @@ import ru.tinkoff.edu.java.bot.dtos.ApiErrorResponse;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalRestControllerAdvice extends ResponseEntityExceptionHandler {
