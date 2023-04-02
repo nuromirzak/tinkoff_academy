@@ -1,7 +1,6 @@
 package ru.tinkoff.edu.java.bot.components;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -14,26 +13,26 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class TextMessageHandler {
-    private static final String COMMAND_START = "/start";
-    private static final String COMMAND_LIST = "/list";
-    private static final String COMMAND_HELP = "/help";
-    private static final String COMMAND_TRACK = "/track";
-    private static final String COMMAND_UNTRACK = "/untrack";
-    private static final String COMMAND_DELETE = "/delete";
-    private static final String COMMAND_TEST = "/test";
+    public static final String COMMAND_START = "/start";
+    public static final String COMMAND_LIST = "/list";
+    public static final String COMMAND_HELP = "/help";
+    public static final String COMMAND_TRACK = "/track";
+    public static final String COMMAND_UNTRACK = "/untrack";
+    public static final String COMMAND_DELETE = "/delete";
+    public static final String COMMAND_TEST = "/test";
 
-    private static final String ERROR_MESSAGE_COMMAND_NOT_FOUND = "Введите команду для получения списка доступных команд введите команду /help.";
-    private static final String ERROR_MESSAGE_LINK_NOT_ADDED = "Не было добавлено ссылок, возможно вы уже отслеживаете эту ссылку.";
-    private static final String ERROR_MESSAGE_LINK_NOT_REMOVED = "Не было удалено ссылок, возможно вы не отслеживаете эту ссылку.";
-    private static final String ERROR_MESSAGE_UNHANDLED = "Произошла непредвиденная ошибка, обратитесь к администратору бота.";
-    private static final String ERROR_MESSAGE_NOT_REGISTERED = "Вы должны быть зарегистрированы, для получения списка доступных команд введите команду /help.";
-    private static final String ERROR_MESSAGE_INVALID_COMMAND_ARGUMENTS = "Применение команды: %s <ссылка>";
-    private static final String SUCCESS_MESSAGE_DELETE = "Вы успешно отписались от всех ссылок, для получения списка доступных команд введите команду /help.";
-    private static final String SECRET_COMMAND_USERNAME = "nrmkhd";
-    private static final String SECRET_COMMAND_RESPONSE = "Вы нашли секретную команду, но у вас нет прав на ее использование))";
-    private static final String ERROR_MESSAGE_NO_LINKS = "У вас нет отслеживаемых ссылок, для получения списка доступных команд введите команду /help.";
+    public static final String ERROR_MESSAGE_COMMAND_NOT_FOUND = "Введите команду для получения списка доступных команд введите команду /help.";
+    public static final String ERROR_MESSAGE_LINK_NOT_ADDED = "Не было добавлено ссылок, возможно вы уже отслеживаете эту ссылку.";
+    public static final String ERROR_MESSAGE_LINK_NOT_REMOVED = "Не было удалено ссылок, возможно вы не отслеживаете эту ссылку.";
+    public static final String ERROR_MESSAGE_UNHANDLED = "Произошла непредвиденная ошибка, обратитесь к администратору бота.";
+    public static final String ERROR_MESSAGE_NOT_REGISTERED = "Вы должны быть зарегистрированы, для получения списка доступных команд введите команду /help.";
+    public static final String ERROR_MESSAGE_INVALID_COMMAND_ARGUMENTS = "Применение команды: %s <ссылка>";
+    public static final String SUCCESS_MESSAGE_DELETE = "Вы успешно отписались от всех ссылок, для получения списка доступных команд введите команду /help.";
+    public static final String SECRET_COMMAND_USERNAME = "nrmkhd";
+    public static final String SECRET_COMMAND_RESPONSE = "Вы нашли секретную команду, но у вас нет прав на ее использование))";
+    public static final String ERROR_MESSAGE_NO_LINKS = "У вас нет отслеживаемых ссылок, для получения списка доступных команд введите команду /help.";
 
-    private final Map<String, String> commands = Map.of(
+    public static final Map<String, String> commands = Map.of(
             COMMAND_START, "Добро пожаловать в бота, %s! Вы успешно зарегистрировались, для подробной информации введите команду /help",
             COMMAND_HELP, BotCommands.HELP_TEXT,
             COMMAND_TRACK, "Вы успешно подписались на ссылку %s, теперь вы будете получать уведомления о изменениях",
