@@ -1,2 +1,14 @@
 app:
-  test: "Hello from Scrapper Module!"
+    test: Hello from Scrapper Module!
+    scheduler:
+        interval: 5000
+
+springdoc:
+    swagger-ui:
+        path: /swagger-ui
+
+github:
+    base-url: https://api.github.com
+
+stackoverflow:
+    base-url: https://api.stackexchange.com/2.3
