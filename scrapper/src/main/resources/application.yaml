@@ -12,3 +12,6 @@ github:
 
 stackoverflow:
     base-url: https://api.stackexchange.com/2.3
+
+server:
+    port: 8081

@@ -1,8 +1,6 @@
 package ru.tinkoff.edu.java.link_parser.parsers;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.tinkoff.edu.java.link_parser.utils.LinkParserHelper;
 
 import java.util.Map;
 
@@ -81,5 +79,59 @@ class StackoverflowLinkParserTest {
         String link = "https://stackoverflow.com/questions/4114095s/";
         Map<String, String> result = parser.parse(link);
         assertNull(result);
+    }
+
+    @Test
+    public void parseValidLinkWithTags() {
+        String link = "https://stackoverflow.com/questions/tagged/java?sort=newest&pageSize=15";
+        Map<String, String> result = parser.parse(link);
+        assertNull(result);
+    }
+
+    @Test
+    public void parseValidLinkWithAnswerId() {
+        String link = "https://stackoverflow.com/a/123456";
+        Map<String, String> result = parser.parse(link);
+        assertNull(result);
+    }
+
+    @Test
+    public void parseValidLinkWithQueryString() {
+        String link = "https://stackoverflow.com/questions/4114095/how-do-i-revert-a-git-repository-to-a-previous-commit/?sort=votes#tab-top";
+        Map<String, String> result = parser.parse(link);
+        Map<String, String> expected = Map.of("questionId", "4114095");
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void parseValidLinkWithHash() {
+        String link = "https://stackoverflow.com/questions/4114095/#comment123456";
+        Map<String, String> result = parser.parse(link);
+        Map<String, String> expected = Map.of("questionId", "4114095");
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void parseValidLinkWithTrailingSlash() {
+        String link = "https://stackoverflow.com/questions/4114095/";
+        Map<String, String> result = parser.parse(link);
+        Map<String, String> expected = Map.of("questionId", "4114095");
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void parseValidLinkWithLeadingWhiteSpace() {
+        String link = "  https://stackoverflow.com/questions/4114095/";
+        Map<String, String> result = parser.parse(link);
+        Map<String, String> expected = Map.of("questionId", "4114095");
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void parseValidLinkWithTrailingWhiteSpace() {
+        String link = "https://stackoverflow.com/questions/4114095/   ";
+        Map<String, String> result = parser.parse(link);
+        Map<String, String> expected = Map.of("questionId", "4114095");
+        assertEquals(expected, result);
     }
 }

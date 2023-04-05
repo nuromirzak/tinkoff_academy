@@ -164,3 +164,4 @@
  ### Custom rules ###
  *.iml
  .vscode/
+ **/target/
