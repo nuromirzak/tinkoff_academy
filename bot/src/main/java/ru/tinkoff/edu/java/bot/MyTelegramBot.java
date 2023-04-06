@@ -11,20 +11,20 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.tinkoff.edu.java.bot.components.BotCommands;
-import ru.tinkoff.edu.java.bot.components.TextMessageHandler;
-import ru.tinkoff.edu.java.bot.configuration.BotConfig;
+import ru.tinkoff.edu.java.bot.components.CommandRouter;
+import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 
 @Component
 @Log4j2
 public class MyTelegramBot extends TelegramLongPollingBot {
-    private final TextMessageHandler textMessageHandler;
-    private final BotConfig botConfig;
+    private final CommandRouter commandRouter;
+    private final String botName;
 
     @Autowired
-    public MyTelegramBot(BotConfig botConfig, TextMessageHandler textMessageHandler) {
-        super(botConfig.getBotToken());
-        this.textMessageHandler = textMessageHandler;
-        this.botConfig = botConfig;
+    public MyTelegramBot(ApplicationConfig applicationConfig, CommandRouter commandRouter) {
+        super(applicationConfig.botToken());
+        this.commandRouter = commandRouter;
+        this.botName = applicationConfig.botUsername();
         try {
             this.execute(new SetMyCommands(BotCommands.LIST_OF_COMMANDS, new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
@@ -43,11 +43,10 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         message.setChatId(update.getMessage().getChatId().toString());
 
         String messageText = update.getMessage().hasText() ? update.getMessage().getText() : null;
-        String answerText = textMessageHandler.handleTextMessage(update, messageText);
+        String answerText = commandRouter.routeCommand(update, messageText);
         message.setText(answerText);
 
         try {
-            log.info("Отправляем сообщение: {}", message.getText());
             Message result = execute(message);
             log.info(result.getText());
         } catch (TelegramApiException e) {
@@ -57,6 +56,6 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return this.botConfig.getBotName();
+        return this.botName;
     }
 }
