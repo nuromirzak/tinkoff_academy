@@ -1,9 +1,9 @@
 package ru.tinkoff.edu.java.scrapper.services;
 
-import ru.tinkoff.edu.java.scrapper.dtos.AddLinkRequest;
-import ru.tinkoff.edu.java.scrapper.dtos.LinkResponse;
-import ru.tinkoff.edu.java.scrapper.dtos.ListLinkResponse;
-import ru.tinkoff.edu.java.scrapper.dtos.RemoveLinkRequest;
+import ru.tinkoff.edu.java.scrapper.dtos.requests.AddLinkRequest;
+import ru.tinkoff.edu.java.scrapper.dtos.responses.LinkResponse;
+import ru.tinkoff.edu.java.scrapper.dtos.responses.ListLinkResponse;
+import ru.tinkoff.edu.java.scrapper.dtos.requests.RemoveLinkRequest;
 
 public interface TelegramChatService {
     public void registerChat(String id);

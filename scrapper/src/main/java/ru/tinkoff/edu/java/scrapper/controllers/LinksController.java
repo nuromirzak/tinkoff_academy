@@ -9,7 +9,11 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
-import ru.tinkoff.edu.java.scrapper.dtos.*;
+import ru.tinkoff.edu.java.scrapper.dtos.requests.AddLinkRequest;
+import ru.tinkoff.edu.java.scrapper.dtos.requests.RemoveLinkRequest;
+import ru.tinkoff.edu.java.scrapper.dtos.responses.ApiErrorResponse;
+import ru.tinkoff.edu.java.scrapper.dtos.responses.LinkResponse;
+import ru.tinkoff.edu.java.scrapper.dtos.responses.ListLinkResponse;
 import ru.tinkoff.edu.java.scrapper.services.TelegramChatService;
 
 @RestController
