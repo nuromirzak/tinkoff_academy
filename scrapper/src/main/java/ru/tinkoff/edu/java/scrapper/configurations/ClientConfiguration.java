@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
+import ru.tinkoff.edu.java.link_parser.parsers.GlobalLinkParser;
 
 @Configuration
 public class ClientConfiguration {
@@ -33,6 +34,11 @@ public class ClientConfiguration {
         return WebClient.builder()
                 .baseUrl(botBaseUrl)
                 .build();
+    }
+
+    @Bean
+    public GlobalLinkParser globalLinkParser() {
+        return new GlobalLinkParser();
     }
 
     @Bean

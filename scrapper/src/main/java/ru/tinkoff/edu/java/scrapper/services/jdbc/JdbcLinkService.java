@@ -2,12 +2,14 @@ package ru.tinkoff.edu.java.scrapper.services.jdbc;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.repo.JdbcChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.JdbcLinkRepo;
 import ru.tinkoff.edu.java.scrapper.services.LinkService;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,5 +43,15 @@ public class JdbcLinkService implements LinkService {
     @Override
     public Collection<Link> listAll(long tgChatId) {
         return jdbcChatRepo.findLinksByChatId(tgChatId);
+    }
+
+    @Override
+    public Collection<Link> findAll() {
+        return jdbcLinkRepo.findAll();
+    }
+
+    @Override
+    public List<Chat> findFollowers(String url) {
+        return jdbcChatRepo.findChatsByLikeLink(url);
     }
 }

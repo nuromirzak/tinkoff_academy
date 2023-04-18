@@ -22,6 +22,7 @@ public class JdbcChatRepo {
     private static final String SQL_FIND_LINKS_BY_CHAT_ID = "SELECT * FROM link WHERE link_id IN (SELECT link_id FROM link_chat WHERE chat_id = ?)";
     private static final String SQL_INSERT_LINK_CHAT = "INSERT INTO link_chat (chat_id, link_id) VALUES (?, ?)";
     private static final String SQL_DELETE_LINK_CHAT = "DELETE FROM link_chat WHERE chat_id = ? AND link_id = ?";
+    private static final String SQL_FIND_CHATS_BY_LIKE_LINK = "SELECT * FROM chat WHERE chat_id IN (SELECT chat_id FROM link_chat WHERE link_id IN (SELECT link_id FROM link WHERE url LIKE ?))";
 
     public boolean add(long chatId) {
         int count = jdbcTemplate.update(SQL_INSERT_CHAT, chatId);
@@ -53,5 +54,9 @@ public class JdbcChatRepo {
     public boolean removeLinkFromChat(long chatId, long linkId) {
         int count = jdbcTemplate.update(SQL_DELETE_LINK_CHAT, chatId, linkId);
         return count > 0;
+    }
+
+    public List<Chat> findChatsByLikeLink(String url) {
+        return jdbcTemplate.query(SQL_FIND_CHATS_BY_LIKE_LINK, new ChatMapper(), url);
     }
 }
