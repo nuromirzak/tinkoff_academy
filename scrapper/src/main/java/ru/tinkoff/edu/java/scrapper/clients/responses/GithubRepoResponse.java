@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -16,4 +17,14 @@ public final class GithubRepoResponse {
     private String htmlUrl;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
+    private OffsetDateTime pushedAt;
+    private String homepage;
+    private int stargazersCount;
+    private int watchersCount;
+    private int forksCount;
+    private boolean archived;
+    private boolean disabled;
+    private int openIssuesCount;
+    private String license;
+    private List<String> topics;
 }

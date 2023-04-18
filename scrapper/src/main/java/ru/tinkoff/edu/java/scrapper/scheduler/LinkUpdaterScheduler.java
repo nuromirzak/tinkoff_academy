@@ -18,10 +18,7 @@ import ru.tinkoff.edu.java.scrapper.services.TgChatService;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @EnableScheduling
@@ -42,7 +39,7 @@ public class LinkUpdaterScheduler {
         log.debug("{}th iteration of link update process started", currentIteration);
 
         Collection<Link> links = linkService.findAll();
-        Collection<Link> updatedLinks = new HashSet<>();
+        Map<Link, String> updatedLinksWithDescription = new HashMap<>();
         for (Link link : links) {
             String linkString = link.getUrl();
             try {
@@ -54,7 +51,10 @@ public class LinkUpdaterScheduler {
                     String repo = parsedLink.get("repo");
                     GithubRepoResponse githubRepoResponse = gitHubClient.getRepo(owner, repo);
                     if (githubRepoResponse.getUpdatedAt().isAfter(link.getLastUpdated())) {
-                        updatedLinks.add(link);
+                        StringBuilder updateDescription = new StringBuilder();
+                        updateDescription.append("Repository ").append(githubRepoResponse.getFullName()).append(" has a new update!\n");
+                        // TODO: add more info about update
+                        updatedLinksWithDescription.put(link, updateDescription.toString());
                     }
                 } else if (host.equals("stackoverflow.com")) {
                     Map<String, String> parsedLink = globalLinkParser.parse(linkString);
@@ -62,7 +62,10 @@ public class LinkUpdaterScheduler {
                     Long questionIdLong = Long.parseLong(questionId);
                     StackoverflowQuestionResponse stackoverflowQuestionResponse = stackoverflowClient.getQuestionById(questionIdLong);
                     if (stackoverflowQuestionResponse.getLastActivityDate().isAfter(link.getLastUpdated())) {
-                        updatedLinks.add(link);
+                        StringBuilder updateDescription = new StringBuilder();
+                        updateDescription.append("Question ").append(stackoverflowQuestionResponse.getTitle()).append(" has a new update!\n");
+                        // TODO: add more info about update
+                        updatedLinksWithDescription.put(link, updateDescription.toString());
                     }
                 } else {
                     log.warn("Link {} is not supported", linkString);
@@ -72,8 +75,9 @@ public class LinkUpdaterScheduler {
             }
         }
 
-        for (Link link : updatedLinks) {
-            String description = String.format("%s has a new update!", link.getUrl());
+        for (Map.Entry<Link, String> entry : updatedLinksWithDescription.entrySet()) {
+            Link link = entry.getKey();
+            String description = entry.getValue();
             List<Chat> chats = linkService.findFollowers(link.getUrl());
             List<Long> tgChatIds = chats.stream().map(Chat::getChatId).toList();
             botClient.updateLink(link.getLinkId(), link.getUrl(), description, tgChatIds);
