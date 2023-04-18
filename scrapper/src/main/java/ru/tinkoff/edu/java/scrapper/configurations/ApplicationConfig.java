@@ -9,6 +9,6 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(@NotNull String test,
                                 @NotNull Scheduler scheduler,
                                 @NotNull String dbUrl,
-                                @NotNull String dbUser,
+                                @NotNull String dbUsername,
                                 @NotNull String dbPassword) {
 }

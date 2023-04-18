@@ -5,7 +5,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
 import ru.tinkoff.edu.java.scrapper.repo.JdbcLinkRepo;
-import ru.tinkoff.edu.java.scrapper.repo.JdbcSubscriptionRepo;
+import ru.tinkoff.edu.java.scrapper.repo.JdbcChatRepo;
 
 import javax.sql.DataSource;
 
@@ -33,8 +33,8 @@ public class SpringTestJdbcConfig {
     }
 
     @Bean
-    public JdbcSubscriptionRepo jdbcSubscriptionRepo() {
+    public JdbcChatRepo jdbcSubscriptionRepo() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(postgresDataSource());
-        return new JdbcSubscriptionRepo(jdbcTemplate);
+        return new JdbcChatRepo(jdbcTemplate);
     }
 }

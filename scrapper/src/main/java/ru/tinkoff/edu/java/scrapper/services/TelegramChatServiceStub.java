@@ -9,7 +9,7 @@ import ru.tinkoff.edu.java.scrapper.dtos.requests.RemoveLinkRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
+@Service("telegramChatServiceStub")
 public class TelegramChatServiceStub implements TelegramChatService {
     private final Map<String, List<String>> chatLinks =
             new HashMap<>();

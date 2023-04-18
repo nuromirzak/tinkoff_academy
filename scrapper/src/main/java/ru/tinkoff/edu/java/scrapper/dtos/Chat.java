@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.OffsetDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public final class Subscription {
+public final class Chat {
     private Long chatId;
-    private Long linkId;
+    private OffsetDateTime regDate;
 }
