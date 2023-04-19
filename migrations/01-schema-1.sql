@@ -3,7 +3,7 @@ CREATE TABLE link
     link_id      SERIAL PRIMARY KEY,
     url          VARCHAR(256) NOT NULL UNIQUE,
     last_updated TIMESTAMP    NOT NULL,
-    json_props   JSONB
+    json_props   JSON
 );
 
 CREATE TABLE link_chat
