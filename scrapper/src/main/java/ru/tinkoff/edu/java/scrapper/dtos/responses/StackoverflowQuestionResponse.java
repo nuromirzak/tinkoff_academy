@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.clients.responses;
+package ru.tinkoff.edu.java.scrapper.dtos.responses;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

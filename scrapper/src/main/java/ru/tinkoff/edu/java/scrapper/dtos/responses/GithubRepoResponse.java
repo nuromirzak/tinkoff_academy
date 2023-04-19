@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.clients.responses;
+package ru.tinkoff.edu.java.scrapper.dtos.responses;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
