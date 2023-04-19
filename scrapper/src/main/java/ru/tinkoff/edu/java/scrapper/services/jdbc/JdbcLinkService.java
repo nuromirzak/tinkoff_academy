@@ -5,9 +5,10 @@ import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.link_parser.parsers.GlobalLinkParser;
 import ru.tinkoff.edu.java.scrapper.clients.GitHubClient;
 import ru.tinkoff.edu.java.scrapper.clients.StackoverflowClient;
-import ru.tinkoff.edu.java.scrapper.clients.responses.GithubRepoResponse;
 import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
+import ru.tinkoff.edu.java.scrapper.dtos.responses.GithubRepoResponse;
+import ru.tinkoff.edu.java.scrapper.dtos.responses.StackoverflowQuestionResponse;
 import ru.tinkoff.edu.java.scrapper.repo.JdbcChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.JdbcLinkRepo;
 import ru.tinkoff.edu.java.scrapper.services.LinkService;
@@ -42,9 +43,11 @@ public class JdbcLinkService implements LinkService {
                 GithubRepoResponse githubRepoResponse = gitHubClient.getRepo(map.get("owner"), map.get("repo"));
                 link.setJsonProps(githubRepoResponse);
             } else if (map.containsKey("questions")) {
-                link.setJsonProps(stackoverflowClient.getQuestionById(Long.parseLong(map.get("questionId"))));
+                StackoverflowQuestionResponse stackoverflowQuestionResponse = stackoverflowClient.getQuestionById(Long.parseLong(map.get("questionId")));
+                link.setJsonProps(stackoverflowQuestionResponse);
             }
         } catch (Exception e) {
+            System.out.println("Error while parsing url: " + url + " " + e.getMessage());
             return null;
         }
 

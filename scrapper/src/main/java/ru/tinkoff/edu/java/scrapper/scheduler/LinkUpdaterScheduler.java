@@ -37,7 +37,7 @@ public class LinkUpdaterScheduler {
     @Scheduled(fixedDelayString = "#{@schedulerIntervalMs}")
     public void update() {
         int currentIteration = ++iteration;
-        log.debug("{}th iteration of link update process started", currentIteration);
+        log.info("{}th iteration of link update process started", currentIteration);
 
         Collection<Link> links = linkService.findAll();
         Map<Link, String> updatedLinksWithDescription = new HashMap<>();
@@ -78,6 +78,6 @@ public class LinkUpdaterScheduler {
             botClient.updateLink(link.getLinkId(), link.getUrl(), description, tgChatIds);
         }
 
-        log.debug("{}th iteration of link update process finished", currentIteration);
+        log.info("{}th iteration of link update process finished", currentIteration);
     }
 }

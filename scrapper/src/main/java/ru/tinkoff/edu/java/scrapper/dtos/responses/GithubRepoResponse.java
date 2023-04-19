@@ -26,7 +26,6 @@ public final class GithubRepoResponse {
     private boolean archived;
     private boolean disabled;
     private int openIssuesCount;
-    private String license;
     private List<String> topics;
 
     public String getDifferenceMessageBetween(GithubRepoResponse newGithubRepoResponse) {
@@ -37,9 +36,6 @@ public final class GithubRepoResponse {
         }
         if (!Objects.equals(newGithubRepoResponse.getHomepage(), homepage)) {
             updateDescription.append("Homepage has been changed from \"").append(homepage).append("\" to \"").append(newGithubRepoResponse.getHomepage()).append("\".\n");
-        }
-        if (!Objects.equals(newGithubRepoResponse.getLicense(), license)) {
-            updateDescription.append("License has been changed from \"").append(license).append("\" to \"").append(newGithubRepoResponse.getLicense()).append("\".\n");
         }
         if (newGithubRepoResponse.getStargazersCount() != stargazersCount) {
             updateDescription.append("Stargazers count has been changed from \"").append(stargazersCount).append("\" to \"").append(newGithubRepoResponse.getStargazersCount()).append("\".\n");
@@ -58,9 +54,6 @@ public final class GithubRepoResponse {
         }
         if (newGithubRepoResponse.getOpenIssuesCount() != openIssuesCount) {
             updateDescription.append("Open issues count has been changed from \"").append(openIssuesCount).append("\" to \"").append(newGithubRepoResponse.getOpenIssuesCount()).append("\".\n");
-        }
-        if (!Objects.equals(newGithubRepoResponse.getLicense(), license)) {
-            updateDescription.append("License has been changed from \"").append(license).append("\" to \"").append(newGithubRepoResponse.getLicense()).append("\".\n");
         }
         if (!Objects.equals(newGithubRepoResponse.getTopics(), topics)) {
             updateDescription.append("Topics has been changed from \"").append(topics).append("\" to \"").append(newGithubRepoResponse.getTopics()).append("\".\n");
