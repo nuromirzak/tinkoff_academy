@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class StackoverflowClient {
+public class  StackoverflowClient {
     private final WebClient stackoverflowWebClient;
 
     public StackoverflowQuestionResponse getQuestionById(Long id) {

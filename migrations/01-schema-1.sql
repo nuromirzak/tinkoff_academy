@@ -2,7 +2,8 @@ CREATE TABLE link
 (
     link_id      SERIAL PRIMARY KEY,
     url          VARCHAR(256) NOT NULL UNIQUE,
-    last_updated TIMESTAMP    NOT NULL
+    last_updated TIMESTAMP    NOT NULL,
+    json_props   JSONB
 );
 
 CREATE TABLE link_chat
@@ -15,6 +16,6 @@ CREATE TABLE link_chat
 
 CREATE TABLE chat
 (
-    chat_id BIGINT PRIMARY KEY,
+    chat_id  BIGINT PRIMARY KEY,
     reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

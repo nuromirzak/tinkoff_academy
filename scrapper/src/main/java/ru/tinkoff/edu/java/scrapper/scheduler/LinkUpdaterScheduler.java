@@ -17,6 +17,7 @@ import ru.tinkoff.edu.java.scrapper.services.LinkService;
 import ru.tinkoff.edu.java.scrapper.services.TgChatService;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.*;
 
@@ -42,36 +43,30 @@ public class LinkUpdaterScheduler {
         Map<Link, String> updatedLinksWithDescription = new HashMap<>();
         for (Link link : links) {
             String linkString = link.getUrl();
-            try {
-                URL url = new URL(linkString);
-                String host = url.getHost();
-                if (host.equals("github.com")) {
-                    Map<String, String> parsedLink = globalLinkParser.parse(linkString);
-                    String owner = parsedLink.get("owner");
-                    String repo = parsedLink.get("repo");
-                    GithubRepoResponse githubRepoResponse = gitHubClient.getRepo(owner, repo);
-                    if (githubRepoResponse.getUpdatedAt().isAfter(link.getLastUpdated())) {
-                        StringBuilder updateDescription = new StringBuilder();
-                        updateDescription.append("Repository ").append(githubRepoResponse.getFullName()).append(" has a new update!\n");
-                        // TODO: add more info about update
-                        updatedLinksWithDescription.put(link, updateDescription.toString());
-                    }
-                } else if (host.equals("stackoverflow.com")) {
-                    Map<String, String> parsedLink = globalLinkParser.parse(linkString);
-                    String questionId = parsedLink.get("questionId");
-                    Long questionIdLong = Long.parseLong(questionId);
-                    StackoverflowQuestionResponse stackoverflowQuestionResponse = stackoverflowClient.getQuestionById(questionIdLong);
-                    if (stackoverflowQuestionResponse.getLastActivityDate().isAfter(link.getLastUpdated())) {
-                        StringBuilder updateDescription = new StringBuilder();
-                        updateDescription.append("Question ").append(stackoverflowQuestionResponse.getTitle()).append(" has a new update!\n");
-                        // TODO: add more info about update
-                        updatedLinksWithDescription.put(link, updateDescription.toString());
-                    }
-                } else {
-                    log.warn("Link {} is not supported", linkString);
+            URI uri = URI.create(linkString);
+            String host = uri.getHost();
+            if (host.equals("github.com")) {
+                GithubRepoResponse oldGithubRepoResponse = (GithubRepoResponse) link.getJsonProps();
+                Map<String, String> parsedLink = globalLinkParser.parse(uri);
+                String owner = parsedLink.get("owner");
+                String repo = parsedLink.get("repo");
+                GithubRepoResponse githubRepoResponse = gitHubClient.getRepo(owner, repo);
+                if (githubRepoResponse.getUpdatedAt().isAfter(link.getLastUpdated())) {
+                    String updateMessage = oldGithubRepoResponse.getDifferenceMessageBetween(githubRepoResponse);
+                    updatedLinksWithDescription.put(link, updateMessage);
                 }
-            } catch (MalformedURLException e) {
-                log.warn("Link {} is malformed", linkString);
+            } else if (host.equals("stackoverflow.com")) {
+                StackoverflowQuestionResponse oldStackoverflowQuestionResponse = (StackoverflowQuestionResponse) link.getJsonProps();
+                Map<String, String> parsedLink = globalLinkParser.parse(uri);
+                String questionId = parsedLink.get("questionId");
+                Long questionIdLong = Long.parseLong(questionId);
+                StackoverflowQuestionResponse stackoverflowQuestionResponse = stackoverflowClient.getQuestionById(questionIdLong);
+                if (stackoverflowQuestionResponse.getLastActivityDate().isAfter(link.getLastUpdated())) {
+                    String updateMessage = oldStackoverflowQuestionResponse.getDifferenceMessageBetween(stackoverflowQuestionResponse);
+                    updatedLinksWithDescription.put(link, updateMessage);
+                }
+            } else {
+                log.warn("Link {} is not supported", linkString);
             }
         }
 

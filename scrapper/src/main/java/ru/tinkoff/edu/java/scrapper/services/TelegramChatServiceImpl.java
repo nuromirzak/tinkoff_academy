@@ -11,8 +11,11 @@ import ru.tinkoff.edu.java.scrapper.repo.JdbcChatRepo;
 import ru.tinkoff.edu.java.scrapper.services.jdbc.JdbcLinkService;
 import ru.tinkoff.edu.java.scrapper.services.jdbc.JdbcTgChatService;
 
+import javax.swing.text.html.Option;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("telegramChatService")
@@ -44,7 +47,11 @@ public class TelegramChatServiceImpl implements TelegramChatService {
     @Override
     public LinkResponse addLink(String chatId, AddLinkRequest addLinkRequest) {
         Link link = jdbcLinkService.add(Long.parseLong(chatId), addLinkRequest.link());
-        return new LinkResponse(link.getLinkId(), link.getUrl());
+
+        Long linkId = Optional.ofNullable(link).map(Link::getLinkId).orElse(0L);
+        String url = Optional.ofNullable(link).map(Link::getUrl).orElse("");
+
+        return new LinkResponse(linkId, url);
     }
 
     @Override

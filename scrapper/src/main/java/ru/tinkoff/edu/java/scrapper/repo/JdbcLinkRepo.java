@@ -17,7 +17,8 @@ import java.util.Objects;
 public class JdbcLinkRepo {
     private final JdbcTemplate jdbcTemplate;
 
-    private static final String SQL_INSERT_LINK = "INSERT INTO link (url, last_updated) VALUES (?, ?)";
+    // TODO: Duplicate URLs cannot be added, change SQL Query
+    private static final String SQL_INSERT_LINK = "INSERT INTO link (url, last_updated, json_props) VALUES (?, ?, ?)";
     private static final String SQL_CHECK_LINK_EXISTS = "SELECT * FROM link WHERE url = ?";
     private static final String SQL_DELETE_LINK = "DELETE FROM link WHERE url = ?";
     private static final String SQL_FIND_LINK = "SELECT * FROM link";
@@ -39,6 +40,7 @@ public class JdbcLinkRepo {
             var statement = con.prepareStatement(SQL_INSERT_LINK, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, link.getUrl());
             statement.setObject(2, link.getLastUpdated());
+            statement.setObject(3, link.getJsonProps());
             return statement;
         }, holder);
 
