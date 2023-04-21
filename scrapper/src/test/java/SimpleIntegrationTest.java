@@ -1,16 +1,27 @@
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SimpleIntegrationTest extends IntegrationEnvironment {
+    private static Connection connection;
+
+    @BeforeAll
+    static void setUp() {
+        connection = openConnection();
+    }
+
+    @AfterAll
+    static void tearDown() throws SQLException {
+        connection.close();
+    }
+
     @Test
     @DisplayName("Check that the database is up and running")
     void checkDatabaseIsUp() {
@@ -19,25 +30,45 @@ public class SimpleIntegrationTest extends IntegrationEnvironment {
 
     @Test
     @DisplayName("Contains the expected tables")
-    void checkTables() {
+    void checkTables() throws SQLException {
         // Arrange
         Set<String> actualTables = new HashSet<>();
-        Set<String> expectedTables = Set.of("chat", "link", "databasechangelog", "databasechangeloglock");
+        Set<String> expectedMyTables = Set.of("chat", "link", "link_chat");
+        Set<String> expectedLiquibaseTables = Set.of("databasechangelog", "databasechangeloglock");
 
         // Act
-        try (Connection connection = DriverManager.getConnection(
-                POSTGRE_SQL_CONTAINER.getJdbcUrl(),
-                POSTGRE_SQL_CONTAINER.getUsername(),
-                POSTGRE_SQL_CONTAINER.getPassword())) {
-            ResultSet rs = connection.getMetaData().getTables(null, null, "%", new String[] { "TABLE" });
-            while (rs.next()) {
-                actualTables.add(rs.getString("TABLE_NAME"));
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        ResultSet rs = connection.getMetaData().getTables(null, null, "%", new String[]{"TABLE"});
+        while (rs.next()) {
+            actualTables.add(rs.getString("TABLE_NAME"));
         }
 
         // Assert
-        assertTrue(actualTables.containsAll(expectedTables));
+        assertTrue(actualTables.containsAll(expectedMyTables));
+        assertTrue(actualTables.containsAll(expectedLiquibaseTables));
+    }
+
+    @Test
+    @DisplayName("Liquibase has been successfully run")
+    void checkLiquibase() throws SQLException {
+        // Arrange
+        Set<String> actualTables = new HashSet<>();
+        Set<String> expectedLiquibaseTables = Set.of("databasechangelog", "databasechangeloglock");
+        Set<String> execTypes = new HashSet<>();
+
+        // Act
+        ResultSet rs = connection.getMetaData().getTables(null, null, "%", new String[]{"TABLE"});
+        while (rs.next()) {
+            actualTables.add(rs.getString("TABLE_NAME"));
+        }
+        Statement statement = connection.createStatement();
+        ResultSet rs2 = statement.executeQuery("SELECT exectype FROM databasechangelog");
+        while (rs2.next()) {
+            execTypes.add(rs2.getString("exectype"));
+        }
+
+
+        // Assert
+        assertTrue(actualTables.containsAll(expectedLiquibaseTables));
+        assertTrue(execTypes.stream().noneMatch("FAILED"::equals));
     }
 }
