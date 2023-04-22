@@ -1,8 +1,8 @@
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -16,10 +16,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {SpringTestJdbcConfig.class, DataSourceConfig.class})
+@ContextConfiguration(classes = {SpringTestJooqConfig.class, DataSourceConfig.class})
 @Transactional
 @Sql(scripts = "classpath:populateDB.sql")
-public class JdbcChatRepoTest extends IntegrationEnvironment {
+public class JooqChatRepoTest extends IntegrationEnvironment {
     @Autowired
     private ChatRepo chatRepo;
 
@@ -30,7 +30,9 @@ public class JdbcChatRepoTest extends IntegrationEnvironment {
 
     @Test
     public void findAllAndPrint() {
+        System.out.println("---Start---");
         chatRepo.findAll().forEach(System.out::println);
+        System.out.println("---End---");
     }
 
     @Test
@@ -108,11 +110,15 @@ public class JdbcChatRepoTest extends IntegrationEnvironment {
         link.setLinkId(linkId);
 
         // Act
-        chatRepo.add(chatId);
-        chatRepo.addLinkToChat(chatId, linkId);
+        boolean chatAdded = chatRepo.add(chatId);
+        System.out.println("chatAdded = " + chatAdded);
+        boolean linkAdded = chatRepo.addLinkToChat(chatId, linkId);
+        System.out.println("linkAdded = " + linkAdded);
         List<Link> linksByChatIdBefore = chatRepo.findLinksByChatId(chatId);
+        System.out.println("linksByChatIdBefore = " + linksByChatIdBefore);
         chatRepo.removeLinkFromChat(chatId, linkId);
         List<Link> linksByChatIdAfter = chatRepo.findLinksByChatId(chatId);
+        System.out.println("linksByChatIdAfter = " + linksByChatIdAfter);
 
         // Assert
         assertEquals(1, linksByChatIdBefore.size());

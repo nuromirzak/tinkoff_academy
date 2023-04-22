@@ -1,22 +1,22 @@
-package ru.tinkoff.edu.java.scrapper.services.jdbc;
+package ru.tinkoff.edu.java.scrapper.services.impls;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.tinkoff.edu.java.scrapper.repo.JdbcChatRepo;
+import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
 import ru.tinkoff.edu.java.scrapper.services.TgChatService;
 
 @Component
 @RequiredArgsConstructor
-public class JdbcTgChatService implements TgChatService {
-    private final JdbcChatRepo jdbcChatRepo;
+public class TgChatServiceImpl implements TgChatService {
+    private final ChatRepo chatRepo;
 
     @Override
     public boolean register(long tgChatId) {
-        return jdbcChatRepo.add(tgChatId);
+        return chatRepo.add(tgChatId);
     }
 
     @Override
     public boolean unregister(long tgChatId) {
-        return jdbcChatRepo.remove(tgChatId);
+        return chatRepo.remove(tgChatId);
     }
 }

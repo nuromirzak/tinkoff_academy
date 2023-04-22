@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.services.jdbc;
+package ru.tinkoff.edu.java.scrapper.services.impls;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,8 +9,8 @@ import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.GithubRepoResponse;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.StackoverflowQuestionResponse;
-import ru.tinkoff.edu.java.scrapper.repo.JdbcChatRepo;
-import ru.tinkoff.edu.java.scrapper.repo.JdbcLinkRepo;
+import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
+import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
 import ru.tinkoff.edu.java.scrapper.services.LinkService;
 
 import java.net.URI;
@@ -20,9 +20,9 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class JdbcLinkService implements LinkService {
-    private final JdbcLinkRepo jdbcLinkRepo;
-    private final JdbcChatRepo jdbcChatRepo;
+public class LinkServiceImpl implements LinkService {
+    private final LinkRepo linkRepo;
+    private final ChatRepo chatRepo;
     private final GlobalLinkParser globalLinkParser;
     private final GitHubClient gitHubClient;
     private final StackoverflowClient stackoverflowClient;
@@ -51,12 +51,12 @@ public class JdbcLinkService implements LinkService {
             return null;
         }
 
-        long linkId = jdbcLinkRepo.add(link);
+        long linkId = linkRepo.add(link);
         link.setLinkId(linkId);
 
         System.out.println("link=" + link);
 
-        jdbcChatRepo.addLinkToChat(tgChatId, linkId);
+        chatRepo.addLinkToChat(tgChatId, linkId);
 
         return link;
     }
@@ -66,29 +66,23 @@ public class JdbcLinkService implements LinkService {
         Link link = new Link();
         link.setUrl(url);
 
-        long linkId = jdbcLinkRepo.add(link);
+        long linkId = linkRepo.add(link);
 
-        return jdbcChatRepo.removeLinkFromChat(tgChatId, linkId);
+        return chatRepo.removeLinkFromChat(tgChatId, linkId);
     }
 
     @Override
     public Collection<Link> listAll(long tgChatId) {
-        return jdbcChatRepo.findLinksByChatId(tgChatId);
+        return chatRepo.findLinksByChatId(tgChatId);
     }
 
     @Override
     public Collection<Link> findAll() {
-        return jdbcLinkRepo.findAll();
+        return linkRepo.findAll();
     }
 
     @Override
     public List<Chat> findFollowers(String url) {
-        return jdbcChatRepo.findChatsByLikeLink(url);
-    }
-
-    public static void main(String[] args) {
-        String hello = "Hello, world!";
-        URI uri = URI.create(hello);
-        System.out.println(uri);
+        return chatRepo.findChatsByLikeLink(url);
     }
 }

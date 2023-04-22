@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SpringTestJdbcConfig.class, DataSourceConfig.class})
 @Transactional
-public class JdbcLinkRepoTest extends IntegrationEnvironment {
+public class JooqLinkRepoTest extends IntegrationEnvironment {
     @Autowired
     private LinkRepo linkRepo;
 
