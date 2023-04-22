@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.configurations;
+package ru.tinkoff.edu.java.scrapper.configurations.databases;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -9,16 +9,22 @@ import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.DefaultExecuteListenerProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jooq.JooqExceptionTranslator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
+import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
+import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
+import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqChatRepo;
+import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqLinkRepo;
 
 import javax.sql.DataSource;
 
 @Configuration
+@ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jooq")
 @RequiredArgsConstructor
-public class JooqConfig {
+public class JooqAccessConfiguration implements DatabaseAccessConfiguration {
     private final DataSource dataSource;
 
     @Bean
@@ -41,5 +47,15 @@ public class JooqConfig {
         config.set(new DefaultExecuteListenerProvider(
                 new JooqExceptionTranslator()));
         return config;
+    }
+
+    @Override
+    public ChatRepo chatRepo() {
+        return new JooqChatRepo(dsl());
+    }
+
+    @Override
+    public LinkRepo linkRepo() {
+        return new JooqLinkRepo(dsl());
     }
 }

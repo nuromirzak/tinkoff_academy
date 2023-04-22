@@ -13,7 +13,6 @@ import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Repository("jdbcChatRepo")
 public class JdbcChatRepo implements ChatRepo {
     private final JdbcTemplate jdbcTemplate;
 

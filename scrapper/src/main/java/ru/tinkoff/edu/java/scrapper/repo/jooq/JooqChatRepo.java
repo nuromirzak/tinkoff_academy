@@ -11,7 +11,6 @@ import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Repository("jooqChatRepo")
 public class JooqChatRepo implements ChatRepo {
     private final DSLContext dslContext;
 

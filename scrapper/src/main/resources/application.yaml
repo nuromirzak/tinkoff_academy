@@ -5,6 +5,7 @@ app:
     db_url: jdbc:postgresql://localhost:5432/scrapper
     db_username: postgres
     db_password: password
+    database-access-type: jpa
 
 springdoc:
     swagger-ui:
@@ -21,3 +22,7 @@ bot:
 
 server:
     port: 8081
+
+spring:
+    jpa:
+        openInView: false

@@ -11,7 +11,6 @@ import ru.tinkoff.edu.java.scrapper.domain.jooq.Tables;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Repository("jooqLinkRepo")
 public class JooqLinkRepo implements LinkRepo {
     private final DSLContext dslContext;
 

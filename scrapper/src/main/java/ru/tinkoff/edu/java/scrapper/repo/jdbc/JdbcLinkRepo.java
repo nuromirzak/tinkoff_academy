@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Objects;
 
 @RequiredArgsConstructor
-@Repository("jdbcLinkRepo")
 public class JdbcLinkRepo implements LinkRepo {
     private final JdbcTemplate jdbcTemplate;
 
