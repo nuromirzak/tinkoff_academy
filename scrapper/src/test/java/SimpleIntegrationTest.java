@@ -46,4 +46,29 @@ public class SimpleIntegrationTest extends IntegrationEnvironment {
         assertTrue(actualTables.containsAll(expectedMyTables));
         assertTrue(actualTables.containsAll(expectedLiquibaseTables));
     }
+
+    @Test
+    @DisplayName("Liquibase has been successfully run")
+    void checkLiquibase() throws SQLException {
+        // Arrange
+        Set<String> actualTables = new HashSet<>();
+        Set<String> expectedLiquibaseTables = Set.of("databasechangelog", "databasechangeloglock");
+        Set<String> execTypes = new HashSet<>();
+
+        // Act
+        ResultSet rs = connection.getMetaData().getTables(null, null, "%", new String[]{"TABLE"});
+        while (rs.next()) {
+            actualTables.add(rs.getString("TABLE_NAME"));
+        }
+        Statement statement = connection.createStatement();
+        ResultSet rs2 = statement.executeQuery("SELECT exectype FROM databasechangelog");
+        while (rs2.next()) {
+            execTypes.add(rs2.getString("exectype"));
+        }
+
+
+        // Assert
+        assertTrue(actualTables.containsAll(expectedLiquibaseTables));
+        assertTrue(execTypes.stream().noneMatch("FAILED"::equals));
+    }
 }
