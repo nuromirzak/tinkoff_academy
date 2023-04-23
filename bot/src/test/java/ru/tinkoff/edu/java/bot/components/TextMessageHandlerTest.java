@@ -19,12 +19,13 @@ class TextMessageHandlerTest {
     private static final Long USER_ID = 362037700L;
     private final ScrapperClient scrapperClient = new ScrapperClientStub();
 
-    private TextMessageHandler textMessageHandler;
+    private CommandRouter commandRouter;
     private Update update;
 
     @BeforeEach
     void setUp() {
-        textMessageHandler = new TextMessageHandler(scrapperClient);
+        CommandHandlerFactory commandHandlerFactory = new CommandHandlerFactory(scrapperClient);
+        commandRouter = new CommandRouter(commandHandlerFactory);
 
         User user = new User();
         user.setId(USER_ID);
@@ -45,8 +46,8 @@ class TextMessageHandlerTest {
     @Test
     void testWhenNoLinks() {
         // Act
-        String response = textMessageHandler.handleTextMessage(update, "/list");
-        String expected = TextMessageHandler.ERROR_MESSAGE_NO_LINKS;
+        String response = commandRouter.routeCommand(update, "/list");
+        String expected = BotCommands.ERROR_MESSAGE_NO_LINKS;
 
         // Assert
         assertEquals(expected, response);
@@ -55,27 +56,27 @@ class TextMessageHandlerTest {
     @Test
     void testAddLinkWhenRegistered() {
         // Arrange
-        textMessageHandler.handleTextMessage(update, "/start");
-        textMessageHandler.handleTextMessage(update, "/track https://www.google.com");
+        commandRouter.routeCommand(update, "/start");
+        commandRouter.routeCommand(update, "/track https://www.google.com");
 
         // Act
-        String response = textMessageHandler.handleTextMessage(update, "/list");
+        String response = commandRouter.routeCommand(update, "/list");
         LinkResponse response1 = new LinkResponse(0, "https://www.google.com");
         ListLinkResponse listLinkResponse = new ListLinkResponse(Collections.singletonList(response1), 1);
-        String expected = String.format(TextMessageHandler.commands.get("/list"), listLinkResponse);
+        String expected = String.format(BotCommands.commands.get("/list"), listLinkResponse);
 
-        // Assert
+        // AssertBotCommands
         assertEquals(expected, response);
     }
 
     @Test
     void testAddLinkWhenNotRegistered() {
         // Arrange
-        textMessageHandler.handleTextMessage(update, "/track https://www.google.com");
+        commandRouter.routeCommand(update, "/track https://www.google.com");
 
         // Act
-        String response = textMessageHandler.handleTextMessage(update, "/list");
-        String expected = TextMessageHandler.ERROR_MESSAGE_NO_LINKS;
+        String response = commandRouter.routeCommand(update, "/list");
+        String expected = BotCommands.ERROR_MESSAGE_NO_LINKS;
 
         // Assert
         assertEquals(expected, response);
@@ -84,15 +85,15 @@ class TextMessageHandlerTest {
     @Test
     void testAddLinkWhenNotRegisteredAndRegistered() {
         // Arrange
-        textMessageHandler.handleTextMessage(update, "/track https://www.google.com");
-        textMessageHandler.handleTextMessage(update, "/start");
-        textMessageHandler.handleTextMessage(update, "/track https://www.google.com");
+        commandRouter.routeCommand(update, "/track https://www.google.com");
+        commandRouter.routeCommand(update, "/start");
+        commandRouter.routeCommand(update, "/track https://www.google.com");
 
         // Act
-        String response = textMessageHandler.handleTextMessage(update, "/list");
+        String response = commandRouter.routeCommand(update, "/list");
         LinkResponse response1 = new LinkResponse(0, "https://www.google.com");
         ListLinkResponse listLinkResponse = new ListLinkResponse(Collections.singletonList(response1), 1);
-        String expected = String.format(TextMessageHandler.commands.get("/list"), listLinkResponse);
+        String expected = String.format(BotCommands.commands.get("/list"), listLinkResponse);
 
         // Assert
         assertEquals(expected, response);
@@ -101,16 +102,16 @@ class TextMessageHandlerTest {
     @Test
     void testListLinksMultiple() {
         // Arrange
-        textMessageHandler.handleTextMessage(update, "/start");
-        textMessageHandler.handleTextMessage(update, "/track https://www.google.com");
-        textMessageHandler.handleTextMessage(update, "/track https://www.facebook.com");
+        commandRouter.routeCommand(update, "/start");
+        commandRouter.routeCommand(update, "/track https://www.google.com");
+        commandRouter.routeCommand(update, "/track https://www.facebook.com");
 
         // Act
-        String response = textMessageHandler.handleTextMessage(update, "/list");
+        String response = commandRouter.routeCommand(update, "/list");
         LinkResponse response1 = new LinkResponse(0, "https://www.google.com");
         LinkResponse response2 = new LinkResponse(1, "https://www.facebook.com");
         ListLinkResponse listLinkResponse = new ListLinkResponse(Arrays.asList(response1, response2), 2);
-        String expected = String.format(TextMessageHandler.commands.get("/list"), listLinkResponse);
+        String expected = String.format(BotCommands.commands.get("/list"), listLinkResponse);
 
         // Assert
         assertEquals(expected, response);
@@ -119,12 +120,12 @@ class TextMessageHandlerTest {
     @Test
     void testListLinksEmpty() {
         // Arrange
-        textMessageHandler.handleTextMessage(update, "/start");
+        commandRouter.routeCommand(update, "/start");
 
         // Act
-        String response = textMessageHandler.handleTextMessage(update, "/list");
+        String response = commandRouter.routeCommand(update, "/list");
 
         // Assert
-        assertEquals(TextMessageHandler.ERROR_MESSAGE_NO_LINKS, response);
+        assertEquals(BotCommands.ERROR_MESSAGE_NO_LINKS, response);
     }
 }
