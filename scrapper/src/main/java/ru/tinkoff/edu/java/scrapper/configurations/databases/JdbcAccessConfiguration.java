@@ -17,11 +17,13 @@ public class JdbcAccessConfiguration implements DatabaseAccessConfiguration {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
+    @Bean
     public ChatRepo chatRepo() {
         return new JdbcChatRepo(jdbcTemplate);
     }
 
     @Override
+    @Bean
     public LinkRepo linkRepo() {
         return new JdbcLinkRepo(jdbcTemplate);
     }

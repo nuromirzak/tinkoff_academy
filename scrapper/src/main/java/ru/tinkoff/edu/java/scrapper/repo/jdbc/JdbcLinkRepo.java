@@ -26,7 +26,7 @@ public class JdbcLinkRepo implements LinkRepo {
     private static final String SQL_DELETE_ALL_LINKS = "DELETE FROM link";
 
     @Override
-    public long add(Link link) {
+    public int add(Link link) {
         if (link.getLastUpdated() == null)
             link.setLastUpdated(OffsetDateTime.now());
 
@@ -34,7 +34,7 @@ public class JdbcLinkRepo implements LinkRepo {
         if (!existingLinks.isEmpty()) {
             System.out.println("LINK ALREADY EXISTS");
             System.out.println(existingLinks);
-            return existingLinks.get(0).getLinkId();
+            return Math.toIntExact(existingLinks.get(0).getLinkId());
         }
 
         GeneratedKeyHolder holder = new GeneratedKeyHolder();
@@ -48,7 +48,7 @@ public class JdbcLinkRepo implements LinkRepo {
 
         System.out.println("KEYS" + holder.getKeys());
 
-        return ((Number) Objects.requireNonNull(holder.getKeys()).get("link_id")).longValue();
+        return (int) ((Number) Objects.requireNonNull(holder.getKeys()).get("link_id")).longValue();
     }
 
     @Override

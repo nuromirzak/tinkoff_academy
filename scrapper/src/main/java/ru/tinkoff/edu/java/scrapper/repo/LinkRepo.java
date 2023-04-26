@@ -5,7 +5,7 @@ import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import java.util.List;
 
 public interface LinkRepo {
-    long add(Link link);
+    int add(Link link);
 
     List<Link> findAll();
 

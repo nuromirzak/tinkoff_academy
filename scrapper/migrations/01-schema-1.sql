@@ -3,7 +3,7 @@ CREATE TABLE link
     link_id      SERIAL PRIMARY KEY,
     url          VARCHAR(256) NOT NULL UNIQUE,
     last_updated TIMESTAMP    NOT NULL,
-    json_props   JSON
+    json_props   JSONB
 );
 
 COMMENT ON COLUMN link.link_id IS 'Уникальный идентификатор ссылки в базе данных';

@@ -15,7 +15,7 @@ public class JooqLinkRepo implements LinkRepo {
     private final DSLContext dslContext;
 
     @Override
-    public long add(Link link) {
+    public int add(Link link) {
         return dslContext.insertInto(Tables.LINK)
                 .set(Tables.LINK.URL, link.getUrl())
                 .set(Tables.LINK.LAST_UPDATED, link.getLastUpdated().toLocalDateTime())

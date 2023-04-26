@@ -50,11 +50,13 @@ public class JooqAccessConfiguration implements DatabaseAccessConfiguration {
     }
 
     @Override
+    @Bean
     public ChatRepo chatRepo() {
         return new JooqChatRepo(dsl());
     }
 
     @Override
+    @Bean
     public LinkRepo linkRepo() {
         return new JooqLinkRepo(dsl());
     }

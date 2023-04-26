@@ -9,7 +9,9 @@ import java.util.Objects;
 
 @Data
 @NoArgsConstructor
-public class StackoverflowQuestionResponse {
+public class StackoverflowQuestionResponse extends LinkProperties {
+    public static final String DISCRIMINATOR = "link_properties.stackoverflow_question";
+
     private Long ownerId;
     private String ownerName;
     private String title;
@@ -35,5 +37,10 @@ public class StackoverflowQuestionResponse {
             updateDescription.append("Tags has been changed from \"").append(tags).append("\" to \"").append(newStackoverflowQuestionResponse.getTags()).append("\".\n");
         }
         return updateDescription.toString();
+    }
+
+    @Override
+    public String getType() {
+        return DISCRIMINATOR;
     }
 }

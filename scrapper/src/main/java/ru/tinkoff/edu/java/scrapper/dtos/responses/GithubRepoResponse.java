@@ -12,7 +12,9 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public final class GithubRepoResponse {
+public final class GithubRepoResponse extends LinkProperties {
+    public static final String DISCRIMINATOR = "link_properties.github_repository";
+
     private String fullName;
     private String description;
     private String htmlUrl;
@@ -59,5 +61,10 @@ public final class GithubRepoResponse {
             updateDescription.append("Topics has been changed from \"").append(topics).append("\" to \"").append(newGithubRepoResponse.getTopics()).append("\".\n");
         }
         return updateDescription.toString();
+    }
+
+    @Override
+    public String getType() {
+        return DISCRIMINATOR;
     }
 }
