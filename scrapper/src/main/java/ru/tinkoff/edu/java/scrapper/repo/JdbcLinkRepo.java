@@ -8,6 +8,7 @@ import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.dtos.mappers.LinkMapper;
 
 import java.sql.Statement;
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +24,7 @@ public class JdbcLinkRepo {
     private static final String SQL_FIND_LINK = "SELECT * FROM link";
     private static final String SQL_DELETE_ALL_LINKS = "DELETE FROM link";
     private static final String SQL_FIND_LINKS_BY_CHAT_ID = "SELECT * FROM link WHERE link_id IN (SELECT link_id FROM link_chat WHERE chat_id = ?)";
+    private static final String SQL_FIND_LINKS_TO_SCRAP = "SELECT * FROM link WHERE last_updated <= ?";
 
     public long add(Link link) {
         if (link.getLastUpdated() == null)
@@ -63,5 +65,11 @@ public class JdbcLinkRepo {
 
     public List<Link> findLinksByChatId(long chatId) {
         return jdbcTemplate.query(SQL_FIND_LINKS_BY_CHAT_ID, new LinkMapper(), chatId);
+    }
+
+    public List<Link> findLinksToScrap(Duration duration) {
+        OffsetDateTime now = OffsetDateTime.now();
+        OffsetDateTime lastScrapped = now.minus(duration);
+        return jdbcTemplate.query(SQL_FIND_LINKS_TO_SCRAP, new LinkMapper(), lastScrapped);
     }
 }

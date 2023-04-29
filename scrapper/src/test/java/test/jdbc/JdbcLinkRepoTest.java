@@ -11,6 +11,7 @@ import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.repo.JdbcLinkRepo;
 import test.IntegrationEnvironment;
 
+import java.time.Duration;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,5 +73,17 @@ public class JdbcLinkRepoTest extends IntegrationEnvironment {
 
         // Assert
         assertEquals(2, subscriptionsByChatId.size());
+    }
+
+    @Test
+    public void getLinksToScrap() {
+        // Assert
+        Duration fifteenMinutes = Duration.ofMinutes(15);
+
+        // Act
+        List<Link> linksToUpdate = jdbcLinkRepo.findLinksToScrap(fifteenMinutes);
+
+        // Assert
+        assertEquals(4, linksToUpdate.size());
     }
 }

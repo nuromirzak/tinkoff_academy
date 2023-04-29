@@ -11,6 +11,7 @@ import ru.tinkoff.edu.java.scrapper.clients.GitHubClient;
 import ru.tinkoff.edu.java.scrapper.clients.StackoverflowClient;
 import ru.tinkoff.edu.java.scrapper.clients.responses.GithubRepoResponse;
 import ru.tinkoff.edu.java.scrapper.clients.responses.StackoverflowQuestionResponse;
+import ru.tinkoff.edu.java.scrapper.configurations.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.services.LinkService;
@@ -35,13 +36,14 @@ public class LinkUpdaterScheduler {
     private final GitHubClient gitHubClient;
     private final StackoverflowClient stackoverflowClient;
     private final GlobalLinkParser globalLinkParser;
+    private final ApplicationConfig applicationConfig;
 
     @Scheduled(fixedDelayString = "#{@schedulerIntervalMs}")
     public void update() {
         int currentIteration = ++iteration;
         log.debug("{}th iteration of link update process started", currentIteration);
 
-        Collection<Link> links = linkService.findAll();
+        Collection<Link> links = linkService.findLinksToScrap(applicationConfig.scheduler().checkInterval());
         Collection<Link> updatedLinks = new HashSet<>();
         for (Link link : links) {
             String linkString = link.getUrl();
