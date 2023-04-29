@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
-import ru.tinkoff.edu.java.scrapper.dtos.*;
+import ru.tinkoff.edu.java.scrapper.dtos.responses.ApiErrorResponse;
 import ru.tinkoff.edu.java.scrapper.services.TelegramChatService;
 
 @RestController

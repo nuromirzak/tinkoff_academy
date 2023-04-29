@@ -6,5 +6,9 @@ import org.springframework.validation.annotation.Validated;
 
 @Validated
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
-public record ApplicationConfig(@NotNull String test, @NotNull Scheduler scheduler) {
+public record ApplicationConfig(@NotNull String test,
+                                @NotNull Scheduler scheduler,
+                                @NotNull String dbUrl,
+                                @NotNull String dbUsername,
+                                @NotNull String dbPassword) {
 }

@@ -2,6 +2,10 @@ app:
     test: Hello from Scrapper Module!
     scheduler:
         interval: 5000
+        check-interval: 1000 * 60 * 15
+    db_url: jdbc:postgresql://localhost:5432/scrapper
+    db_username: postgres
+    db_password: password
 
 springdoc:
     swagger-ui:
@@ -12,6 +16,9 @@ github:
 
 stackoverflow:
     base-url: https://api.stackexchange.com/2.3
+
+bot:
+    base-url: http://localhost:8080
 
 server:
     port: 8081
