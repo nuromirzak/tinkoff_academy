@@ -1,12 +1,18 @@
+package test.jdbc;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
+import test.DataSourceConfig;
+import test.IntegrationEnvironment;
 
+import java.time.Duration;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,7 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SpringTestJdbcConfig.class, DataSourceConfig.class})
 @Transactional
-public class JooqLinkRepoTest extends IntegrationEnvironment {
+@Sql(scripts = "classpath:populateDB.sql")
+public class JdbcLinkRepoTest extends IntegrationEnvironment {
     @Autowired
     private LinkRepo linkRepo;
 
@@ -55,5 +62,29 @@ public class JooqLinkRepoTest extends IntegrationEnvironment {
         // Assert
         assertTrue(linksAfter.stream().noneMatch(l -> l.getUrl().equals(link.getUrl())));
         assertEquals(linksAfter.size() + 1, linksBefore.size());
+    }
+
+    @Test
+    public void getLinksByChatId() {
+        // Arrange
+        long chatId = 362037700L;
+
+        // Act
+        List<Link> subscriptionsByChatId = linkRepo.findLinksByChatId(chatId);
+
+        // Assert
+        assertEquals(2, subscriptionsByChatId.size());
+    }
+
+    @Test
+    public void getLinksToScrap() {
+        // Assert
+        Duration fifteenMinutes = Duration.ofMinutes(15);
+
+        // Act
+        List<Link> linksToUpdate = linkRepo.findLinksToScrap(fifteenMinutes);
+
+        // Assert
+        assertEquals(4, linksToUpdate.size());
     }
 }
