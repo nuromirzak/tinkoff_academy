@@ -2,12 +2,10 @@ package ru.tinkoff.edu.java.scrapper.repo.jooq;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.Tables;
 import ru.tinkoff.edu.java.scrapper.repo.ChatLinkRepo;
 
 @RequiredArgsConstructor
-@Repository("jooqChatLinkRepo")
 public class JooqChatLinkRepo implements ChatLinkRepo {
     private final DSLContext dslContext;
 

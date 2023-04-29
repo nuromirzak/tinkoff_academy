@@ -2,11 +2,9 @@ package ru.tinkoff.edu.java.scrapper.repo.jdbc;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.scrapper.repo.ChatLinkRepo;
 
 @RequiredArgsConstructor
-@Component
 public class JdbcChatLinkRepo implements ChatLinkRepo {
     private final JdbcTemplate jdbcTemplate;
 

@@ -1,4 +1,4 @@
-package ru.tinkoff.edu.java.scrapper.dtos.mappers;
+package ru.tinkoff.edu.java.scrapper.dtos.mappers.jdbc;
 
 import org.springframework.jdbc.core.RowMapper;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;

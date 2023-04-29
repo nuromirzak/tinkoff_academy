@@ -3,14 +3,14 @@ CREATE TABLE link
     link_id      SERIAL PRIMARY KEY,
     url          VARCHAR(256) NOT NULL UNIQUE,
     last_updated TIMESTAMP    NOT NULL,
-    last_scraped TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    json_props   JSON
+    last_scrapped TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    json_props   JSONB
 );
 
 COMMENT ON COLUMN link.link_id IS 'Уникальный идентификатор ссылки в базе данных';
 COMMENT ON COLUMN link.url IS 'URL отслеживаемой ссылки';
 COMMENT ON COLUMN link.last_updated IS 'Время последнего действия с этой ссылкой';
-COMMENT ON COLUMN link.last_scraped IS 'Время последнего скрапинга этой ссылки';
+COMMENT ON COLUMN link.last_scrapped IS 'Время последнего скрапинга этой ссылки';
 COMMENT ON COLUMN link.json_props IS 'Дополнительные свойства ссылки в формате JSON';
 
 CREATE TABLE link_chat

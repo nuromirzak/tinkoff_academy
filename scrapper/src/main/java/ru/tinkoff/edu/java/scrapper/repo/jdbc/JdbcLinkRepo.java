@@ -3,10 +3,8 @@ package ru.tinkoff.edu.java.scrapper.repo.jdbc;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
-import ru.tinkoff.edu.java.scrapper.dtos.mappers.LinkMapper;
+import ru.tinkoff.edu.java.scrapper.dtos.mappers.jdbc.LinkMapper;
 import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
 
 import java.sql.Statement;
@@ -16,7 +14,6 @@ import java.util.List;
 import java.util.Objects;
 
 @RequiredArgsConstructor
-@Repository("jdbcLinkRepo")
 public class JdbcLinkRepo implements LinkRepo {
     private final JdbcTemplate jdbcTemplate;
 
@@ -27,10 +24,10 @@ public class JdbcLinkRepo implements LinkRepo {
     private static final String SQL_FIND_LINK = "SELECT * FROM link";
     private static final String SQL_DELETE_ALL_LINKS = "DELETE FROM link";
     private static final String SQL_FIND_LINKS_BY_CHAT_ID = "SELECT * FROM link WHERE link_id IN (SELECT link_id FROM link_chat WHERE chat_id = ?)";
-    private static final String SQL_FIND_LINKS_TO_SCRAP = "SELECT * FROM link WHERE last_updated <= ?";
+    private static final String SQL_FIND_LINKS_TO_SCRAP = "SELECT * FROM link WHERE link.last_scrapped <= ?";
 
     @Override
-    public long add(Link link) {
+    public int add(Link link) {
         if (link.getLastUpdated() == null)
             link.setLastUpdated(OffsetDateTime.now());
 
@@ -38,7 +35,7 @@ public class JdbcLinkRepo implements LinkRepo {
         if (!existingLinks.isEmpty()) {
             System.out.println("LINK ALREADY EXISTS");
             System.out.println(existingLinks);
-            return existingLinks.get(0).getLinkId();
+            return Math.toIntExact(existingLinks.get(0).getLinkId());
         }
 
         GeneratedKeyHolder holder = new GeneratedKeyHolder();
@@ -52,7 +49,7 @@ public class JdbcLinkRepo implements LinkRepo {
 
         System.out.println("KEYS" + holder.getKeys());
 
-        return ((Number) Objects.requireNonNull(holder.getKeys()).get("link_id")).longValue();
+        return (int) ((Number) Objects.requireNonNull(holder.getKeys()).get("link_id")).longValue();
     }
 
     @Override

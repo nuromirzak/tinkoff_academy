@@ -2,15 +2,14 @@ package ru.tinkoff.edu.java.scrapper.repo.jooq;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.Tables;
 import ru.tinkoff.edu.java.scrapper.dtos.Chat;
+import ru.tinkoff.edu.java.scrapper.dtos.mappers.jooq.ChatMapper;
 import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-@Repository("jooqChatRepo")
 public class JooqChatRepo implements ChatRepo {
     private final DSLContext dslContext;
 
@@ -33,7 +32,7 @@ public class JooqChatRepo implements ChatRepo {
     @Override
     public List<Chat> findAll() {
         return dslContext.selectFrom(Tables.CHAT)
-                .fetchInto(Chat.class);
+                .fetch(new ChatMapper());
     }
 
     @Override

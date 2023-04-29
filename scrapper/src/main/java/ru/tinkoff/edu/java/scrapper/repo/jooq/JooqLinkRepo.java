@@ -1,25 +1,23 @@
 package ru.tinkoff.edu.java.scrapper.repo.jooq;
 
 import lombok.RequiredArgsConstructor;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.springframework.stereotype.Repository;
-import ru.tinkoff.edu.java.scrapper.domain.jooq.tables.LinkChat;
+import org.jooq.DSLContext;
+import org.jooq.JSON;
+import org.jooq.Record1;
+import ru.tinkoff.edu.java.scrapper.domain.jooq.Tables;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
-import ru.tinkoff.edu.java.scrapper.domain.jooq.Tables;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Repository("jooqLinkRepo")
 public class JooqLinkRepo implements LinkRepo {
     private final DSLContext dslContext;
 
     @Override
-    public long add(Link link) {
+    public int add(Link link) {
         return dslContext.insertInto(Tables.LINK)
                 .set(Tables.LINK.URL, link.getUrl())
                 .set(Tables.LINK.LAST_UPDATED,

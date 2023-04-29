@@ -6,7 +6,7 @@ import java.time.Duration;
 import java.util.List;
 
 public interface LinkRepo {
-    long add(Link link);
+    int add(Link link);
 
     List<Link> findAll();
 

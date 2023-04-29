@@ -2,18 +2,13 @@ package ru.tinkoff.edu.java.scrapper.repo.jdbc;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dtos.Chat;
-import ru.tinkoff.edu.java.scrapper.dtos.Link;
-import ru.tinkoff.edu.java.scrapper.dtos.mappers.ChatMapper;
-import ru.tinkoff.edu.java.scrapper.dtos.mappers.LinkMapper;
+import ru.tinkoff.edu.java.scrapper.dtos.mappers.jdbc.ChatMapper;
 import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-@Repository("jdbcChatRepo")
 public class JdbcChatRepo implements ChatRepo {
     private final JdbcTemplate jdbcTemplate;
 
