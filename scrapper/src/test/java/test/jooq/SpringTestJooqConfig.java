@@ -1,3 +1,5 @@
+package test.jooq;
+
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -11,8 +13,10 @@ import org.springframework.boot.autoconfigure.jooq.JooqExceptionTranslator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
+import ru.tinkoff.edu.java.scrapper.repo.ChatLinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
+import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqChatLinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqLinkRepo;
 
@@ -53,5 +57,10 @@ public class SpringTestJooqConfig {
     @Bean("jooqChatRepo")
     public ChatRepo jooqChatRepo() {
         return new JooqChatRepo(dsl());
+    }
+
+    @Bean("jooqChatLinkRepo")
+    public ChatLinkRepo jooqChatLinkRepo() {
+        return new JooqChatLinkRepo(dsl());
     }
 }

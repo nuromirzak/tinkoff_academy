@@ -11,5 +11,7 @@ public interface LinkRepo {
 
     boolean remove(String link);
 
+    List<Link> findLinksByChatId(long chatId);
+
     int removeAll();
 }

@@ -9,6 +9,7 @@ import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.GithubRepoResponse;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.StackoverflowQuestionResponse;
+import ru.tinkoff.edu.java.scrapper.repo.ChatLinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
 import ru.tinkoff.edu.java.scrapper.services.LinkService;
@@ -23,6 +24,7 @@ import java.util.Map;
 public class LinkServiceImpl implements LinkService {
     private final LinkRepo linkRepo;
     private final ChatRepo chatRepo;
+    private final ChatLinkRepo chatLinkRepo;
     private final GlobalLinkParser globalLinkParser;
     private final GitHubClient gitHubClient;
     private final StackoverflowClient stackoverflowClient;
@@ -56,7 +58,7 @@ public class LinkServiceImpl implements LinkService {
 
         System.out.println("link=" + link);
 
-        chatRepo.addLinkToChat(tgChatId, linkId);
+        chatLinkRepo.addLinkToChat(tgChatId, linkId);
 
         return link;
     }
@@ -68,12 +70,12 @@ public class LinkServiceImpl implements LinkService {
 
         long linkId = linkRepo.add(link);
 
-        return chatRepo.removeLinkFromChat(tgChatId, linkId);
+        return chatLinkRepo.removeLinkFromChat(tgChatId, linkId);
     }
 
     @Override
     public Collection<Link> listAll(long tgChatId) {
-        return chatRepo.findLinksByChatId(tgChatId);
+        return linkRepo.findLinksByChatId(tgChatId);
     }
 
     @Override
