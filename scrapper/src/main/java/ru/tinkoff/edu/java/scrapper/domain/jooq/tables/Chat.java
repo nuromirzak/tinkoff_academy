@@ -62,14 +62,14 @@ public class Chat extends TableImpl<ChatRecord> {
     }
 
     /**
-     * The column <code>CHAT.CHAT_ID</code>.
+     * The column <code>CHAT.CHAT_ID</code>. Telegram ID чата
      */
-    public final TableField<ChatRecord, Long> CHAT_ID = createField(DSL.name("CHAT_ID"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<ChatRecord, Long> CHAT_ID = createField(DSL.name("CHAT_ID"), SQLDataType.BIGINT.nullable(false), this, "Telegram ID чата");
 
     /**
-     * The column <code>CHAT.REG_DATE</code>.
+     * The column <code>CHAT.REG_DATE</code>. Дата регистрации чата
      */
-    public final TableField<ChatRecord, LocalDateTime> REG_DATE = createField(DSL.name("REG_DATE"), SQLDataType.LOCALDATETIME(6).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<ChatRecord, LocalDateTime> REG_DATE = createField(DSL.name("REG_DATE"), SQLDataType.LOCALDATETIME(6).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "Дата регистрации чата");
 
     private Chat(Name alias, Table<ChatRecord> aliased) {
         this(alias, aliased, null);

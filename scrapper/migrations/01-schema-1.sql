@@ -4,7 +4,7 @@ CREATE TABLE link
     url          VARCHAR(256) NOT NULL UNIQUE,
     last_updated TIMESTAMP    NOT NULL,
     last_scrapped TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    json_props   JSONB
+    json_props   JSON
 );
 
 COMMENT ON COLUMN link.link_id IS 'Уникальный идентификатор ссылки в базе данных';

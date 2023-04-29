@@ -36,14 +36,14 @@ public class ChatRecord extends UpdatableRecordImpl<ChatRecord> implements Recor
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>CHAT.CHAT_ID</code>.
+     * Setter for <code>CHAT.CHAT_ID</code>. Telegram ID чата
      */
     public void setChatId(@NotNull Long value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>CHAT.CHAT_ID</code>.
+     * Getter for <code>CHAT.CHAT_ID</code>. Telegram ID чата
      */
     @jakarta.validation.constraints.NotNull
     @NotNull
@@ -52,14 +52,14 @@ public class ChatRecord extends UpdatableRecordImpl<ChatRecord> implements Recor
     }
 
     /**
-     * Setter for <code>CHAT.REG_DATE</code>.
+     * Setter for <code>CHAT.REG_DATE</code>. Дата регистрации чата
      */
     public void setRegDate(@Nullable LocalDateTime value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>CHAT.REG_DATE</code>.
+     * Getter for <code>CHAT.REG_DATE</code>. Дата регистрации чата
      */
     @Nullable
     public LocalDateTime getRegDate() {

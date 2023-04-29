@@ -35,6 +35,7 @@ public class Link implements Serializable {
     private Integer linkId;
     private String url;
     private LocalDateTime lastUpdated;
+    private LocalDateTime lastScrapped;
     private JSON jsonProps;
 
     public Link() {}
@@ -43,24 +44,28 @@ public class Link implements Serializable {
         this.linkId = value.linkId;
         this.url = value.url;
         this.lastUpdated = value.lastUpdated;
+        this.lastScrapped = value.lastScrapped;
         this.jsonProps = value.jsonProps;
     }
 
-    @ConstructorProperties({ "linkId", "url", "lastUpdated", "jsonProps" })
+    @ConstructorProperties({ "linkId", "url", "lastUpdated", "lastScrapped", "jsonProps" })
     public Link(
         @NotNull Integer linkId,
         @NotNull String url,
         @NotNull LocalDateTime lastUpdated,
+        @Nullable LocalDateTime lastScrapped,
         @Nullable JSON jsonProps
     ) {
         this.linkId = linkId;
         this.url = url;
         this.lastUpdated = lastUpdated;
+        this.lastScrapped = lastScrapped;
         this.jsonProps = jsonProps;
     }
 
     /**
-     * Getter for <code>LINK.LINK_ID</code>.
+     * Getter for <code>LINK.LINK_ID</code>. Уникальный идентификатор ссылки в
+     * базе данных
      */
     @NotNull
     public Integer getLinkId() {
@@ -68,14 +73,15 @@ public class Link implements Serializable {
     }
 
     /**
-     * Setter for <code>LINK.LINK_ID</code>.
+     * Setter for <code>LINK.LINK_ID</code>. Уникальный идентификатор ссылки в
+     * базе данных
      */
     public void setLinkId(@NotNull Integer linkId) {
         this.linkId = linkId;
     }
 
     /**
-     * Getter for <code>LINK.URL</code>.
+     * Getter for <code>LINK.URL</code>. URL отслеживаемой ссылки
      */
     @jakarta.validation.constraints.NotNull
     @Size(max = 256)
@@ -85,14 +91,15 @@ public class Link implements Serializable {
     }
 
     /**
-     * Setter for <code>LINK.URL</code>.
+     * Setter for <code>LINK.URL</code>. URL отслеживаемой ссылки
      */
     public void setUrl(@NotNull String url) {
         this.url = url;
     }
 
     /**
-     * Getter for <code>LINK.LAST_UPDATED</code>.
+     * Getter for <code>LINK.LAST_UPDATED</code>. Время последнего действия с
+     * этой ссылкой
      */
     @jakarta.validation.constraints.NotNull
     @NotNull
@@ -101,14 +108,33 @@ public class Link implements Serializable {
     }
 
     /**
-     * Setter for <code>LINK.LAST_UPDATED</code>.
+     * Setter for <code>LINK.LAST_UPDATED</code>. Время последнего действия с
+     * этой ссылкой
      */
     public void setLastUpdated(@NotNull LocalDateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 
     /**
-     * Getter for <code>LINK.JSON_PROPS</code>.
+     * Getter for <code>LINK.LAST_SCRAPPED</code>. Время последнего скрапинга
+     * этой ссылки
+     */
+    @Nullable
+    public LocalDateTime getLastScrapped() {
+        return this.lastScrapped;
+    }
+
+    /**
+     * Setter for <code>LINK.LAST_SCRAPPED</code>. Время последнего скрапинга
+     * этой ссылки
+     */
+    public void setLastScrapped(@Nullable LocalDateTime lastScrapped) {
+        this.lastScrapped = lastScrapped;
+    }
+
+    /**
+     * Getter for <code>LINK.JSON_PROPS</code>. Дополнительные свойства ссылки в
+     * формате JSON
      */
     @Nullable
     public JSON getJsonProps() {
@@ -116,7 +142,8 @@ public class Link implements Serializable {
     }
 
     /**
-     * Setter for <code>LINK.JSON_PROPS</code>.
+     * Setter for <code>LINK.JSON_PROPS</code>. Дополнительные свойства ссылки в
+     * формате JSON
      */
     public void setJsonProps(@Nullable JSON jsonProps) {
         this.jsonProps = jsonProps;
@@ -149,6 +176,12 @@ public class Link implements Serializable {
         }
         else if (!this.lastUpdated.equals(other.lastUpdated))
             return false;
+        if (this.lastScrapped == null) {
+            if (other.lastScrapped != null)
+                return false;
+        }
+        else if (!this.lastScrapped.equals(other.lastScrapped))
+            return false;
         if (this.jsonProps == null) {
             if (other.jsonProps != null)
                 return false;
@@ -165,6 +198,7 @@ public class Link implements Serializable {
         result = prime * result + ((this.linkId == null) ? 0 : this.linkId.hashCode());
         result = prime * result + ((this.url == null) ? 0 : this.url.hashCode());
         result = prime * result + ((this.lastUpdated == null) ? 0 : this.lastUpdated.hashCode());
+        result = prime * result + ((this.lastScrapped == null) ? 0 : this.lastScrapped.hashCode());
         result = prime * result + ((this.jsonProps == null) ? 0 : this.jsonProps.hashCode());
         return result;
     }
@@ -176,6 +210,7 @@ public class Link implements Serializable {
         sb.append(linkId);
         sb.append(", ").append(url);
         sb.append(", ").append(lastUpdated);
+        sb.append(", ").append(lastScrapped);
         sb.append(", ").append(jsonProps);
 
         sb.append(")");

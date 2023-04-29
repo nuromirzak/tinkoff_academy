@@ -49,7 +49,7 @@ public class Chat implements Serializable {
     }
 
     /**
-     * Getter for <code>CHAT.CHAT_ID</code>.
+     * Getter for <code>CHAT.CHAT_ID</code>. Telegram ID чата
      */
     @jakarta.validation.constraints.NotNull
     @NotNull
@@ -58,14 +58,14 @@ public class Chat implements Serializable {
     }
 
     /**
-     * Setter for <code>CHAT.CHAT_ID</code>.
+     * Setter for <code>CHAT.CHAT_ID</code>. Telegram ID чата
      */
     public void setChatId(@NotNull Long chatId) {
         this.chatId = chatId;
     }
 
     /**
-     * Getter for <code>CHAT.REG_DATE</code>.
+     * Getter for <code>CHAT.REG_DATE</code>. Дата регистрации чата
      */
     @Nullable
     public LocalDateTime getRegDate() {
@@ -73,7 +73,7 @@ public class Chat implements Serializable {
     }
 
     /**
-     * Setter for <code>CHAT.REG_DATE</code>.
+     * Setter for <code>CHAT.REG_DATE</code>. Дата регистрации чата
      */
     public void setRegDate(@Nullable LocalDateTime regDate) {
         this.regDate = regDate;

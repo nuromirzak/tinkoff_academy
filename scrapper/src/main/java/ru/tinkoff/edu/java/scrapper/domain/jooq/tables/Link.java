@@ -14,13 +14,13 @@ import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function4;
+import org.jooq.Function5;
 import org.jooq.Identity;
 import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -66,24 +66,33 @@ public class Link extends TableImpl<LinkRecord> {
     }
 
     /**
-     * The column <code>LINK.LINK_ID</code>.
+     * The column <code>LINK.LINK_ID</code>. Уникальный идентификатор ссылки в
+     * базе данных
      */
-    public final TableField<LinkRecord, Integer> LINK_ID = createField(DSL.name("LINK_ID"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<LinkRecord, Integer> LINK_ID = createField(DSL.name("LINK_ID"), SQLDataType.INTEGER.nullable(false).identity(true), this, "Уникальный идентификатор ссылки в базе данных");
 
     /**
-     * The column <code>LINK.URL</code>.
+     * The column <code>LINK.URL</code>. URL отслеживаемой ссылки
      */
-    public final TableField<LinkRecord, String> URL = createField(DSL.name("URL"), SQLDataType.VARCHAR(256).nullable(false), this, "");
+    public final TableField<LinkRecord, String> URL = createField(DSL.name("URL"), SQLDataType.VARCHAR(256).nullable(false), this, "URL отслеживаемой ссылки");
 
     /**
-     * The column <code>LINK.LAST_UPDATED</code>.
+     * The column <code>LINK.LAST_UPDATED</code>. Время последнего действия с
+     * этой ссылкой
      */
-    public final TableField<LinkRecord, LocalDateTime> LAST_UPDATED = createField(DSL.name("LAST_UPDATED"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
+    public final TableField<LinkRecord, LocalDateTime> LAST_UPDATED = createField(DSL.name("LAST_UPDATED"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "Время последнего действия с этой ссылкой");
 
     /**
-     * The column <code>LINK.JSON_PROPS</code>.
+     * The column <code>LINK.LAST_SCRAPPED</code>. Время последнего скрапинга
+     * этой ссылки
      */
-    public final TableField<LinkRecord, JSON> JSON_PROPS = createField(DSL.name("JSON_PROPS"), SQLDataType.JSON, this, "");
+    public final TableField<LinkRecord, LocalDateTime> LAST_SCRAPPED = createField(DSL.name("LAST_SCRAPPED"), SQLDataType.LOCALDATETIME(6).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)), this, "Время последнего скрапинга этой ссылки");
+
+    /**
+     * The column <code>LINK.JSON_PROPS</code>. Дополнительные свойства ссылки в
+     * формате JSON
+     */
+    public final TableField<LinkRecord, JSON> JSON_PROPS = createField(DSL.name("JSON_PROPS"), SQLDataType.JSON, this, "Дополнительные свойства ссылки в формате JSON");
 
     private Link(Name alias, Table<LinkRecord> aliased) {
         this(alias, aliased, null);
@@ -188,19 +197,19 @@ public class Link extends TableImpl<LinkRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
     @NotNull
-    public Row4<Integer, String, LocalDateTime, JSON> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Integer, String, LocalDateTime, LocalDateTime, JSON> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super LocalDateTime, ? super JSON, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function5<? super Integer, ? super String, ? super LocalDateTime, ? super LocalDateTime, ? super JSON, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -208,7 +217,7 @@ public class Link extends TableImpl<LinkRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super LocalDateTime, ? super JSON, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super String, ? super LocalDateTime, ? super LocalDateTime, ? super JSON, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }
