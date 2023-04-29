@@ -15,11 +15,5 @@ public interface ChatRepo {
 
     int removeAll();
 
-    List<Link> findLinksByChatId(long chatId);
-
-    boolean addLinkToChat(long chatId, long linkId);
-
-    boolean removeLinkFromChat(long chatId, long linkId);
-
     List<Chat> findChatsByLikeLink(String url);
 }

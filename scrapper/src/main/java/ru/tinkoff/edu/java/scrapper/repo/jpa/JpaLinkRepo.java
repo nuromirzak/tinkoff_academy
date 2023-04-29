@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.repo.jpa;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +10,7 @@ import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.LinkProperties;
 import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
 
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -41,7 +43,19 @@ public interface JpaLinkRepo extends LinkRepo, JpaRepository<Link, Long> {
     int removeAndReturnInt(String link);
 
     @Override
+    @Query(value = "SELECT * FROM link WHERE link_id IN (SELECT link_id FROM link_chat WHERE chat_id = ?1)", nativeQuery = true)
+    List<Link> findLinksByChatId(long chatId);
+
+    @Override
     @Query(value = "DELETE FROM link", nativeQuery = true)
     @Modifying
     int removeAll();
+
+    @Override
+    default List<Link> findLinksToScrap(Duration duration) {
+        OffsetDateTime lastScrapped = OffsetDateTime.now().minus(duration);
+        return findLinkByLastScrappedBefore(lastScrapped);
+    }
+
+    List<Link> findLinkByLastScrappedBefore(OffsetDateTime lastScrapped);
 }

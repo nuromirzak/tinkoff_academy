@@ -9,17 +9,19 @@ import ru.tinkoff.edu.java.link_parser.parsers.GlobalLinkParser;
 import ru.tinkoff.edu.java.scrapper.clients.BotClient;
 import ru.tinkoff.edu.java.scrapper.clients.GitHubClient;
 import ru.tinkoff.edu.java.scrapper.clients.StackoverflowClient;
-import ru.tinkoff.edu.java.scrapper.dtos.responses.GithubRepoResponse;
-import ru.tinkoff.edu.java.scrapper.dtos.responses.StackoverflowQuestionResponse;
+import ru.tinkoff.edu.java.scrapper.configurations.ApplicationConfig;
 import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
+import ru.tinkoff.edu.java.scrapper.dtos.responses.GithubRepoResponse;
+import ru.tinkoff.edu.java.scrapper.dtos.responses.StackoverflowQuestionResponse;
 import ru.tinkoff.edu.java.scrapper.services.LinkService;
 import ru.tinkoff.edu.java.scrapper.services.TgChatService;
 
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @EnableScheduling
@@ -33,13 +35,14 @@ public class LinkUpdaterScheduler {
     private final GitHubClient gitHubClient;
     private final StackoverflowClient stackoverflowClient;
     private final GlobalLinkParser globalLinkParser;
+    private final ApplicationConfig applicationConfig;
 
     @Scheduled(fixedDelayString = "#{@schedulerIntervalMs}")
     public void update() {
         int currentIteration = ++iteration;
         log.info("{}th iteration of link update process started", currentIteration);
 
-        Collection<Link> links = linkService.findAll();
+        Collection<Link> links = linkService.findLinksToScrap(applicationConfig.scheduler().checkInterval());
         Map<Link, String> updatedLinksWithDescription = new HashMap<>();
         for (Link link : links) {
             String linkString = link.getUrl();

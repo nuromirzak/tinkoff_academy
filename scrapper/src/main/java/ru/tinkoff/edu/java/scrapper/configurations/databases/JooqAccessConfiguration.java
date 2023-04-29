@@ -14,8 +14,10 @@ import org.springframework.boot.autoconfigure.jooq.JooqExceptionTranslator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
+import ru.tinkoff.edu.java.scrapper.repo.ChatLinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
+import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqChatLinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqLinkRepo;
 
@@ -59,5 +61,11 @@ public class JooqAccessConfiguration implements DatabaseAccessConfiguration {
     @Bean
     public LinkRepo linkRepo() {
         return new JooqLinkRepo(dsl());
+    }
+
+    @Override
+    @Bean
+    public ChatLinkRepo chatLinkRepo() {
+        return new JooqChatLinkRepo(dsl());
     }
 }

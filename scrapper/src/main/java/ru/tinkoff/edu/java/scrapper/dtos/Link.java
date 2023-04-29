@@ -29,4 +29,7 @@ public final class Link {
     @Type(JsonType.class)
     @Column(columnDefinition = "jsonb", name = "json_props")
     private LinkProperties jsonProps;
+
+    @Column(name = "last_scrapped")
+    private OffsetDateTime lastScrapped;
 }
