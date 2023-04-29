@@ -1,10 +1,11 @@
-package ru.tinkoff.edu.java.scrapper.services;
+package ru.tinkoff.edu.java.scrapper.services.impls;
 
 import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.scrapper.dtos.requests.AddLinkRequest;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.LinkResponse;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.ListLinkResponse;
 import ru.tinkoff.edu.java.scrapper.dtos.requests.RemoveLinkRequest;
+import ru.tinkoff.edu.java.scrapper.services.TelegramChatService;
 
 import java.util.*;
 import java.util.stream.Collectors;

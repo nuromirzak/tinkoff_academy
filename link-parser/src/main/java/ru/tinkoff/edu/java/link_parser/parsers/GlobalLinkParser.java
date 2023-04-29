@@ -4,13 +4,14 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Modifier;
+import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public final class GlobalLinkParser {
     private final List<LinkParser> allImplementations;
 
-    public Map<String, String> parse(String link) {
+    public Map<String, String> parse(URI link) {
         return allImplementations.stream()
                 .map(parser -> parser.parse(link))
                 .filter(Objects::nonNull)
@@ -64,7 +65,7 @@ public final class GlobalLinkParser {
     }
 
     /**
-     * @param className  - имя класса, которые мы хотим получить
+     * @param className   - имя класса, которые мы хотим получить
      * @param packageName - имя пакета, в котором ищем класс
      * @return Класс, который находится в пакете packageName и имеет имя className
      */

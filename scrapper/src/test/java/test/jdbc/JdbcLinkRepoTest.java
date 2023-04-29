@@ -8,7 +8,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
-import ru.tinkoff.edu.java.scrapper.repo.JdbcLinkRepo;
+import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
+import test.DataSourceConfig;
 import test.IntegrationEnvironment;
 
 import java.time.Duration;
@@ -18,16 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = SpringTestJdbcConfig.class)
+@ContextConfiguration(classes = {SpringTestJdbcConfig.class, DataSourceConfig.class})
 @Transactional
 @Sql(scripts = "classpath:populateDB.sql")
 public class JdbcLinkRepoTest extends IntegrationEnvironment {
     @Autowired
-    private JdbcLinkRepo jdbcLinkRepo;
+    private LinkRepo linkRepo;
 
     @Test
     public void findAllAndPrint() {
-        jdbcLinkRepo.findAll().forEach(System.out::println);
+        linkRepo.findAll().forEach(System.out::println);
     }
 
     @Test
@@ -38,10 +39,10 @@ public class JdbcLinkRepoTest extends IntegrationEnvironment {
         link.setLastUpdated(null);
 
         // Act
-        jdbcLinkRepo.add(link);
+        linkRepo.add(link);
 
         // Assert
-        List<Link> links = jdbcLinkRepo.findAll();
+        List<Link> links = linkRepo.findAll();
         assertTrue(links.stream().anyMatch(l -> l.getUrl().equals(link.getUrl())));
     }
 
@@ -53,10 +54,10 @@ public class JdbcLinkRepoTest extends IntegrationEnvironment {
         link.setLastUpdated(null);
 
         // Act
-        jdbcLinkRepo.add(link);
-        List<Link> linksBefore = jdbcLinkRepo.findAll();
-        jdbcLinkRepo.remove(link.getUrl());
-        List<Link> linksAfter = jdbcLinkRepo.findAll();
+        linkRepo.add(link);
+        List<Link> linksBefore = linkRepo.findAll();
+        linkRepo.remove(link.getUrl());
+        List<Link> linksAfter = linkRepo.findAll();
 
         // Assert
         assertTrue(linksAfter.stream().noneMatch(l -> l.getUrl().equals(link.getUrl())));
@@ -69,7 +70,7 @@ public class JdbcLinkRepoTest extends IntegrationEnvironment {
         long chatId = 362037700L;
 
         // Act
-        List<Link> subscriptionsByChatId = jdbcLinkRepo.findLinksByChatId(chatId);
+        List<Link> subscriptionsByChatId = linkRepo.findLinksByChatId(chatId);
 
         // Assert
         assertEquals(2, subscriptionsByChatId.size());
@@ -80,8 +81,7 @@ public class JdbcLinkRepoTest extends IntegrationEnvironment {
         // Assert
         Duration fifteenMinutes = Duration.ofMinutes(15);
 
-        // Act
-        List<Link> linksToUpdate = jdbcLinkRepo.findLinksToScrap(fifteenMinutes);
+        List<Link> linksToUpdate = linkRepo.findLinksToScrap(fifteenMinutes);
 
         // Assert
         assertEquals(4, linksToUpdate.size());

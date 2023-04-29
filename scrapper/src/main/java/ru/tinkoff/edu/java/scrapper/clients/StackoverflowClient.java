@@ -2,11 +2,9 @@ package ru.tinkoff.edu.java.scrapper.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.tinkoff.edu.java.scrapper.clients.responses.StackoverflowQuestionResponse;
+import ru.tinkoff.edu.java.scrapper.dtos.responses.StackoverflowQuestionResponse;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -17,7 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class StackoverflowClient {
+public class  StackoverflowClient {
     private final WebClient stackoverflowWebClient;
 
     public StackoverflowQuestionResponse getQuestionById(Long id) {

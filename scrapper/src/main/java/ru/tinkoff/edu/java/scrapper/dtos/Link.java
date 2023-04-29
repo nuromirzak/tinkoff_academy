@@ -13,5 +13,6 @@ public final class Link {
     private Long linkId;
     private String url;
     private OffsetDateTime lastUpdated;
+    private Object jsonProps;
     private OffsetDateTime lastScrapped;
 }

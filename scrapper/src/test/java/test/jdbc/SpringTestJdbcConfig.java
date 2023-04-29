@@ -1,50 +1,38 @@
 package test.jdbc;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.transaction.PlatformTransactionManager;
-import ru.tinkoff.edu.java.scrapper.repo.JdbcChatLinkRepo;
-import ru.tinkoff.edu.java.scrapper.repo.JdbcLinkRepo;
-import ru.tinkoff.edu.java.scrapper.repo.JdbcChatRepo;
-import test.IntegrationEnvironment;
+import ru.tinkoff.edu.java.scrapper.repo.ChatLinkRepo;
+import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
+import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
+import ru.tinkoff.edu.java.scrapper.repo.jdbc.JdbcChatLinkRepo;
+import ru.tinkoff.edu.java.scrapper.repo.jdbc.JdbcChatRepo;
+import ru.tinkoff.edu.java.scrapper.repo.jdbc.JdbcLinkRepo;
 
 import javax.sql.DataSource;
 
 @Configuration
+@RequiredArgsConstructor
 public class SpringTestJdbcConfig {
-    @Bean
-    public DataSource postgresDataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl(IntegrationEnvironment.POSTGRE_SQL_CONTAINER.getJdbcUrl());
-        dataSource.setUsername(IntegrationEnvironment.POSTGRE_SQL_CONTAINER.getUsername());
-        dataSource.setPassword(IntegrationEnvironment.POSTGRE_SQL_CONTAINER.getPassword());
-        return dataSource;
-    }
+    private final DataSource dataSource;
 
-    @Bean
-    public PlatformTransactionManager txManager() {
-        return new DataSourceTransactionManager(postgresDataSource());
-    }
-
-    @Bean
-    public JdbcLinkRepo jdbcLinkRepo() {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(postgresDataSource());
+    @Bean("jdbcLinkRepo")
+    public LinkRepo jdbcLinkRepo() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return new JdbcLinkRepo(jdbcTemplate);
     }
 
-    @Bean
-    public JdbcChatRepo jdbcChatRepo() {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(postgresDataSource());
+    @Bean("jdbcChatRepo")
+    public ChatRepo jdbcChatRepo() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return new JdbcChatRepo(jdbcTemplate);
     }
 
-    @Bean
-    public JdbcChatLinkRepo jdbcChatLinkRepo() {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(postgresDataSource());
+    @Bean("jdbcChatLinkRepo")
+    public ChatLinkRepo jdbcChatLinkRepo() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return new JdbcChatLinkRepo(jdbcTemplate);
     }
 }

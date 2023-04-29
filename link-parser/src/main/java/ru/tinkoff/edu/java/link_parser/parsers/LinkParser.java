@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.link_parser.parsers;
 
+import java.net.URI;
 import java.util.Map;
 
 public sealed interface LinkParser permits GithubLinkParser, StackoverflowLinkParser {
@@ -7,7 +8,7 @@ public sealed interface LinkParser permits GithubLinkParser, StackoverflowLinkPa
      * @param link ссылка, которую нужно распарсить
      * @return Map если ссылка соответствует формату, иначе null
      */
-    public Map<String, String> parse(String link);
+    public Map<String, String> parse(URI link);
 
     /**
      * Этот метод не должен кидать исключения
@@ -15,5 +16,5 @@ public sealed interface LinkParser permits GithubLinkParser, StackoverflowLinkPa
      * @param link ссылка, которую нужно проверить
      * @return true если ссылка соответствует формату, иначе false
      */
-    public boolean canParse(String link);
+    public boolean canParse(URI link);
 }

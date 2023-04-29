@@ -57,6 +57,10 @@ public class LinksController {
 
         LinkResponse linkResponse = telegramChatService.addLink(chatId, request);
 
+//        if (linkResponse.id() == 0L && linkResponse.url().equals("")) {
+//            throw new IllegalArgumentException("Кажется, ссылка некорректна. Если вы считаете, что это не так, пожалуйста, обратитесь в поддержку");
+//        }
+
         return ResponseEntity.ok(linkResponse);
     }
 

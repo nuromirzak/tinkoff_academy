@@ -1,6 +1,5 @@
 package test.jdbc;
 
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +8,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dtos.Chat;
-import ru.tinkoff.edu.java.scrapper.dtos.Link;
-import ru.tinkoff.edu.java.scrapper.repo.JdbcChatRepo;
+import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
+import test.DataSourceConfig;
 import test.IntegrationEnvironment;
 
 import java.util.List;
@@ -18,16 +17,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = SpringTestJdbcConfig.class)
+@ContextConfiguration(classes = {SpringTestJdbcConfig.class, DataSourceConfig.class})
 @Transactional
 @Sql(scripts = "classpath:populateDB.sql")
 public class JdbcChatRepoTest extends IntegrationEnvironment {
     @Autowired
-    private JdbcChatRepo jdbcChatRepo;
+    private ChatRepo chatRepo;
 
     @Test
     public void findAllAndPrint() {
-        jdbcChatRepo.findAll().forEach(System.out::println);
+        chatRepo.findAll().forEach(System.out::println);
     }
 
     @Test
@@ -38,10 +37,10 @@ public class JdbcChatRepoTest extends IntegrationEnvironment {
         chat.setChatId(chatId);
 
         // Act
-        jdbcChatRepo.add(chatId);
+        chatRepo.add(chatId);
 
         // Assert
-        List<Chat> chats = jdbcChatRepo.findAll();
+        List<Chat> chats = chatRepo.findAll();
         assertTrue(chats.stream().anyMatch(subscription -> subscription.getChatId().equals(chatId)));
     }
 
@@ -53,16 +52,15 @@ public class JdbcChatRepoTest extends IntegrationEnvironment {
         chat.setChatId(chatId);
 
         // Act
-        jdbcChatRepo.add(chatId);
-        List<Chat> chatsBefore = jdbcChatRepo.findAll();
-        jdbcChatRepo.remove(chatId);
-        List<Chat> chatsAfter = jdbcChatRepo.findAll();
+        chatRepo.add(chatId);
+        List<Chat> chatsBefore = chatRepo.findAll();
+        chatRepo.remove(chatId);
+        List<Chat> chatsAfter = chatRepo.findAll();
 
         // Assert
         assertTrue(chatsAfter.stream().noneMatch(c -> c.getChatId().equals(chatId)));
         assertEquals(chatsAfter.size() + 1, chatsBefore.size());
     }
-
 
     @Test
     public void removeAll() {
@@ -72,10 +70,10 @@ public class JdbcChatRepoTest extends IntegrationEnvironment {
         chat.setChatId(chatId);
 
         // Act
-        jdbcChatRepo.add(chatId);
-        List<Chat> chatsBefore = jdbcChatRepo.findAll();
-        jdbcChatRepo.removeAll();
-        List<Chat> chatsAfter = jdbcChatRepo.findAll();
+        chatRepo.add(chatId);
+        List<Chat> chatsBefore = chatRepo.findAll();
+        chatRepo.removeAll();
+        List<Chat> chatsAfter = chatRepo.findAll();
 
         // Assert
         assertFalse(chatsBefore.isEmpty());

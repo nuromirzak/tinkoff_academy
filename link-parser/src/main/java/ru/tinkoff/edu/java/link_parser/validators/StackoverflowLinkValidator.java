@@ -3,17 +3,12 @@ package ru.tinkoff.edu.java.link_parser.validators;
 import ru.tinkoff.edu.java.link_parser.utils.LinkParserHelper;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 public class StackoverflowLinkValidator implements LinkValidator {
     @Override
-    public boolean validate(String link) {
-        try {
-            URL url = new URL(link);
-        } catch (MalformedURLException e) {
-            return false;
-        }
-
+    public boolean validate(URI link) {
         if (LinkParserHelper.containsSubdomain(link)) {
             throw new IllegalArgumentException("Link contains subdomain: " + link);
         }

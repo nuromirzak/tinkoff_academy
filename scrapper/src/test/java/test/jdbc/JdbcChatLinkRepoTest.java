@@ -8,8 +8,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
-import ru.tinkoff.edu.java.scrapper.repo.JdbcChatLinkRepo;
-import ru.tinkoff.edu.java.scrapper.repo.JdbcLinkRepo;
+import ru.tinkoff.edu.java.scrapper.repo.ChatLinkRepo;
+import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
+import test.DataSourceConfig;
 import test.IntegrationEnvironment;
 
 import java.util.List;
@@ -18,14 +19,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = SpringTestJdbcConfig.class)
+@ContextConfiguration(classes = {SpringTestJdbcConfig.class, DataSourceConfig.class})
 @Transactional
 @Sql(scripts = "classpath:populateDB.sql")
 public class JdbcChatLinkRepoTest extends IntegrationEnvironment {
     @Autowired
-    private JdbcChatLinkRepo jdbcChatLinkRepo;
+    private ChatLinkRepo chatLinkRepo;
     @Autowired
-    private JdbcLinkRepo jdbcLinkRepo;
+    private LinkRepo linkRepo;
 
     @Test
     public void removeLinkFromChat() {
@@ -34,9 +35,9 @@ public class JdbcChatLinkRepoTest extends IntegrationEnvironment {
         long linkId = 20L;
 
         // Act
-        List<Link> linksByChatIdBefore = jdbcLinkRepo.findLinksByChatId(chatId);
-        jdbcChatLinkRepo.removeLinkFromChat(chatId, linkId);
-        List<Link> linksByChatIdAfter = jdbcLinkRepo.findLinksByChatId(chatId);
+        List<Link> linksByChatIdBefore = linkRepo.findLinksByChatId(chatId);
+        chatLinkRepo.removeLinkFromChat(chatId, linkId);
+        List<Link> linksByChatIdAfter = linkRepo.findLinksByChatId(chatId);
 
         // Assert
         assertEquals(linksByChatIdBefore.size() - 1, linksByChatIdAfter.size());
@@ -50,9 +51,9 @@ public class JdbcChatLinkRepoTest extends IntegrationEnvironment {
         long linkId = 40L;
 
         // Act
-        List<Link> linksByChatIdBefore = jdbcLinkRepo.findLinksByChatId(chatId);
-        jdbcChatLinkRepo.addLinkToChat(chatId, linkId);
-        List<Link> linksByChatIdAfter = jdbcLinkRepo.findLinksByChatId(chatId);
+        List<Link> linksByChatIdBefore = linkRepo.findLinksByChatId(chatId);
+        chatLinkRepo.addLinkToChat(chatId, linkId);
+        List<Link> linksByChatIdAfter = linkRepo.findLinksByChatId(chatId);
 
         // Assert
         assertEquals(linksByChatIdBefore.size() + 1, linksByChatIdAfter.size());

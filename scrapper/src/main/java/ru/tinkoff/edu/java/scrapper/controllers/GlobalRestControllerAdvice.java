@@ -23,6 +23,11 @@ public class GlobalRestControllerAdvice {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, e, "Cannot parse request body");
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, e, "Illegal argument");
+    }
+
     private ResponseEntity<ApiErrorResponse> buildErrorResponse(HttpStatus status, Exception e, String description) {
         List<String> stacktrace = Arrays.stream(e.getStackTrace())
                 .map(StackTraceElement::toString)
