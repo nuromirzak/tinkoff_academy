@@ -1,3 +1,5 @@
+package test;
+
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
@@ -16,7 +18,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 abstract public class IntegrationEnvironment {
-    protected static PostgreSQLContainer<?> POSTGRE_SQL_CONTAINER;
+    public static PostgreSQLContainer<?> POSTGRE_SQL_CONTAINER;
     private static final String IMAGE_NAME = "postgres:15";
 
     private static final String CHANGELOG_PATH = "master.xml";

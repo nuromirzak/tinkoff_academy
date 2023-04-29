@@ -22,6 +22,7 @@ public class JdbcLinkRepo {
     private static final String SQL_DELETE_LINK = "DELETE FROM link WHERE url = ?";
     private static final String SQL_FIND_LINK = "SELECT * FROM link";
     private static final String SQL_DELETE_ALL_LINKS = "DELETE FROM link";
+    private static final String SQL_FIND_LINKS_BY_CHAT_ID = "SELECT * FROM link WHERE link_id IN (SELECT link_id FROM link_chat WHERE chat_id = ?)";
 
     public long add(Link link) {
         if (link.getLastUpdated() == null)
@@ -58,5 +59,9 @@ public class JdbcLinkRepo {
 
     public int removeAll() {
         return jdbcTemplate.update(SQL_DELETE_ALL_LINKS);
+    }
+
+    public List<Link> findLinksByChatId(long chatId) {
+        return jdbcTemplate.query(SQL_FIND_LINKS_BY_CHAT_ID, new LinkMapper(), chatId);
     }
 }

@@ -1,11 +1,15 @@
+package test.jdbc;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
+import ru.tinkoff.edu.java.scrapper.repo.JdbcChatLinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.JdbcLinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.JdbcChatRepo;
+import test.IntegrationEnvironment;
 
 import javax.sql.DataSource;
 
@@ -33,8 +37,14 @@ public class SpringTestJdbcConfig {
     }
 
     @Bean
-    public JdbcChatRepo jdbcSubscriptionRepo() {
+    public JdbcChatRepo jdbcChatRepo() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(postgresDataSource());
         return new JdbcChatRepo(jdbcTemplate);
+    }
+
+    @Bean
+    public JdbcChatLinkRepo jdbcChatLinkRepo() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(postgresDataSource());
+        return new JdbcChatLinkRepo(jdbcTemplate);
     }
 }
