@@ -7,22 +7,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
-import ru.tinkoff.edu.java.scrapper.configurations.ApplicationConfig;
+import ru.tinkoff.edu.java.scrapper.configurations.ApplicationConfiguration;
 
 import javax.sql.DataSource;
 
 @Configuration
 @RequiredArgsConstructor
 public class MyDatasource {
-    private final ApplicationConfig applicationConfig;
+    private final ApplicationConfiguration applicationConfiguration;
 
     @Bean
     public DataSource postgresDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl(applicationConfig.dbUrl());
-        dataSource.setUsername(applicationConfig.dbUsername());
-        dataSource.setPassword(applicationConfig.dbPassword());
+        dataSource.setUrl(applicationConfiguration.dbUrl());
+        dataSource.setUsername(applicationConfiguration.dbUsername());
+        dataSource.setPassword(applicationConfiguration.dbPassword());
         return dataSource;
     }
 

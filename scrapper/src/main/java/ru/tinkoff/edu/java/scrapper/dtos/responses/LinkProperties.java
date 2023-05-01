@@ -3,6 +3,7 @@ package ru.tinkoff.edu.java.scrapper.dtos.responses;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @JsonTypeInfo(
@@ -20,7 +21,7 @@ import java.util.Objects;
                 value = StackoverflowQuestionResponse.class
         )
 })
-public abstract class LinkProperties {
+public abstract class LinkProperties implements Serializable {
     private String name;
 
     public LinkProperties() {

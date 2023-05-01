@@ -3,12 +3,14 @@ package ru.tinkoff.edu.java.scrapper.dtos.responses;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)

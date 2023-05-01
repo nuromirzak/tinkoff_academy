@@ -1,7 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.repo.jpa;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,8 +17,6 @@ import java.util.List;
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
 public interface JpaLinkRepo extends LinkRepo, JpaRepository<Link, Long> {
     @Override
-    @Query(value = "INSERT INTO link (url, last_updated, json_props) VALUES (?1, ?2, ?3)", nativeQuery = true)
-    @Modifying
     default int add(Link link) {
         OffsetDateTime lastUpdated = link.getLastUpdated() == null ? OffsetDateTime.now() : link.getLastUpdated();
         return addAndReturnInt(link.getUrl(), lastUpdated, link.getJsonProps());

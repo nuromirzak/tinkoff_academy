@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.tinkoff.edu.java.bot.dtos.ApiErrorResponse;
 import ru.tinkoff.edu.java.bot.dtos.LinkUpdateRequest;
+import ru.tinkoff.edu.java.bot.service.LinkUpdateReceiver;
 
 @RestController
 @Log4j2
+@RequiredArgsConstructor
 public class LinksController {
+    private final LinkUpdateReceiver linkUpdateReceiver;
     @PostMapping("/updates")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Обновление обработано",
@@ -27,6 +31,8 @@ public class LinksController {
     })
     public ResponseEntity<?> updateLink(@RequestBody LinkUpdateRequest request) {
         log.info("\u001B[34m" + "Got request: {}", request);
+
+        linkUpdateReceiver.receiveUpdate(request);
 
         return ResponseEntity.ok().build();
     }

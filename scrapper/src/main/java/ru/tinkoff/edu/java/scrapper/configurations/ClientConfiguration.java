@@ -42,7 +42,7 @@ public class ClientConfiguration {
     }
 
     @Bean
-    public long schedulerIntervalMs(ApplicationConfig config) {
+    public long schedulerIntervalMs(ApplicationConfiguration config) {
         long toMillis = config.scheduler().interval().toMillis();
         return toMillis;
     }

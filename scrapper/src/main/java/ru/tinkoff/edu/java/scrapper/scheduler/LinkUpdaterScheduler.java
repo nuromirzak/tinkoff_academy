@@ -6,16 +6,16 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.tinkoff.edu.java.link_parser.parsers.GlobalLinkParser;
-import ru.tinkoff.edu.java.scrapper.clients.BotClient;
 import ru.tinkoff.edu.java.scrapper.clients.GitHubClient;
 import ru.tinkoff.edu.java.scrapper.clients.StackoverflowClient;
-import ru.tinkoff.edu.java.scrapper.configurations.ApplicationConfig;
+import ru.tinkoff.edu.java.scrapper.configurations.ApplicationConfiguration;
 import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
+import ru.tinkoff.edu.java.scrapper.dtos.requests.LinkUpdateRequest;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.GithubRepoResponse;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.StackoverflowQuestionResponse;
 import ru.tinkoff.edu.java.scrapper.services.LinkService;
-import ru.tinkoff.edu.java.scrapper.services.TgChatService;
+import ru.tinkoff.edu.java.scrapper.services.sender.LinkUpdateSender;
 
 import java.net.URI;
 import java.util.Collection;
@@ -30,26 +30,24 @@ import java.util.Map;
 public class LinkUpdaterScheduler {
     private int iteration = 0;
     private final LinkService linkService;
-    private final TgChatService tgChatService;
-    private final BotClient botClient;
     private final GitHubClient gitHubClient;
     private final StackoverflowClient stackoverflowClient;
     private final GlobalLinkParser globalLinkParser;
-    private final ApplicationConfig applicationConfig;
+    private final ApplicationConfiguration applicationConfiguration;
+    private final LinkUpdateSender linkUpdateSender;
 
     @Scheduled(fixedDelayString = "#{@schedulerIntervalMs}")
     public void update() {
         int currentIteration = ++iteration;
         log.info("{}th iteration of link update process started", currentIteration);
 
-        Collection<Link> links = linkService.findLinksToScrap(applicationConfig.scheduler().checkInterval());
+        Collection<Link> links = linkService.findLinksToScrap(applicationConfiguration.scheduler().checkInterval());
         Map<Link, String> updatedLinksWithDescription = new HashMap<>();
         for (Link link : links) {
             String linkString = link.getUrl();
             URI uri = URI.create(linkString);
-            String host = uri.getHost();
-            if (host.equals("github.com")) {
-                GithubRepoResponse oldGithubRepoResponse = (GithubRepoResponse) link.getJsonProps();
+
+            if (link.getJsonProps() instanceof GithubRepoResponse oldGithubRepoResponse) {
                 Map<String, String> parsedLink = globalLinkParser.parse(uri);
                 String owner = parsedLink.get("owner");
                 String repo = parsedLink.get("repo");
@@ -58,8 +56,7 @@ public class LinkUpdaterScheduler {
                     String updateMessage = oldGithubRepoResponse.getDifferenceMessageBetween(githubRepoResponse);
                     updatedLinksWithDescription.put(link, updateMessage);
                 }
-            } else if (host.equals("stackoverflow.com")) {
-                StackoverflowQuestionResponse oldStackoverflowQuestionResponse = (StackoverflowQuestionResponse) link.getJsonProps();
+            } else if (link.getJsonProps() instanceof StackoverflowQuestionResponse oldStackoverflowQuestionResponse) {
                 Map<String, String> parsedLink = globalLinkParser.parse(uri);
                 String questionId = parsedLink.get("questionId");
                 Long questionIdLong = Long.parseLong(questionId);
@@ -71,6 +68,7 @@ public class LinkUpdaterScheduler {
             } else {
                 log.warn("Link {} is not supported", linkString);
             }
+
         }
 
         for (Map.Entry<Link, String> entry : updatedLinksWithDescription.entrySet()) {
@@ -78,7 +76,9 @@ public class LinkUpdaterScheduler {
             String description = entry.getValue();
             List<Chat> chats = linkService.findFollowers(link.getUrl());
             List<Long> tgChatIds = chats.stream().map(Chat::getChatId).toList();
-            botClient.updateLink(link.getLinkId(), link.getUrl(), description, tgChatIds);
+            LinkUpdateRequest linkUpdateRequest =
+                    new LinkUpdateRequest(link.getLinkId(), link.getUrl(), description, tgChatIds);
+            linkUpdateSender.send(linkUpdateRequest);
         }
 
         log.info("{}th iteration of link update process finished", currentIteration);
