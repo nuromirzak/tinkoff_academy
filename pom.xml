@@ -21,6 +21,7 @@
         <springdoc-openapi-starter-webmvc-ui.version>2.0.2</springdoc-openapi-starter-webmvc-ui.version>
         <junitt5.version>5.9.2</junitt5.version>
         <testcontainers.version>1.17.6</testcontainers.version>
+        <failsafe.version>2.22.2</failsafe.version>
     </properties>
 
     <build>
@@ -68,6 +69,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${failsafe.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
