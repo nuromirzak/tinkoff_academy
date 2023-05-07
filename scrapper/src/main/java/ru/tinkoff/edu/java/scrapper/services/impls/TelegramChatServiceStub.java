@@ -1,23 +1,24 @@
 package ru.tinkoff.edu.java.scrapper.services.impls;
 
-import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.scrapper.dtos.requests.AddLinkRequest;
+import ru.tinkoff.edu.java.scrapper.dtos.requests.RemoveLinkRequest;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.LinkResponse;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.ListLinkResponse;
-import ru.tinkoff.edu.java.scrapper.dtos.requests.RemoveLinkRequest;
 import ru.tinkoff.edu.java.scrapper.services.TelegramChatService;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-@Service("telegramChatServiceStub")
 public class TelegramChatServiceStub implements TelegramChatService {
     private final Map<String, List<String>> chatLinks =
             new HashMap<>();
 
     @Override
-    public void registerChat(String id) {
-        chatLinks.putIfAbsent(id, new ArrayList<>());
+    public boolean registerChat(String id) {
+        return chatLinks.putIfAbsent(id, new ArrayList<>()) == null;
     }
 
     @Override

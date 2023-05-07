@@ -6,36 +6,37 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.dtos.mappers.jdbc.LinkMapper;
 import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
-
 import java.sql.Statement;
-import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RequiredArgsConstructor
 public class JdbcLinkRepo implements LinkRepo {
-    private final JdbcTemplate jdbcTemplate;
-
-    // TODO: Duplicate URLs cannot be added, change SQL Query
-    private static final String SQL_INSERT_LINK = "INSERT INTO link (url, last_updated, json_props) VALUES (?, ?, ?)";
-    private static final String SQL_CHECK_LINK_EXISTS = "SELECT * FROM link WHERE url = ?";
+    private static final String SQL_INSERT_LINK =
+            "INSERT INTO link (url, last_updated, last_scrapped, json_props) VALUES (?, ?, ?, ?)";
+    private static final String SQL_FIND_LINK_BY_URL = "SELECT * FROM link WHERE url LIKE ?";
     private static final String SQL_DELETE_LINK = "DELETE FROM link WHERE url = ?";
     private static final String SQL_FIND_LINK = "SELECT * FROM link";
     private static final String SQL_DELETE_ALL_LINKS = "DELETE FROM link";
-    private static final String SQL_FIND_LINKS_BY_CHAT_ID = "SELECT * FROM link WHERE link_id IN (SELECT link_id FROM link_chat WHERE chat_id = ?)";
+    private static final String SQL_FIND_LINKS_BY_CHAT_ID =
+            "SELECT * FROM link WHERE link_id IN (SELECT link_id FROM link_chat WHERE chat_id = ?)";
     private static final String SQL_FIND_LINKS_TO_SCRAP = "SELECT * FROM link WHERE link.last_scrapped <= ?";
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public int add(Link link) {
-        if (link.getLastUpdated() == null)
+    public Link saveIfAbsentOrReturnExisting(Link link) {
+        if (link.getLastUpdated() == null) {
             link.setLastUpdated(OffsetDateTime.now());
+        }
+        if (link.getLastScrapped() == null) {
+            link.setLastScrapped(OffsetDateTime.now());
+        }
 
-        List<Link> existingLinks = jdbcTemplate.query(SQL_CHECK_LINK_EXISTS, new LinkMapper(), link.getUrl());
+        List<Link> existingLinks = jdbcTemplate.query(SQL_FIND_LINK_BY_URL, new LinkMapper(), link.getUrl());
         if (!existingLinks.isEmpty()) {
-            System.out.println("LINK ALREADY EXISTS");
-            System.out.println(existingLinks);
-            return Math.toIntExact(existingLinks.get(0).getLinkId());
+            return existingLinks.get(0);
         }
 
         GeneratedKeyHolder holder = new GeneratedKeyHolder();
@@ -43,13 +44,16 @@ public class JdbcLinkRepo implements LinkRepo {
             var statement = con.prepareStatement(SQL_INSERT_LINK, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, link.getUrl());
             statement.setObject(2, link.getLastUpdated());
-            statement.setObject(3, link.getJsonProps());
+            statement.setObject(3, link.getLastScrapped());
+            statement.setObject(4, link.getJsonProps());
             return statement;
         }, holder);
 
-        System.out.println("KEYS" + holder.getKeys());
+        Map<String, Object> keys = holder.getKeys();
 
-        return (int) ((Number) Objects.requireNonNull(holder.getKeys()).get("link_id")).longValue();
+        long linkId = keys.get("link_id") == null ? -1L : ((Number) keys.get("link_id")).longValue();
+        link.setLinkId(linkId);
+        return link;
     }
 
     @Override
@@ -58,7 +62,7 @@ public class JdbcLinkRepo implements LinkRepo {
     }
 
     @Override
-    public boolean remove(String link) {
+    public boolean removeLinkByUrlLike(String link) {
         int count = jdbcTemplate.update(SQL_DELETE_LINK, link);
         return count > 0;
     }
@@ -74,9 +78,7 @@ public class JdbcLinkRepo implements LinkRepo {
     }
 
     @Override
-    public List<Link> findLinksToScrap(Duration duration) {
-        OffsetDateTime now = OffsetDateTime.now();
-        OffsetDateTime lastScrapped = now.minus(duration);
+    public List<Link> findLinksByLastScrappedBefore(OffsetDateTime lastScrapped) {
         return jdbcTemplate.query(SQL_FIND_LINKS_TO_SCRAP, new LinkMapper(), lastScrapped);
     }
 }

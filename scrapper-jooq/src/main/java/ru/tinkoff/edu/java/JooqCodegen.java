@@ -13,7 +13,7 @@ public class JooqCodegen {
         Database database = new Database()
                 .withName("org.jooq.meta.extensions.liquibase.LiquibaseDatabase")
                 .withProperties(
-                        new Property().withKey("rootPath").withValue("migrations"),
+                        new Property().withKey("rootPath").withValue("scrapper/migrations"),
                         new Property().withKey("scripts").withValue("master.xml")
                 );
 

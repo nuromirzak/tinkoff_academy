@@ -8,7 +8,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import ru.tinkoff.edu.java.scrapper.configurations.ApplicationConfig;
-
 import javax.sql.DataSource;
 
 @Configuration

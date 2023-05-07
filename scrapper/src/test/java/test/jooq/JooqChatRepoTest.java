@@ -1,28 +1,28 @@
 package test.jooq;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
 import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
-import test.DataSourceConfig;
+import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqChatRepo;
 import test.IntegrationEnvironment;
-
 import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {SpringTestJooqConfig.class, DataSourceConfig.class})
+@SpringBootTest(classes = ScrapperApplication.class, properties = {
+        "app.database-access-type=jooq"
+})
 @Transactional
 @Sql(scripts = "classpath:populateDB.sql")
 public class JooqChatRepoTest extends IntegrationEnvironment {
     @Autowired
-    private ChatRepo chatRepo;
+    private JooqChatRepo chatRepo;
 
     @Test
     public void findAllAndPrint() {

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.webjars.NotFoundException;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.ApiErrorResponse;
-
 import java.util.Arrays;
 import java.util.List;
 

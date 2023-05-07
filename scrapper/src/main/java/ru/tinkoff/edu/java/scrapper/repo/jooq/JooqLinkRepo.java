@@ -7,9 +7,7 @@ import org.jooq.Record1;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.Tables;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -17,17 +15,34 @@ public class JooqLinkRepo implements LinkRepo {
     private final DSLContext dslContext;
 
     @Override
-    public int add(Link link) {
-        return dslContext.insertInto(Tables.LINK)
+    public Link saveIfAbsentOrReturnExisting(Link link) {
+        if (link.getLastUpdated() == null) {
+            link.setLastUpdated(OffsetDateTime.now());
+        }
+        if (link.getLastScrapped() == null) {
+            link.setLastScrapped(OffsetDateTime.now());
+        }
+
+        List<Link> existingLinks = dslContext.selectFrom(Tables.LINK)
+                .where(Tables.LINK.URL.like(link.getUrl()))
+                .fetchInto(Link.class);
+
+        if (!existingLinks.isEmpty()) {
+            return existingLinks.get(0);
+        }
+
+        long linkId = dslContext.insertInto(Tables.LINK)
                 .set(Tables.LINK.URL, link.getUrl())
-                .set(Tables.LINK.LAST_UPDATED,
-                        link.getLastUpdated() == null ? LocalDateTime.now() : link.getLastUpdated().toLocalDateTime()
-                )
-                .set(Tables.LINK.JSON_PROPS, link.getJsonProps() == null ? null : JSON.json(link.getJsonProps().toString())
-                )
+                .set(Tables.LINK.LAST_UPDATED, link.getLastUpdated().toLocalDateTime())
+                .set(Tables.LINK.LAST_SCRAPPED, link.getLastScrapped().toLocalDateTime())
+                .set(Tables.LINK.JSON_PROPS,
+                        link.getJsonProps() == null ? null : JSON.json(link.getJsonProps().toString()))
                 .returning(Tables.LINK.LINK_ID)
                 .fetchOne()
                 .getLinkId();
+
+        link.setLinkId(linkId);
+        return link;
     }
 
     @Override
@@ -37,7 +52,7 @@ public class JooqLinkRepo implements LinkRepo {
     }
 
     @Override
-    public boolean remove(String link) {
+    public boolean removeLinkByUrlLike(String link) {
         return dslContext.deleteFrom(Tables.LINK)
                 .where(Tables.LINK.URL.eq(link))
                 .execute() > 0;
@@ -61,9 +76,9 @@ public class JooqLinkRepo implements LinkRepo {
     }
 
     @Override
-    public List<Link> findLinksToScrap(Duration duration) {
+    public List<Link> findLinksByLastScrappedBefore(OffsetDateTime lastScrapped) {
         return dslContext.selectFrom(Tables.LINK)
-                .where(Tables.LINK.LAST_UPDATED.le(LocalDateTime.now().minus(duration)))
+                .where(Tables.LINK.LAST_UPDATED.le(lastScrapped.toLocalDateTime()))
                 .fetchInto(Link.class);
     }
 }

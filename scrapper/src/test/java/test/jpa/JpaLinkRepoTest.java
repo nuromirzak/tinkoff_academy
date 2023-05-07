@@ -1,19 +1,17 @@
 package test.jpa;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
-import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
+import ru.tinkoff.edu.java.scrapper.repo.jpa.JpaLinkRepo;
 import test.IntegrationEnvironment;
 
 import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Sql(scripts = "classpath:populateDB.sql")
 public class JpaLinkRepoTest extends IntegrationEnvironment {
     @Autowired
-    private LinkRepo linkRepo;
+    private JpaLinkRepo linkRepo;
 
     @Test
     public void findAllAndPrint() {
@@ -38,10 +36,10 @@ public class JpaLinkRepoTest extends IntegrationEnvironment {
         // Arrange
         Link link = new Link();
         link.setUrl("https://www.tinkoff.ru");
-        link.setLastUpdated(null);
+        link.setLastUpdated(OffsetDateTime.now());
 
         // Act
-        linkRepo.add(link);
+        linkRepo.save(link);
 
         // Assert
         List<Link> links = linkRepo.findAll();
@@ -53,12 +51,12 @@ public class JpaLinkRepoTest extends IntegrationEnvironment {
         // Arrange
         Link link = new Link();
         link.setUrl("https://www.tinkoff.ru");
-        link.setLastUpdated(null);
+        link.setLastUpdated(OffsetDateTime.now());
 
         // Act
-        linkRepo.add(link);
+        linkRepo.save(link);
         List<Link> linksBefore = linkRepo.findAll();
-        linkRepo.remove(link.getUrl());
+        linkRepo.removeLinkByUrlLike(link.getUrl());
         List<Link> linksAfter = linkRepo.findAll();
 
         // Assert
@@ -72,7 +70,7 @@ public class JpaLinkRepoTest extends IntegrationEnvironment {
         long chatId = 362037700L;
 
         // Act
-        List<Link> subscriptionsByChatId = linkRepo.findLinksByChatId(chatId);
+        List<Link> subscriptionsByChatId = linkRepo.findLinksByChatsChatId(chatId);
 
         // Assert
         assertEquals(2, subscriptionsByChatId.size());
@@ -82,9 +80,10 @@ public class JpaLinkRepoTest extends IntegrationEnvironment {
     public void getLinksToScrap() {
         // Assert
         Duration fifteenMinutes = Duration.ofMinutes(15);
+        OffsetDateTime offsetDateTime = OffsetDateTime.now().minus(fifteenMinutes);
 
         // Act
-        List<Link> linksToUpdate = linkRepo.findLinksToScrap(fifteenMinutes);
+        List<Link> linksToUpdate = linkRepo.findLinksByLastScrappedBefore(offsetDateTime);
 
         // Assert
         assertEquals(4, linksToUpdate.size());
