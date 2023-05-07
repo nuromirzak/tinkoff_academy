@@ -14,6 +14,8 @@ import ru.tinkoff.edu.java.bot.components.BotCommands;
 import ru.tinkoff.edu.java.bot.components.CommandRouter;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 
+import java.util.List;
+
 @Component
 @Log4j2
 public class MyTelegramBot extends TelegramLongPollingBot {
@@ -57,5 +59,18 @@ public class MyTelegramBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         return this.botName;
+    }
+
+    public void sendMailing(String message, List<Long> tgChatIds) {
+        tgChatIds.forEach(chatId -> {
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(chatId.toString());
+            sendMessage.setText(message);
+            try {
+                execute(sendMessage);
+            } catch (TelegramApiException e) {
+                log.error(e);
+            }
+        });
     }
 }

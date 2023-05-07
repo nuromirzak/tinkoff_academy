@@ -6,7 +6,10 @@ app:
     db_url: jdbc:postgresql://localhost:5432/scrapper
     db_username: postgres
     db_password: password
-    database-access-type: jdbc
+    database-access-type: jpa
+    use-queue: false
+    queue-name: scrapper-queue
+    exchange-name: scrapper-exchange
 
 springdoc:
     swagger-ui:
@@ -27,7 +30,7 @@ server:
 spring:
     jpa:
         openInView: false
-        showSql: true
+        showSql: false
         properties:
             hibernate:
                 format_sql: true
@@ -35,3 +38,8 @@ spring:
                 dialect: org.hibernate.dialect.PostgreSQLDialect
     liquibase:
         enabled: false
+    rabbitmq:
+        host: localhost
+        port: 5672
+        username: rabbitmq
+        password: password

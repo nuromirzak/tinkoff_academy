@@ -4,14 +4,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
-import ru.tinkoff.edu.java.scrapper.configurations.ApplicationConfig;
+import ru.tinkoff.edu.java.scrapper.configurations.ApplicationConfiguration;
 
 @SpringBootApplication
-@EnableConfigurationProperties(ApplicationConfig.class)
+@EnableConfigurationProperties(ApplicationConfiguration.class)
 public class ScrapperApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext ctx = SpringApplication.run(ScrapperApplication.class, args);
-        ApplicationConfig config = ctx.getBean(ApplicationConfig.class);
+        ApplicationConfiguration config = ctx.getBean(ApplicationConfiguration.class);
         System.out.println(config);
     }
 }
