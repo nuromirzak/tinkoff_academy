@@ -1,16 +1,15 @@
 package ru.tinkoff.edu.java.scrapper.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import ru.tinkoff.edu.java.scrapper.dtos.responses.StackoverflowQuestionResponse;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import ru.tinkoff.edu.java.scrapper.dtos.responses.StackoverflowQuestionResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -19,13 +18,13 @@ public class StackoverflowClient {
 
     public StackoverflowQuestionResponse getQuestionById(Long id) {
         return stackoverflowWebClient.get()
-                .uri(uri -> uri.path("/questions/{id}")
-                        .queryParam("site", "stackoverflow")
-                        .build(id))
-                .retrieve()
-                .bodyToMono(JsonNode.class)
-                .map(this::convertJsonToStackoverflowQuestion)
-                .block();
+            .uri(uri -> uri.path("/questions/{id}")
+                .queryParam("site", "stackoverflow")
+                .build(id))
+            .retrieve()
+            .bodyToMono(JsonNode.class)
+            .map(this::convertJsonToStackoverflowQuestion)
+            .block();
     }
 
     private StackoverflowQuestionResponse convertJsonToStackoverflowQuestion(JsonNode jsonNode) {
@@ -46,10 +45,15 @@ public class StackoverflowClient {
 
         long creationDate = itemsArray.path("creation_date").asLong();
         OffsetDateTime creationDateOffset =
-                OffsetDateTime.ofInstant(Instant.ofEpochSecond(creationDate), ZoneOffset.UTC);
+            OffsetDateTime.ofInstant(Instant.ofEpochSecond(creationDate), ZoneOffset.UTC);
+
         question.setCreationDate(creationDateOffset);
 
-        Date lastActivityDate = new Date(itemsArray.path("last_activity_date").asLong() * 1000);
+        OffsetDateTime lastActivityDate =
+            OffsetDateTime.ofInstant(
+                Instant.ofEpochSecond(itemsArray.path("last_activity_date").asLong()),
+                ZoneOffset.UTC
+            );
         question.setLastActivityDate(lastActivityDate.toInstant().atOffset(ZoneOffset.UTC));
 
         return question;

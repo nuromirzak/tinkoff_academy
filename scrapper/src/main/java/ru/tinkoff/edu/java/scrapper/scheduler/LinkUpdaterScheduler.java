@@ -2,6 +2,11 @@ package ru.tinkoff.edu.java.scrapper.scheduler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URI;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -18,11 +23,6 @@ import ru.tinkoff.edu.java.scrapper.dtos.responses.GithubRepoResponse;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.StackoverflowQuestionResponse;
 import ru.tinkoff.edu.java.scrapper.services.LinkService;
 import ru.tinkoff.edu.java.scrapper.services.sender.LinkUpdateSender;
-import java.net.URI;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Component
 @EnableScheduling
@@ -44,7 +44,7 @@ public class LinkUpdaterScheduler {
         log.info("{}th iteration of link update process started", currentIteration);
 
         Collection<Link> links =
-                linkService.findLinksToScrapSince(applicationConfiguration.scheduler().checkInterval());
+            linkService.findLinksToScrapSince(applicationConfiguration.scheduler().checkInterval());
 
         Map<Link, String> updatedLinksWithDescription = new HashMap<>();
         for (Link link : links) {
@@ -54,7 +54,7 @@ public class LinkUpdaterScheduler {
             if (host.equals("github.com")) {
                 String oldGithubRepoResponseString = link.getJsonProps();
                 GithubRepoResponse oldGithubRepoResponse =
-                        objectMapper.readValue(oldGithubRepoResponseString, GithubRepoResponse.class);
+                    objectMapper.readValue(oldGithubRepoResponseString, GithubRepoResponse.class);
                 Map<String, String> parsedLink = globalLinkParser.parse(uri);
                 String owner = parsedLink.get("owner");
                 String repo = parsedLink.get("repo");
@@ -66,16 +66,18 @@ public class LinkUpdaterScheduler {
             } else if (host.equals("stackoverflow.com")) {
                 String oldStackoverflowQuestionResponseString = link.getJsonProps();
                 StackoverflowQuestionResponse oldStackoverflowQuestionResponse =
-                        objectMapper.readValue(oldStackoverflowQuestionResponseString,
-                                StackoverflowQuestionResponse.class);
+                    objectMapper.readValue(
+                        oldStackoverflowQuestionResponseString,
+                        StackoverflowQuestionResponse.class
+                    );
                 Map<String, String> parsedLink = globalLinkParser.parse(uri);
                 String questionId = parsedLink.get("questionId");
                 Long questionIdLong = Long.parseLong(questionId);
                 StackoverflowQuestionResponse stackoverflowQuestionResponse =
-                        stackoverflowClient.getQuestionById(questionIdLong);
+                    stackoverflowClient.getQuestionById(questionIdLong);
                 if (stackoverflowQuestionResponse.getLastActivityDate().isAfter(link.getLastUpdated())) {
                     String updateMessage =
-                            oldStackoverflowQuestionResponse.getDifferenceMessageBetween(stackoverflowQuestionResponse);
+                        oldStackoverflowQuestionResponse.getDifferenceMessageBetween(stackoverflowQuestionResponse);
                     updatedLinksWithDescription.put(link, updateMessage);
                 }
             } else {
@@ -90,7 +92,7 @@ public class LinkUpdaterScheduler {
             List<Chat> chats = linkService.findFollowers(link.getUrl());
             List<Long> tgChatIds = chats.stream().map(Chat::getChatId).toList();
             LinkUpdateRequest linkUpdateRequest =
-                    new LinkUpdateRequest(link.getLinkId(), link.getUrl(), description, tgChatIds);
+                new LinkUpdateRequest(link.getLinkId(), link.getUrl(), description, tgChatIds);
             linkUpdateSender.send(linkUpdateRequest);
         }
 

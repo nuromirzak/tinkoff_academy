@@ -12,7 +12,7 @@ public abstract class LinkUpdateReceiver {
 
     protected void sendUpdates(LinkUpdateRequest request) {
         bot.sendMailing(
-                request.description(), request.tgChatIds()
+            request.description(), request.tgChatIds()
         );
     }
 }

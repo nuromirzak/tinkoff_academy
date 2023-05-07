@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 
 public record LinkParserHelper() {
+    private static final String DOT_REGEX = "\\.";
+
     public static String getPathSegmentByIndex(URI uri, int index) {
         return getAllPathSegments(uri).get(index);
     }
@@ -16,13 +18,13 @@ public record LinkParserHelper() {
 
     public static List<String> getSubdomains(URI uri) {
         String host = uri.getHost();
-        String[] subdomains = host.split("\\.");
+        String[] subdomains = host.split(DOT_REGEX);
         return List.of(subdomains);
     }
 
     public static String getTopLevelDomain(URI uri) {
         String host = uri.getHost();
-        String[] subdomains = host.split("\\.");
+        String[] subdomains = host.split(DOT_REGEX);
         return subdomains[subdomains.length - 2] + "." + subdomains[subdomains.length - 1];
     }
 

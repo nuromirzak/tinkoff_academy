@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.bot;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -11,11 +12,12 @@ import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
 
 @SpringBootApplication
 @EnableConfigurationProperties(ApplicationConfig.class)
+@Log4j2
 public class BotApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext ctx = SpringApplication.run(BotApplication.class, args);
         ApplicationConfig config = ctx.getBean(ApplicationConfig.class);
-        System.out.printf("Bot application config: %s", config);
+        log.info("Bot application config: {}", config);
 
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);

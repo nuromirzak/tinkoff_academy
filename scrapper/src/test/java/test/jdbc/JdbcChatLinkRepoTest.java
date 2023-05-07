@@ -1,5 +1,6 @@
 package test.jdbc;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -7,26 +8,23 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
-import ru.tinkoff.edu.java.scrapper.repo.ChatLinkRepo;
-import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jdbc.JdbcChatLinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jdbc.JdbcLinkRepo;
 import test.IntegrationEnvironment;
-import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = ScrapperApplication.class, properties = {
-        "app.database-access-type=jdbc"
+    "app.database-access-type=jdbc"
 })
 @Transactional
 @Sql(scripts = "classpath:populateDB.sql")
 public class JdbcChatLinkRepoTest extends IntegrationEnvironment {
+    private static final int START_INDEX = 100000;
     @Autowired
     private JdbcChatLinkRepo chatLinkRepo;
     @Autowired
     private JdbcLinkRepo linkRepo;
-    private static final int START_INDEX = 100000;
 
     @Test
     public void removeLinkFromChat() {

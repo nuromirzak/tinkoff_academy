@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = ScrapperApplication.class, properties = {
-        "app.database-access-type=jpa"
+    "app.database-access-type=jpa"
 })
 @Transactional
 @Sql(scripts = "classpath:populateDB.sql")
@@ -69,8 +69,10 @@ public class TelegramChatServiceImplTest {
 
         // Assert
         assertEquals(2, listLinkResponse.size());
-        assertTrue(listLinkResponse.links().stream().anyMatch(lr -> lr.url().equals("https://github.com/nuromirzak/tinkoff_academy/")));
-        assertTrue(listLinkResponse.links().stream().anyMatch(lr -> lr.url().equals("https://stackoverflow.com/questions/5585779/")));
+        assertTrue(listLinkResponse.links().stream()
+            .anyMatch(lr -> lr.url().equals("https://github.com/nuromirzak/tinkoff_academy/")));
+        assertTrue(listLinkResponse.links().stream()
+            .anyMatch(lr -> lr.url().equals("https://stackoverflow.com/questions/5585779/")));
     }
 
     @Test
@@ -86,7 +88,8 @@ public class TelegramChatServiceImplTest {
         assertNotNull(linkResponse);
         assertEquals(addLinkRequest.link(), linkResponse.url());
         assertTrue(
-                linkRepo.findLinksByChatsChatId(Long.parseLong(chatId)).stream().anyMatch(l -> l.getUrl().equals(addLinkRequest.link())));
+            linkRepo.findLinksByChatsChatId(Long.parseLong(chatId)).stream()
+                .anyMatch(l -> l.getUrl().equals(addLinkRequest.link())));
     }
 
     @Test
@@ -103,7 +106,8 @@ public class TelegramChatServiceImplTest {
         assertNotNull(linkResponse);
         assertEquals(0, linkResponse.id());
         assertEquals(url, linkResponse.url());
-        assertFalse(linkRepo.findLinksByChatsChatId(Long.parseLong(chatId)).stream().anyMatch(l -> l.getUrl().equals(url)));
+        assertFalse(linkRepo.findLinksByChatsChatId(Long.parseLong(chatId)).stream()
+            .anyMatch(l -> l.getUrl().equals(url)));
     }
 
     @Test
@@ -119,9 +123,10 @@ public class TelegramChatServiceImplTest {
         assertNotNull(linkResponse);
         assertEquals(addLinkRequest.link(), linkResponse.url());
         assertTrue(
-                linkRepo.findLinksByChatsChatId(Long.parseLong(chatId)).stream().anyMatch(l -> l.getUrl().equals(addLinkRequest.link())));
+            linkRepo.findLinksByChatsChatId(Long.parseLong(chatId)).stream()
+                .anyMatch(l -> l.getUrl().equals(addLinkRequest.link())));
         assertTrue(
-                chatRepo.existsById(Long.parseLong(chatId)));
+            chatRepo.existsById(Long.parseLong(chatId)));
     }
 
     @Test

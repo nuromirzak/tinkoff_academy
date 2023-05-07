@@ -1,7 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.repo;
 
-import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 import java.util.List;
+import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 
 public interface ChatRepo {
     boolean add(long chatId);

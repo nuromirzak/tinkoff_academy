@@ -1,5 +1,6 @@
 package test.jpa;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,21 +12,20 @@ import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.repo.jpa.JpaChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jpa.JpaLinkRepo;
 import test.IntegrationEnvironment;
-import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = ScrapperApplication.class, properties = {
-        "app.database-access-type=jpa"
+    "app.database-access-type=jpa"
 })
 @Transactional
 @Sql(scripts = "classpath:populateDB.sql")
 public class JpaChatLinkRepoTest extends IntegrationEnvironment {
+    private static final int START_INDEX = 100000;
     @Autowired
     private JpaChatRepo chatRepo;
     @Autowired
     private JpaLinkRepo linkRepo;
-    private static final int START_INDEX = 100000;
 
     @Test
     public void removeLinkFromChat() {

@@ -1,6 +1,13 @@
 package ru.tinkoff.edu.java.scrapper.services.impls.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URI;
+import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
@@ -15,13 +22,6 @@ import ru.tinkoff.edu.java.scrapper.repo.jdbc.JdbcChatLinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jdbc.JdbcChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jdbc.JdbcLinkRepo;
 import ru.tinkoff.edu.java.scrapper.services.LinkService;
-import java.net.URI;
-import java.time.Duration;
-import java.time.OffsetDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jdbc")
@@ -35,6 +35,10 @@ public class JdbcLinkService implements LinkService {
     private final StackoverflowClient stackoverflowClient;
     private final ObjectMapper objectMapper;
 
+    private static final String OWNER = "owner";
+    private static final String REPO = "repo";
+    private static final String QUESTION_ID = "questionId";
+
     @Override
     public Optional<Link> add(long tgChatId, String url) {
         try {
@@ -46,13 +50,13 @@ public class JdbcLinkService implements LinkService {
             if (map == null) {
                 return Optional.empty();
             }
-            if (map.containsKey("owner") && map.containsKey("repo")) {
-                GithubRepoResponse githubRepoResponse = gitHubClient.getRepo(map.get("owner"), map.get("repo"));
+            if (map.containsKey(OWNER) && map.containsKey(REPO)) {
+                GithubRepoResponse githubRepoResponse = gitHubClient.getRepo(map.get(OWNER), map.get(REPO));
                 String jsonProps = objectMapper.writeValueAsString(githubRepoResponse);
                 link.setJsonProps(jsonProps);
-            } else if (map.containsKey("questionId")) {
+            } else if (map.containsKey(QUESTION_ID)) {
                 StackoverflowQuestionResponse stackoverflowQuestionResponse =
-                        stackoverflowClient.getQuestionById(Long.parseLong(map.get("questionId")));
+                    stackoverflowClient.getQuestionById(Long.parseLong(map.get(QUESTION_ID)));
                 String jsonProps = objectMapper.writeValueAsString(stackoverflowQuestionResponse);
                 link.setJsonProps(jsonProps);
             } else {
@@ -75,7 +79,7 @@ public class JdbcLinkService implements LinkService {
             URI uri = URI.create(url);
             List<Link> links = linkRepo.findLinksByChatId(tgChatId);
             Optional<Link> linkToDelete =
-                    links.stream().filter(link -> link.getUrl().equals(uri.toString())).findFirst();
+                links.stream().filter(link -> link.getUrl().equals(uri.toString())).findFirst();
             if (linkToDelete.isPresent()) {
                 Link link = linkToDelete.get();
                 return chatLinkRepo.removeLinkFromChat(tgChatId, link.getLinkId());

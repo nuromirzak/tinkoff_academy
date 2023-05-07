@@ -1,5 +1,7 @@
 package ru.tinkoff.edu.java.bot.components;
 
+import java.util.Arrays;
+import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.objects.Chat;
@@ -9,11 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import ru.tinkoff.edu.java.bot.clients.ScrapperClient;
 import ru.tinkoff.edu.java.bot.dtos.LinkResponse;
 import ru.tinkoff.edu.java.bot.dtos.ListLinkResponse;
-
-import java.util.Arrays;
-import java.util.Collections;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TextMessageHandlerTest {
     private static final Long USER_ID = 362037700L;
@@ -63,7 +61,7 @@ class TextMessageHandlerTest {
         String response = commandRouter.routeCommand(update, "/list");
         LinkResponse response1 = new LinkResponse(0, "https://www.google.com");
         ListLinkResponse listLinkResponse = new ListLinkResponse(Collections.singletonList(response1), 1);
-        String expected = String.format(BotCommands.commands.get("/list"), listLinkResponse);
+        String expected = String.format(BotCommands.COMMANDS.get("/list"), listLinkResponse);
 
         // AssertBotCommands
         assertEquals(expected, response);
@@ -93,7 +91,7 @@ class TextMessageHandlerTest {
         String response = commandRouter.routeCommand(update, "/list");
         LinkResponse response1 = new LinkResponse(0, "https://www.google.com");
         ListLinkResponse listLinkResponse = new ListLinkResponse(Collections.singletonList(response1), 1);
-        String expected = String.format(BotCommands.commands.get("/list"), listLinkResponse);
+        String expected = String.format(BotCommands.COMMANDS.get("/list"), listLinkResponse);
 
         // Assert
         assertEquals(expected, response);
@@ -111,7 +109,7 @@ class TextMessageHandlerTest {
         LinkResponse response1 = new LinkResponse(0, "https://www.google.com");
         LinkResponse response2 = new LinkResponse(1, "https://www.facebook.com");
         ListLinkResponse listLinkResponse = new ListLinkResponse(Arrays.asList(response1, response2), 2);
-        String expected = String.format(BotCommands.commands.get("/list"), listLinkResponse);
+        String expected = String.format(BotCommands.COMMANDS.get("/list"), listLinkResponse);
 
         // Assert
         assertEquals(expected, response);

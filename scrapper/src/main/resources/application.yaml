@@ -1,45 +1,45 @@
 app:
-    test: Hello from Scrapper Module!
-    scheduler:
-        interval: 5000
-        check-interval: 900000 # 15 minutes
-    db_url: jdbc:postgresql://localhost:5432/scrapper
-    db_username: postgres
-    db_password: password
-    database-access-type: jpa
-    use-queue: false
-    queue-name: scrapper-queue
-    exchange-name: scrapper-exchange
+  test: Hello from Scrapper Module!
+  scheduler:
+    interval: 5000
+    check-interval: 900000 # 15 minutes
+  db_url: jdbc:postgresql://localhost:5432/scrapper
+  db_username: postgres
+  db_password: password
+  database-access-type: jpa
+  use-queue: false
+  queue-name: scrapper-queue
+  exchange-name: scrapper-exchange
 
 springdoc:
-    swagger-ui:
-        path: /swagger-ui
+  swagger-ui:
+    path: /swagger-ui
 
 github:
-    base-url: https://api.github.com
+  base-url: https://api.github.com
 
 stackoverflow:
-    base-url: https://api.stackexchange.com/2.3
+  base-url: https://api.stackexchange.com/2.3
 
 bot:
-    base-url: http://localhost:8080
+  base-url: http://localhost:8080
 
 server:
-    port: 8081
+  port: 8081
 
 spring:
-    jpa:
-        openInView: false
-        showSql: false
-        properties:
-            hibernate:
-                format_sql: true
-                use_sql_comments: true
-                dialect: org.hibernate.dialect.PostgreSQLDialect
-    liquibase:
-        enabled: false
-    rabbitmq:
-        host: localhost
-        port: 5672
-        username: rabbitmq
-        password: password
+  jpa:
+    openInView: false
+    showSql: false
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    enabled: false
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: password

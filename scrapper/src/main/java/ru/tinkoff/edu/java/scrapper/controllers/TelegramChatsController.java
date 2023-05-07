@@ -29,11 +29,11 @@ public class TelegramChatsController {
 
     @PostMapping("/{id}")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Чат зарегистрирован",
-                    content = @Content),
-            @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса",
-                    content = @Content(schema = @Schema(implementation = ApiErrorResponse.class),
-                            mediaType = "application/json"))
+        @ApiResponse(responseCode = "200", description = "Чат зарегистрирован",
+                     content = @Content),
+        @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса",
+                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class),
+                                        mediaType = "application/json"))
     })
     public ResponseEntity<?> registerChat(@PathVariable("id") String id) {
         log.info("Registering chat: {}", id);
@@ -45,14 +45,14 @@ public class TelegramChatsController {
 
     @DeleteMapping("/{id}")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Чат успешно удалён",
-                    content = @Content),
-            @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса",
-                    content = @Content(schema = @Schema(implementation = ApiErrorResponse.class),
-                            mediaType = "application/json")),
-            @ApiResponse(responseCode = "404", description = "Чат не существует",
-                    content = @Content(schema = @Schema(implementation = ApiErrorResponse.class),
-                            mediaType = "application/json"))
+        @ApiResponse(responseCode = "200", description = "Чат успешно удалён",
+                     content = @Content),
+        @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса",
+                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class),
+                                        mediaType = "application/json")),
+        @ApiResponse(responseCode = "404", description = "Чат не существует",
+                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class),
+                                        mediaType = "application/json"))
     })
     public ResponseEntity<?> deleteChat(@PathVariable("id") String id) {
         log.info("Deleting chat: {}", id);

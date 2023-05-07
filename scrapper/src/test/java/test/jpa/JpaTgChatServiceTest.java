@@ -8,11 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
 import ru.tinkoff.edu.java.scrapper.repo.jpa.JpaChatRepo;
 import ru.tinkoff.edu.java.scrapper.services.impls.jpa.JpaTgChatService;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = ScrapperApplication.class, properties = {
-        "app.database-access-type=jpa"
+    "app.database-access-type=jpa"
 })
 @Transactional
 @Sql(scripts = "classpath:populateDB.sql")

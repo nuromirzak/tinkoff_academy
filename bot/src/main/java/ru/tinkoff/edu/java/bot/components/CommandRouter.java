@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.tinkoff.edu.java.bot.components.command_handlers.CommandHandler;
-
 import static ru.tinkoff.edu.java.bot.components.BotCommands.ERROR_MESSAGE_COMMAND_NOT_FOUND;
 
 @Component
@@ -33,7 +32,7 @@ public class CommandRouter {
         if (words.length > 1) {
             return words;
         } else {
-            return new String[]{words[0], null};
+            return new String[] {words[0], null};
         }
     }
 }

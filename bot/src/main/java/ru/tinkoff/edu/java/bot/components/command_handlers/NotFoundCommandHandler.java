@@ -2,7 +2,6 @@ package ru.tinkoff.edu.java.bot.components.command_handlers;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.tinkoff.edu.java.bot.clients.ScrapperClient;
-
 import static ru.tinkoff.edu.java.bot.components.BotCommands.ERROR_MESSAGE_COMMAND_NOT_FOUND;
 
 public class NotFoundCommandHandler implements CommandHandler {

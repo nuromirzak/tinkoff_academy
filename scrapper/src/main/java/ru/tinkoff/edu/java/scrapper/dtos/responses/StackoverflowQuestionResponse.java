@@ -1,15 +1,18 @@
 package ru.tinkoff.edu.java.scrapper.dtos.responses;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 public class StackoverflowQuestionResponse {
     public static final String DISCRIMINATOR = "link_properties.stackoverflow_question";
+
+    private static final String TO = "\" to \"";
+    private static final String DOT_NEWLINE = "\".\n";
 
     private Long ownerId;
     private String ownerName;
@@ -23,22 +26,22 @@ public class StackoverflowQuestionResponse {
     public String getDifferenceMessageBetween(StackoverflowQuestionResponse newStackoverflowQuestionResponse) {
         StringBuilder updateDescription = new StringBuilder();
         updateDescription.append("Question ").append(newStackoverflowQuestionResponse.getTitle())
-                .append(" has a new update!\n");
+            .append(" has a new update!\n");
         if (Objects.equals(newStackoverflowQuestionResponse.getTitle(), title)) {
-            updateDescription.append("Title has been changed from \"").append(title).append("\" to \"")
-                    .append(newStackoverflowQuestionResponse.getTitle()).append("\".\n");
+            updateDescription.append("Title has been changed from \"").append(title).append(TO)
+                .append(newStackoverflowQuestionResponse.getTitle()).append(DOT_NEWLINE);
         }
         if (!Objects.equals(newStackoverflowQuestionResponse.getAnswerCount(), answerCount)) {
-            updateDescription.append("Answer count has been changed from \"").append(answerCount).append("\" to \"")
-                    .append(newStackoverflowQuestionResponse.getAnswerCount()).append("\".\n");
+            updateDescription.append("Answer count has been changed from \"").append(answerCount).append(TO)
+                .append(newStackoverflowQuestionResponse.getAnswerCount()).append(DOT_NEWLINE);
         }
         if (!Objects.equals(newStackoverflowQuestionResponse.getScore(), score)) {
-            updateDescription.append("Score has been changed from \"").append(score).append("\" to \"")
-                    .append(newStackoverflowQuestionResponse.getScore()).append("\".\n");
+            updateDescription.append("Score has been changed from \"").append(score).append(TO)
+                .append(newStackoverflowQuestionResponse.getScore()).append(DOT_NEWLINE);
         }
         if (!Objects.equals(newStackoverflowQuestionResponse.getTags(), tags)) {
-            updateDescription.append("Tags has been changed from \"").append(tags).append("\" to \"")
-                    .append(newStackoverflowQuestionResponse.getTags()).append("\".\n");
+            updateDescription.append("Tags has been changed from \"").append(tags).append(TO)
+                .append(newStackoverflowQuestionResponse.getTags()).append(DOT_NEWLINE);
         }
         return updateDescription.toString();
     }

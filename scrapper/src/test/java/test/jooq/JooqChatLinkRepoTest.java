@@ -1,5 +1,6 @@
 package test.jooq;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -7,25 +8,22 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
-import ru.tinkoff.edu.java.scrapper.repo.ChatLinkRepo;
-import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqChatLinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqLinkRepo;
-import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = ScrapperApplication.class, properties = {
-        "app.database-access-type=jooq"
+    "app.database-access-type=jooq"
 })
 @Transactional
 @Sql(scripts = "classpath:populateDB.sql")
 public class JooqChatLinkRepoTest {
+    private static final int START_INDEX = 100000;
     @Autowired
     private JooqChatLinkRepo chatLinkRepo;
     @Autowired
     private JooqLinkRepo linkRepo;
-    private static final int START_INDEX = 100000;
 
     @Test
     public void removeLinkFromChat() {

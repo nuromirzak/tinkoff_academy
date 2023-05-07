@@ -1,7 +1,16 @@
 package ru.tinkoff.edu.java.scrapper.services.impls.jpa;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URI;
+import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.link_parser.parsers.GlobalLinkParser;
@@ -14,18 +23,11 @@ import ru.tinkoff.edu.java.scrapper.dtos.responses.StackoverflowQuestionResponse
 import ru.tinkoff.edu.java.scrapper.repo.jpa.JpaChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jpa.JpaLinkRepo;
 import ru.tinkoff.edu.java.scrapper.services.LinkService;
-import java.net.URI;
-import java.time.Duration;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
 @RequiredArgsConstructor
+@Log4j2
 public class JpaLinkService implements LinkService {
     private final JpaLinkRepo linkRepo;
     private final JpaChatRepo chatRepo;
@@ -33,6 +35,10 @@ public class JpaLinkService implements LinkService {
     private final GitHubClient gitHubClient;
     private final StackoverflowClient stackoverflowClient;
     private final ObjectMapper objectMapper;
+
+    private static final String OWNER = "owner";
+    private static final String REPO = "repo";
+    private static final String QUESTION_ID = "questionId";
 
     @Override
     public Optional<Link> add(long tgChatId, String url) {
@@ -47,23 +53,24 @@ public class JpaLinkService implements LinkService {
 
             URI uri = URI.create(url);
             Map<String, String> map = globalLinkParser.parse(uri);
-            System.out.println("map = " + map);
+            log.info("map = {}", map);
             if (map == null) {
                 return Optional.empty();
             }
-            if (map.containsKey("owner") && map.containsKey("repo")) {
-                GithubRepoResponse githubRepoResponse = gitHubClient.getRepo(map.get("owner"), map.get("repo"));
+            if (map.containsKey(OWNER) && map.containsKey(REPO)) {
+                log.info("map.get(\"owner\") = {}", map.get(OWNER));
+                log.info("map.get(\"repo\") = {}", map.get(REPO));
+                GithubRepoResponse githubRepoResponse = gitHubClient.getRepo(map.get(OWNER), map.get(REPO));
                 String jsonProps = objectMapper.writeValueAsString(githubRepoResponse);
                 link.setJsonProps(jsonProps);
-            } else if (map.containsKey("questionId")) {
-                System.out.println("map.get(\"questionId\") = " + map.get("questionId"));
+            } else if (map.containsKey(QUESTION_ID)) {
+                log.info("map.get(\"questionId\") = {}", map.get(QUESTION_ID));
                 StackoverflowQuestionResponse stackoverflowQuestionResponse =
-                        stackoverflowClient.getQuestionById(Long.parseLong(map.get("questionId")));
-                System.out.println("stackoverflowQuestionResponse = " + stackoverflowQuestionResponse);
+                    stackoverflowClient.getQuestionById(Long.parseLong(map.get(QUESTION_ID)));
                 String jsonProps = objectMapper.writeValueAsString(stackoverflowQuestionResponse);
                 link.setJsonProps(jsonProps);
             } else {
-                System.out.println("Unknown link type");
+                log.warn("Unknown link type");
                 return Optional.empty();
             }
 
@@ -92,7 +99,7 @@ public class JpaLinkService implements LinkService {
             URI uri = URI.create(url);
             List<Link> links = linkRepo.findLinksByChatsChatId(tgChatId);
             Optional<Link> linkToDelete =
-                    links.stream().filter(link -> link.getUrl().equals(uri.toString())).findFirst();
+                links.stream().filter(link -> link.getUrl().equals(uri.toString())).findFirst();
             if (linkToDelete.isPresent()) {
                 Link link = linkToDelete.get();
                 boolean isLinkUnlinked = link.getChats().removeIf(chat -> chat.getChatId() == tgChatId);
@@ -122,7 +129,7 @@ public class JpaLinkService implements LinkService {
 
     @Override
     public List<Chat> findFollowers(String url) {
-        return chatRepo.findChatsByLinks_UrlLike(url);
+        return chatRepo.findChatsByLinksUrlLike(url);
     }
 
     @Override

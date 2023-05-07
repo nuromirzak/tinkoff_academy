@@ -1,8 +1,8 @@
 package ru.tinkoff.edu.java.scrapper.repo;
 
-import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import java.time.OffsetDateTime;
 import java.util.List;
+import ru.tinkoff.edu.java.scrapper.dtos.Link;
 
 public interface LinkRepo {
     Link saveIfAbsentOrReturnExisting(Link link);

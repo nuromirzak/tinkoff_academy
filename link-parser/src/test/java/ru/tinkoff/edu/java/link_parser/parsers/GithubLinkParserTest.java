@@ -1,11 +1,10 @@
 package ru.tinkoff.edu.java.link_parser.parsers;
 
-import org.junit.jupiter.api.Test;
-
 import java.net.URI;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class GithubLinkParserTest {
     private static final LinkParser parser = new GithubLinkParser();
@@ -92,7 +91,8 @@ class GithubLinkParserTest {
 
     @Test
     public void parseLinkWithUsernameAndRepoInPathAndQueryParams() {
-        URI uri = URI.create("https://github.com/nuromirzak/awesome-project?utm_source=github&utm_medium=repository&utm_campaign=978711");
+        URI uri = URI.create(
+            "https://github.com/nuromirzak/awesome-project?utm_source=github&utm_medium=repository&utm_campaign=978711");
         Map<String, String> result = parser.parse(uri);
         Map<String, String> expected = Map.of("owner", "nuromirzak", "repo", "awesome-project");
         assertEquals(expected, result);
@@ -116,7 +116,8 @@ class GithubLinkParserTest {
 
     @Test
     public void parseLinkWithOrganizationAndRepoInPathAndQueryParams() {
-        URI uri = URI.create("https://github.com/openai/gpt-3?utm_source=github&utm_medium=repository&utm_campaign=978711");
+        URI uri =
+            URI.create("https://github.com/openai/gpt-3?utm_source=github&utm_medium=repository&utm_campaign=978711");
         Map<String, String> result = parser.parse(uri);
         Map<String, String> expected = Map.of("owner", "openai", "repo", "gpt-3");
         assertEquals(expected, result);

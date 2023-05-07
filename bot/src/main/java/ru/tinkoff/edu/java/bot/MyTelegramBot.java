@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.bot;
 
+import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,8 +14,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.tinkoff.edu.java.bot.components.BotCommands;
 import ru.tinkoff.edu.java.bot.components.CommandRouter;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
-
-import java.util.List;
 
 @Component
 @Log4j2

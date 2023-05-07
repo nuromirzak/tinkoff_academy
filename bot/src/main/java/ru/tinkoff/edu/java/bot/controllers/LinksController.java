@@ -21,13 +21,14 @@ import ru.tinkoff.edu.java.bot.service.LinkUpdateReceiver;
 @RequiredArgsConstructor
 public class LinksController {
     private final LinkUpdateReceiver linkUpdateReceiver;
+
     @PostMapping("/updates")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Обновление обработано",
-                    content = @Content),
-            @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса",
-                    content = @Content(schema = @Schema(implementation = ApiErrorResponse.class),
-                            mediaType = "application/json"))
+        @ApiResponse(responseCode = "200", description = "Обновление обработано",
+                     content = @Content),
+        @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса",
+                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class),
+                                        mediaType = "application/json"))
     })
     public ResponseEntity<?> updateLink(@RequestBody LinkUpdateRequest request) {
         log.info("\u001B[34m" + "Got request: {}", request);
