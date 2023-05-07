@@ -5,9 +5,9 @@ import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
 
 public interface DatabaseAccessConfiguration {
-    public ChatRepo chatRepo();
+    ChatRepo chatRepo();
 
-    public LinkRepo linkRepo();
+    LinkRepo linkRepo();
 
-    public ChatLinkRepo chatLinkRepo();
+    ChatLinkRepo chatLinkRepo();
 }

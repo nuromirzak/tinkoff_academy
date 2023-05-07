@@ -10,7 +10,6 @@ import ru.tinkoff.edu.java.scrapper.dtos.responses.ListLinkResponse;
 import ru.tinkoff.edu.java.scrapper.services.LinkService;
 import ru.tinkoff.edu.java.scrapper.services.TelegramChatService;
 import ru.tinkoff.edu.java.scrapper.services.TgChatService;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -22,14 +21,13 @@ public class TelegramChatServiceImpl implements TelegramChatService {
     private final TgChatService tgChatService;
 
     @Override
-    public void registerChat(String id) {
-        tgChatService.register(Long.parseLong(id));
+    public boolean registerChat(String id) {
+        return tgChatService.register(Long.parseLong(id));
     }
 
     @Override
     public boolean deleteChat(String id) {
-        tgChatService.unregister(Long.parseLong(id));
-        return true;
+        return tgChatService.unregister(Long.parseLong(id));
     }
 
     @Override
@@ -43,17 +41,25 @@ public class TelegramChatServiceImpl implements TelegramChatService {
 
     @Override
     public LinkResponse addLink(String chatId, AddLinkRequest addLinkRequest) {
-        Link link = linkService.add(Long.parseLong(chatId), addLinkRequest.link());
+        Optional<Link> link = linkService.add(Long.parseLong(chatId), addLinkRequest.link());
 
-        Long linkId = Optional.ofNullable(link).map(Link::getLinkId).orElse(0L);
-        String url = Optional.ofNullable(link).map(Link::getUrl).orElse("");
+        if (link.isEmpty()) {
+            throw new RuntimeException("Error while adding link");
+        }
+
+        Link savedLink = link.get();
+        Long linkId = savedLink.getLinkId();
+        String url = savedLink.getUrl();
 
         return new LinkResponse(linkId, url);
     }
 
     @Override
     public LinkResponse deleteLink(String chatId, RemoveLinkRequest addLinkRequest) {
-        linkService.remove(Long.parseLong(chatId), addLinkRequest.link());
+        if (!linkService.remove(Long.parseLong(chatId), addLinkRequest.link())) {
+            throw new RuntimeException("Error while deleting link");
+        }
+
         return new LinkResponse(0, addLinkRequest.link());
     }
 }

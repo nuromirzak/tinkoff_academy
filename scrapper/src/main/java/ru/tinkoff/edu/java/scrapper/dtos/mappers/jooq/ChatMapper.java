@@ -3,7 +3,6 @@ package ru.tinkoff.edu.java.scrapper.dtos.mappers.jooq;
 import org.jooq.RecordMapper;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.tables.records.ChatRecord;
 import ru.tinkoff.edu.java.scrapper.dtos.Chat;
-
 import java.time.ZoneOffset;
 
 public class ChatMapper implements RecordMapper<ChatRecord, Chat> {

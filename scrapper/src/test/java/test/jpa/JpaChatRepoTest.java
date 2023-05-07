@@ -1,24 +1,18 @@
 package test.jpa;
 
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
-import ru.tinkoff.edu.java.scrapper.configurations.databases.JpaAccessConfiguration;
 import ru.tinkoff.edu.java.scrapper.dtos.Chat;
-import ru.tinkoff.edu.java.scrapper.dtos.Link;
-import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
+import ru.tinkoff.edu.java.scrapper.repo.jpa.JpaChatRepo;
 import test.IntegrationEnvironment;
-
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = ScrapperApplication.class, properties = {
         "app.database-access-type=jpa"
@@ -27,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Sql(scripts = "classpath:populateDB.sql")
 public class JpaChatRepoTest extends IntegrationEnvironment {
     @Autowired
-    private ChatRepo chatRepo;
+    private JpaChatRepo chatRepo;
 
     @Test
     public void findAllAndPrint() {
@@ -42,7 +36,7 @@ public class JpaChatRepoTest extends IntegrationEnvironment {
         chat.setChatId(chatId);
 
         // Act
-        chatRepo.add(chatId);
+        chatRepo.save(chat);
 
         // Assert
         List<Chat> chats = chatRepo.findAll();
@@ -57,9 +51,9 @@ public class JpaChatRepoTest extends IntegrationEnvironment {
         chat.setChatId(chatId);
 
         // Act
-        chatRepo.add(chatId);
+        chatRepo.save(chat);
         List<Chat> chatsBefore = chatRepo.findAll();
-        chatRepo.remove(chatId);
+        chatRepo.delete(chat);
         List<Chat> chatsAfter = chatRepo.findAll();
 
         // Assert
@@ -75,9 +69,9 @@ public class JpaChatRepoTest extends IntegrationEnvironment {
         chat.setChatId(chatId);
 
         // Act
-        chatRepo.add(chatId);
+        chatRepo.save(chat);
         List<Chat> chatsBefore = chatRepo.findAll();
-        chatRepo.removeAll();
+        chatRepo.removeAllBy();
         List<Chat> chatsAfter = chatRepo.findAll();
 
         // Assert

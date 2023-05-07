@@ -1,9 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.repo;
 
-import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dtos.Chat;
-import ru.tinkoff.edu.java.scrapper.dtos.Link;
-
 import java.util.List;
 
 public interface ChatRepo {

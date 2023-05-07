@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.StackoverflowQuestionResponse;
-
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -15,7 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class  StackoverflowClient {
+public class StackoverflowClient {
     private final WebClient stackoverflowWebClient;
 
     public StackoverflowQuestionResponse getQuestionById(Long id) {
@@ -46,7 +45,8 @@ public class  StackoverflowClient {
         question.setTags(tagsList);
 
         long creationDate = itemsArray.path("creation_date").asLong();
-        OffsetDateTime creationDateOffset = OffsetDateTime.ofInstant(Instant.ofEpochSecond(creationDate), ZoneOffset.UTC);
+        OffsetDateTime creationDateOffset =
+                OffsetDateTime.ofInstant(Instant.ofEpochSecond(creationDate), ZoneOffset.UTC);
         question.setCreationDate(creationDateOffset);
 
         Date lastActivityDate = new Date(itemsArray.path("last_activity_date").asLong() * 1000);

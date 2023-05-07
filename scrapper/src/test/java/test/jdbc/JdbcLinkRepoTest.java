@@ -1,30 +1,29 @@
 package test.jdbc;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
-import test.DataSourceConfig;
+import ru.tinkoff.edu.java.scrapper.repo.jdbc.JdbcLinkRepo;
 import test.IntegrationEnvironment;
-
 import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {SpringTestJdbcConfig.class, DataSourceConfig.class})
+@SpringBootTest(classes = ScrapperApplication.class, properties = {
+        "app.database-access-type=jdbc"
+})
 @Transactional
 @Sql(scripts = "classpath:populateDB.sql")
 public class JdbcLinkRepoTest extends IntegrationEnvironment {
     @Autowired
-    private LinkRepo linkRepo;
+    private JdbcLinkRepo linkRepo;
 
     @Test
     public void findAllAndPrint() {
@@ -39,7 +38,7 @@ public class JdbcLinkRepoTest extends IntegrationEnvironment {
         link.setLastUpdated(null);
 
         // Act
-        linkRepo.add(link);
+        linkRepo.saveIfAbsentOrReturnExisting(link);
 
         // Assert
         List<Link> links = linkRepo.findAll();
@@ -54,9 +53,9 @@ public class JdbcLinkRepoTest extends IntegrationEnvironment {
         link.setLastUpdated(null);
 
         // Act
-        linkRepo.add(link);
+        linkRepo.saveIfAbsentOrReturnExisting(link);
         List<Link> linksBefore = linkRepo.findAll();
-        linkRepo.remove(link.getUrl());
+        linkRepo.removeLinkByUrlLike(link.getUrl());
         List<Link> linksAfter = linkRepo.findAll();
 
         // Assert
@@ -80,9 +79,10 @@ public class JdbcLinkRepoTest extends IntegrationEnvironment {
     public void getLinksToScrap() {
         // Assert
         Duration fifteenMinutes = Duration.ofMinutes(15);
+        OffsetDateTime offsetDateTime = OffsetDateTime.now().minus(fifteenMinutes);
 
         // Act
-        List<Link> linksToUpdate = linkRepo.findLinksToScrap(fifteenMinutes);
+        List<Link> linksToUpdate = linkRepo.findLinksByLastScrappedBefore(offsetDateTime);
 
         // Assert
         assertEquals(4, linksToUpdate.size());

@@ -6,7 +6,6 @@ import ru.tinkoff.edu.java.scrapper.domain.jooq.Tables;
 import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 import ru.tinkoff.edu.java.scrapper.dtos.mappers.jooq.ChatMapper;
 import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
-
 import java.util.List;
 
 @RequiredArgsConstructor
