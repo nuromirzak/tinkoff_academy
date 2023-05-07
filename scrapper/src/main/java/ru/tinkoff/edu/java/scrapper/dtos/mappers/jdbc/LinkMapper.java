@@ -1,12 +1,10 @@
 package ru.tinkoff.edu.java.scrapper.dtos.mappers.jdbc;
 
-import org.springframework.jdbc.core.RowMapper;
-import ru.tinkoff.edu.java.scrapper.dtos.Link;
-
-import javax.swing.tree.TreePath;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
+import org.springframework.jdbc.core.RowMapper;
+import ru.tinkoff.edu.java.scrapper.dtos.Link;
 
 public class LinkMapper implements RowMapper<Link> {
     @Override
@@ -17,7 +15,8 @@ public class LinkMapper implements RowMapper<Link> {
 
         link.setUrl(resultSet.getString("url"));
 
-        OffsetDateTime offsetDateTime = resultSet.getTimestamp("last_updated").toLocalDateTime().atOffset(OffsetDateTime.now().getOffset());
+        OffsetDateTime offsetDateTime =
+            resultSet.getTimestamp("last_updated").toLocalDateTime().atOffset(OffsetDateTime.now().getOffset());
         link.setLastUpdated(offsetDateTime);
 
         return link;

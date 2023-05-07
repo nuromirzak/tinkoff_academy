@@ -2,24 +2,23 @@ package ru.tinkoff.edu.java.scrapper.dtos.responses;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import java.io.Serializable;
 import java.util.Objects;
 
 @JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "type"
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type"
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(
-                name = GithubRepoResponse.DISCRIMINATOR,
-                value = GithubRepoResponse.class
-        ),
-        @JsonSubTypes.Type(
-                name = StackoverflowQuestionResponse.DISCRIMINATOR,
-                value = StackoverflowQuestionResponse.class
-        )
+    @JsonSubTypes.Type(
+        name = GithubRepoResponse.DISCRIMINATOR,
+        value = GithubRepoResponse.class
+    ),
+    @JsonSubTypes.Type(
+        name = StackoverflowQuestionResponse.DISCRIMINATOR,
+        value = StackoverflowQuestionResponse.class
+    )
 })
 public abstract class LinkProperties implements Serializable {
     private String name;
@@ -40,8 +39,12 @@ public abstract class LinkProperties implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof LinkProperties that)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof LinkProperties that)) {
+            return false;
+        }
         return Objects.equals(this, that);
     }
 

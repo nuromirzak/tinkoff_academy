@@ -18,22 +18,22 @@ public class ClientConfiguration {
     @Bean("githubWebClient")
     public WebClient githubClient() {
         return WebClient.builder()
-                .baseUrl(githubBaseUrl)
-                .build();
+            .baseUrl(githubBaseUrl)
+            .build();
     }
 
     @Bean("stackoverflowWebClient")
     public WebClient stackoverflowClient() {
         return WebClient.builder()
-                .baseUrl(stackoverflowBaseUrl)
-                .build();
+            .baseUrl(stackoverflowBaseUrl)
+            .build();
     }
 
     @Bean("botWebClient")
     public WebClient botClient() {
         return WebClient.builder()
-                .baseUrl(botBaseUrl)
-                .build();
+            .baseUrl(botBaseUrl)
+            .build();
     }
 
     @Bean

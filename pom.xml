@@ -22,6 +22,7 @@
         <junitt5.version>5.9.2</junitt5.version>
         <testcontainers.version>1.17.6</testcontainers.version>
         <failsafe.version>2.22.2</failsafe.version>
+        <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
     </properties>
 
     <build>

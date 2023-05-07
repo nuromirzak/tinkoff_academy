@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.repo.jpa;
 
+import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -7,8 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
-
-import java.util.List;
 
 @Repository
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
@@ -41,6 +40,8 @@ public interface JpaChatRepo extends ChatRepo, JpaRepository<Chat, Long> {
     int removeAll();
 
     @Override
-    @Query(value = "SELECT * FROM chat WHERE chat_id IN (SELECT chat_id FROM link_chat WHERE link_id IN (SELECT link_id FROM link WHERE url LIKE ?1))", nativeQuery = true)
+    @Query(value = "SELECT * FROM chat WHERE chat_id IN "
+        + "(SELECT chat_id FROM link_chat WHERE link_id IN (SELECT link_id FROM link WHERE url LIKE ?1))",
+           nativeQuery = true)
     List<Chat> findChatsByLikeLink(String url);
 }

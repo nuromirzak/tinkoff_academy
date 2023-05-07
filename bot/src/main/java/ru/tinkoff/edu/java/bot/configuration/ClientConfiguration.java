@@ -13,7 +13,7 @@ public class ClientConfiguration {
     @Bean("scrapper_client")
     public WebClient scrapperClient() {
         return WebClient.builder()
-                .baseUrl(scrapperUrl)
-                .build();
+            .baseUrl(scrapperUrl)
+            .build();
     }
 }

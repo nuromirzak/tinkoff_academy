@@ -1,15 +1,18 @@
 package ru.tinkoff.edu.java.bot.components;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import ru.tinkoff.edu.java.bot.clients.ScrapperClient;
 import ru.tinkoff.edu.java.bot.dtos.LinkResponse;
 import ru.tinkoff.edu.java.bot.dtos.ListLinkResponse;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 public class ScrapperClientStub implements ScrapperClient {
     private final Map<String, List<String>> chatLinks =
-            new HashMap<>();
+        new HashMap<>();
 
     @Override
     public boolean registerChat(String chatId) {
@@ -27,8 +30,8 @@ public class ScrapperClientStub implements ScrapperClient {
         List<String> links = chatLinks.getOrDefault(chatId, Collections.emptyList());
 
         List<LinkResponse> linkResponses = links.stream()
-                .map(link -> new LinkResponse(links.indexOf(link), link))
-                .collect(Collectors.toList());
+            .map(link -> new LinkResponse(links.indexOf(link), link))
+            .collect(Collectors.toList());
 
         return new ListLinkResponse(linkResponses, links.size());
     }

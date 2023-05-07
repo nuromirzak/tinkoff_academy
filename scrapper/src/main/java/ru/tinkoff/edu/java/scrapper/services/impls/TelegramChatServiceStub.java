@@ -1,19 +1,22 @@
 package ru.tinkoff.edu.java.scrapper.services.impls;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.scrapper.dtos.requests.AddLinkRequest;
+import ru.tinkoff.edu.java.scrapper.dtos.requests.RemoveLinkRequest;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.LinkResponse;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.ListLinkResponse;
-import ru.tinkoff.edu.java.scrapper.dtos.requests.RemoveLinkRequest;
 import ru.tinkoff.edu.java.scrapper.services.TelegramChatService;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service("telegramChatServiceStub")
 public class TelegramChatServiceStub implements TelegramChatService {
     private final Map<String, List<String>> chatLinks =
-            new HashMap<>();
+        new HashMap<>();
 
     @Override
     public void registerChat(String id) {
@@ -30,8 +33,8 @@ public class TelegramChatServiceStub implements TelegramChatService {
         List<String> links = chatLinks.getOrDefault(chatId, Collections.emptyList());
 
         List<LinkResponse> linkResponses = links.stream()
-                .map(link -> new LinkResponse(links.indexOf(link), link))
-                .collect(Collectors.toList());
+            .map(link -> new LinkResponse(links.indexOf(link), link))
+            .collect(Collectors.toList());
 
         return new ListLinkResponse(linkResponses, links.size());
     }

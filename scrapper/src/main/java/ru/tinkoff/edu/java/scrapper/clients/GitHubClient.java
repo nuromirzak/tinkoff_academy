@@ -12,9 +12,9 @@ public class GitHubClient {
 
     public GithubRepoResponse getRepo(String owner, String repo) {
         return githubWebClient.get()
-                .uri("/repos/{owner}/{repo}", owner, repo)
-                .retrieve()
-                .bodyToMono(GithubRepoResponse.class)
-                .block();
+            .uri("/repos/{owner}/{repo}", owner, repo)
+            .retrieve()
+            .bodyToMono(GithubRepoResponse.class)
+            .block();
     }
 }

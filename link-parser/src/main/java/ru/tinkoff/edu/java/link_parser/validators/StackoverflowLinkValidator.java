@@ -1,10 +1,7 @@
 package ru.tinkoff.edu.java.link_parser.validators;
 
-import ru.tinkoff.edu.java.link_parser.utils.LinkParserHelper;
-
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
+import ru.tinkoff.edu.java.link_parser.utils.LinkParserHelper;
 
 public class StackoverflowLinkValidator implements LinkValidator {
     @Override

@@ -12,7 +12,7 @@ import ru.tinkoff.edu.java.bot.service.RabbitLinkUpdateReceiver;
 public class QueueLinkUpdateReceiverConfig {
     @Bean
     public LinkUpdateReceiver linkUpdateReceiver(
-            MyTelegramBot bot
+        MyTelegramBot bot
     ) {
         return new RabbitLinkUpdateReceiver(bot);
     }

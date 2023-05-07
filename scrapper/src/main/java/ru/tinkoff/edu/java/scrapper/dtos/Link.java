@@ -1,14 +1,16 @@
 package ru.tinkoff.edu.java.scrapper.dtos;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.LinkProperties;
-
-import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor

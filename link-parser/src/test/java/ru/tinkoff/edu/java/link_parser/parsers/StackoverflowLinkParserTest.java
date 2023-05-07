@@ -1,10 +1,8 @@
 package ru.tinkoff.edu.java.link_parser.parsers;
 
-import org.junit.jupiter.api.Test;
-
 import java.net.URI;
 import java.util.Map;
-
+import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -21,14 +19,16 @@ class StackoverflowLinkParserTest {
 
     @Test
     public void parseInvalidLinkWithInvalidFirstSegmentPath() {
-        URI uri = URI.create("https://stackoverflow.com/lol/4114095/how-do-i-revert-a-git-repository-to-a-previous-commit");
+        URI uri =
+            URI.create("https://stackoverflow.com/lol/4114095/how-do-i-revert-a-git-repository-to-a-previous-commit");
         Map<String, String> result = parser.parse(uri);
         assertNull(result);
     }
 
     @Test
     public void parseValidLinkWithMultiplePathSegments() {
-        URI uri = URI.create("https://stackoverflow.com/questions/4114095/how-do-i-revert-a-git-repository-to-a-previous-commit/");
+        URI uri = URI.create(
+            "https://stackoverflow.com/questions/4114095/how-do-i-revert-a-git-repository-to-a-previous-commit/");
         Map<String, String> result = parser.parse(uri);
         Map<String, String> expected = Map.of("questionId", "4114095");
         assertEquals(expected, result);
@@ -99,7 +99,8 @@ class StackoverflowLinkParserTest {
 
     @Test
     public void parseValidLinkWithQueryString() {
-        URI uri = URI.create("https://stackoverflow.com/questions/4114095/how-do-i-revert-a-git-repository-to-a-previous-commit/?sort=votes#tab-top");
+        URI uri = URI.create(
+            "https://stackoverflow.com/questions/4114095/how-do-i-revert-a-git-repository-to-a-previous-commit/?sort=votes#tab-top");
         Map<String, String> result = parser.parse(uri);
         Map<String, String> expected = Map.of("questionId", "4114095");
         assertEquals(expected, result);

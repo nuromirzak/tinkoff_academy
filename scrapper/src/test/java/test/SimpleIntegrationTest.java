@@ -1,14 +1,15 @@
 package test;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.sql.*;
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SimpleIntegrationTest extends IntegrationEnvironment {
@@ -39,7 +40,7 @@ public class SimpleIntegrationTest extends IntegrationEnvironment {
         Set<String> expectedLiquibaseTables = Set.of("databasechangelog", "databasechangeloglock");
 
         // Act
-        ResultSet rs = connection.getMetaData().getTables(null, null, "%", new String[]{"TABLE"});
+        ResultSet rs = connection.getMetaData().getTables(null, null, "%", new String[] {"TABLE"});
         while (rs.next()) {
             actualTables.add(rs.getString("TABLE_NAME"));
         }
@@ -58,7 +59,7 @@ public class SimpleIntegrationTest extends IntegrationEnvironment {
         Set<String> execTypes = new HashSet<>();
 
         // Act
-        ResultSet rs = connection.getMetaData().getTables(null, null, "%", new String[]{"TABLE"});
+        ResultSet rs = connection.getMetaData().getTables(null, null, "%", new String[] {"TABLE"});
         while (rs.next()) {
             actualTables.add(rs.getString("TABLE_NAME"));
         }
@@ -67,7 +68,6 @@ public class SimpleIntegrationTest extends IntegrationEnvironment {
         while (rs2.next()) {
             execTypes.add(rs2.getString("exectype"));
         }
-
 
         // Assert
         assertTrue(actualTables.containsAll(expectedLiquibaseTables));

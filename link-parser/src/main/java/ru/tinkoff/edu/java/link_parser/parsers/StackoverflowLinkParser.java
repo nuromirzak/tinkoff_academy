@@ -1,14 +1,13 @@
 package ru.tinkoff.edu.java.link_parser.parsers;
 
-import ru.tinkoff.edu.java.link_parser.utils.LinkParserHelper;
-import ru.tinkoff.edu.java.link_parser.validators.StackoverflowLinkValidator;
-
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import ru.tinkoff.edu.java.link_parser.utils.LinkParserHelper;
+import ru.tinkoff.edu.java.link_parser.validators.StackoverflowLinkValidator;
 
 public final class StackoverflowLinkParser implements LinkParser {
-    private static final StackoverflowLinkValidator validator = new StackoverflowLinkValidator();
+    private static final StackoverflowLinkValidator VALIDATOR = new StackoverflowLinkValidator();
 
     @Override
     public Map<String, String> parse(URI link) {
@@ -26,7 +25,7 @@ public final class StackoverflowLinkParser implements LinkParser {
     @Override
     public boolean canParse(URI link) {
         try {
-            return validator.validate(link);
+            return VALIDATOR.validate(link);
         } catch (Exception e) {
             return false;
         }

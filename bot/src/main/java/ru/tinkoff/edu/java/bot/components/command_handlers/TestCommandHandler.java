@@ -1,11 +1,9 @@
 package ru.tinkoff.edu.java.bot.components.command_handlers;
 
+import java.util.List;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.tinkoff.edu.java.bot.clients.ScrapperClient;
-
-import java.util.List;
-
 import static ru.tinkoff.edu.java.bot.components.BotCommands.COMMAND_TEST_RESPONSE;
 import static ru.tinkoff.edu.java.bot.components.BotCommands.SECRET_COMMAND_USERNAME;
 

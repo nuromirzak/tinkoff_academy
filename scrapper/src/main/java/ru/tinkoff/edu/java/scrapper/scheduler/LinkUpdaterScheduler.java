@@ -1,5 +1,10 @@
 package ru.tinkoff.edu.java.scrapper.scheduler;
 
+import java.net.URI;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -17,24 +22,18 @@ import ru.tinkoff.edu.java.scrapper.dtos.responses.StackoverflowQuestionResponse
 import ru.tinkoff.edu.java.scrapper.services.LinkService;
 import ru.tinkoff.edu.java.scrapper.services.sender.LinkUpdateSender;
 
-import java.net.URI;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @Component
 @EnableScheduling
 @Log4j2
 @RequiredArgsConstructor
 public class LinkUpdaterScheduler {
-    private int iteration = 0;
     private final LinkService linkService;
     private final GitHubClient gitHubClient;
     private final StackoverflowClient stackoverflowClient;
     private final GlobalLinkParser globalLinkParser;
     private final ApplicationConfiguration applicationConfiguration;
     private final LinkUpdateSender linkUpdateSender;
+    private int iteration = 0;
 
     @Scheduled(fixedDelayString = "#{@schedulerIntervalMs}")
     public void update() {
@@ -60,9 +59,11 @@ public class LinkUpdaterScheduler {
                 Map<String, String> parsedLink = globalLinkParser.parse(uri);
                 String questionId = parsedLink.get("questionId");
                 Long questionIdLong = Long.parseLong(questionId);
-                StackoverflowQuestionResponse stackoverflowQuestionResponse = stackoverflowClient.getQuestionById(questionIdLong);
+                StackoverflowQuestionResponse stackoverflowQuestionResponse =
+                    stackoverflowClient.getQuestionById(questionIdLong);
                 if (stackoverflowQuestionResponse.getLastActivityDate().isAfter(link.getLastUpdated())) {
-                    String updateMessage = oldStackoverflowQuestionResponse.getDifferenceMessageBetween(stackoverflowQuestionResponse);
+                    String updateMessage =
+                        oldStackoverflowQuestionResponse.getDifferenceMessageBetween(stackoverflowQuestionResponse);
                     updatedLinksWithDescription.put(link, updateMessage);
                 }
             } else {
@@ -77,7 +78,7 @@ public class LinkUpdaterScheduler {
             List<Chat> chats = linkService.findFollowers(link.getUrl());
             List<Long> tgChatIds = chats.stream().map(Chat::getChatId).toList();
             LinkUpdateRequest linkUpdateRequest =
-                    new LinkUpdateRequest(link.getLinkId(), link.getUrl(), description, tgChatIds);
+                new LinkUpdateRequest(link.getLinkId(), link.getUrl(), description, tgChatIds);
             linkUpdateSender.send(linkUpdateRequest);
         }
 

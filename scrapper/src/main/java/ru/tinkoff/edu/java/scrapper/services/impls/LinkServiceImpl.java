@@ -1,6 +1,12 @@
 package ru.tinkoff.edu.java.scrapper.services.impls;
 
+import java.net.URI;
+import java.time.Duration;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.link_parser.parsers.GlobalLinkParser;
 import ru.tinkoff.edu.java.scrapper.clients.GitHubClient;
@@ -14,15 +20,12 @@ import ru.tinkoff.edu.java.scrapper.repo.ChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
 import ru.tinkoff.edu.java.scrapper.services.LinkService;
 
-import java.net.URI;
-import java.time.Duration;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class LinkServiceImpl implements LinkService {
+    private static final String OWNER_KEY = "owner";
+    private static final String REPO_KEY = "repo";
     private final LinkRepo linkRepo;
     private final ChatRepo chatRepo;
     private final ChatLinkRepo chatLinkRepo;
@@ -42,22 +45,23 @@ public class LinkServiceImpl implements LinkService {
             if (map == null) {
                 return null;
             }
-            if (map.containsKey("owner") && map.containsKey("repo")) {
-                GithubRepoResponse githubRepoResponse = gitHubClient.getRepo(map.get("owner"), map.get("repo"));
+            if (map.containsKey(OWNER_KEY) && map.containsKey(REPO_KEY)) {
+                GithubRepoResponse githubRepoResponse = gitHubClient.getRepo(map.get(OWNER_KEY), map.get(REPO_KEY));
                 link.setJsonProps(githubRepoResponse);
             } else if (map.containsKey("questions")) {
-                StackoverflowQuestionResponse stackoverflowQuestionResponse = stackoverflowClient.getQuestionById(Long.parseLong(map.get("questionId")));
+                StackoverflowQuestionResponse stackoverflowQuestionResponse =
+                    stackoverflowClient.getQuestionById(Long.parseLong(map.get("questionId")));
                 link.setJsonProps(stackoverflowQuestionResponse);
             }
         } catch (Exception e) {
-            System.out.println("Error while parsing url: " + url + " " + e.getMessage());
+            log.error("Error while parsing url: " + url + " " + e.getMessage());
             return null;
         }
 
         long linkId = linkRepo.add(link);
         link.setLinkId(linkId);
 
-        System.out.println("link=" + link);
+        log.info("link=" + link);
 
         chatLinkRepo.addLinkToChat(tgChatId, linkId);
 

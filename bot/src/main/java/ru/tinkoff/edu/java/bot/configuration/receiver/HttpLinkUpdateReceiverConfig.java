@@ -12,7 +12,7 @@ import ru.tinkoff.edu.java.bot.service.LinkUpdateReceiver;
 public class HttpLinkUpdateReceiverConfig {
     @Bean
     public LinkUpdateReceiver linkUpdateReceiver(
-            MyTelegramBot bot
+        MyTelegramBot bot
     ) {
         return new HttpLinkUpdateReceiver(bot);
     }

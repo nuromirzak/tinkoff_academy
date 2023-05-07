@@ -1,5 +1,6 @@
 package test.jdbc;
 
+import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,8 +11,6 @@ import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jdbc.JdbcChatLinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jdbc.JdbcChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jdbc.JdbcLinkRepo;
-
-import javax.sql.DataSource;
 
 @Configuration
 @RequiredArgsConstructor

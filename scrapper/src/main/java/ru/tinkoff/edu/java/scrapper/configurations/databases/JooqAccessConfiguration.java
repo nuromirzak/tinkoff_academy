@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.scrapper.configurations.databases;
 
+import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -20,8 +21,6 @@ import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqChatLinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqLinkRepo;
-
-import javax.sql.DataSource;
 
 @Configuration
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jooq")
@@ -45,9 +44,9 @@ public class JooqAccessConfiguration implements DatabaseAccessConfiguration {
         config.set(connectionProvider());
         config.set(SQLDialect.POSTGRES);
         config.set(new Settings()
-                .withRenderNameCase(RenderNameCase.LOWER));
+            .withRenderNameCase(RenderNameCase.LOWER));
         config.set(new DefaultExecuteListenerProvider(
-                new JooqExceptionTranslator()));
+            new JooqExceptionTranslator()));
         return config;
     }
 

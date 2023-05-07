@@ -1,5 +1,8 @@
 package ru.tinkoff.edu.java.scrapper.services.impls;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
@@ -10,10 +13,6 @@ import ru.tinkoff.edu.java.scrapper.dtos.responses.ListLinkResponse;
 import ru.tinkoff.edu.java.scrapper.services.LinkService;
 import ru.tinkoff.edu.java.scrapper.services.TelegramChatService;
 import ru.tinkoff.edu.java.scrapper.services.TgChatService;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 @Service("telegramChatService")
 @RequiredArgsConstructor
@@ -36,8 +35,8 @@ public class TelegramChatServiceImpl implements TelegramChatService {
     public ListLinkResponse getLinks(String chatId) {
         Collection<Link> links = linkService.listAll(Long.parseLong(chatId));
         List<LinkResponse> linkResponses = links.stream()
-                .map(link -> new LinkResponse(link.getLinkId(), link.getUrl()))
-                .toList();
+            .map(link -> new LinkResponse(link.getLinkId(), link.getUrl()))
+            .toList();
         return new ListLinkResponse(linkResponses, links.size());
     }
 

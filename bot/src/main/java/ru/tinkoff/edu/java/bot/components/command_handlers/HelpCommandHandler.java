@@ -2,8 +2,7 @@ package ru.tinkoff.edu.java.bot.components.command_handlers;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.tinkoff.edu.java.bot.clients.ScrapperClient;
-
-import static ru.tinkoff.edu.java.bot.components.BotCommands.commands;
+import static ru.tinkoff.edu.java.bot.components.BotCommands.COMMANDS;
 
 public class HelpCommandHandler implements CommandHandler {
 
@@ -12,6 +11,6 @@ public class HelpCommandHandler implements CommandHandler {
 
     @Override
     public String handleCommand(Update update, String chatId, String[] commandArguments) {
-        return commands.get(commandArguments[0]);
+        return COMMANDS.get(commandArguments[0]);
     }
 }
