@@ -19,4 +19,6 @@ public interface LinkService {
     List<Chat> findFollowers(String url);
 
     List<Link> findLinksToScrapSince(Duration checkInterval);
+
+    void batchUpdate(Collection<Link> links);
 }

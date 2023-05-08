@@ -3,7 +3,7 @@ CREATE TABLE link
     link_id      SERIAL PRIMARY KEY,
     url          VARCHAR(256) NOT NULL UNIQUE,
     last_updated TIMESTAMP    NOT NULL,
-    last_scrapped TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_scrapped TIMESTAMP NOT NULL,
     json_props   JSON
 );
 

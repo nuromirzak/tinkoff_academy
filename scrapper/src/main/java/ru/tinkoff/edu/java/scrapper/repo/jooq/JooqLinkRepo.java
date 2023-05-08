@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.repo.jooq;
 
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -82,5 +83,21 @@ public class JooqLinkRepo implements LinkRepo {
         return dslContext.selectFrom(Tables.LINK)
             .where(Tables.LINK.LAST_UPDATED.le(lastScrapped.toLocalDateTime()))
             .fetchInto(Link.class);
+    }
+
+    @Override
+    public void updateAll(Collection<Link> links) {
+        dslContext.batch(
+            links.stream().map(
+                link -> dslContext.insertInto(Tables.LINK)
+                    .set(Tables.LINK.URL, link.getUrl())
+                    .set(Tables.LINK.LAST_UPDATED, link.getLastUpdated().toLocalDateTime())
+                    .set(Tables.LINK.LAST_SCRAPPED, link.getLastScrapped().toLocalDateTime())
+                    .set(
+                        Tables.LINK.JSON_PROPS,
+                        link.getJsonProps() == null ? null : JSON.json(link.getJsonProps())
+                    )
+            ).toList()
+        ).execute();
     }
 }

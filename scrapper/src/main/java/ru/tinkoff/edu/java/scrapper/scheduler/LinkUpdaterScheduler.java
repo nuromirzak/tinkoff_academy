@@ -3,6 +3,7 @@ package ru.tinkoff.edu.java.scrapper.scheduler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -43,49 +44,96 @@ public class LinkUpdaterScheduler {
         int currentIteration = ++iteration;
         log.info("{}th iteration of link update process started", currentIteration);
 
-        Collection<Link> links =
-            linkService.findLinksToScrapSince(applicationConfiguration.scheduler().checkInterval());
+        Collection<Link> links = getLinksToScrap();
+        log.info("links to scrap: {}", links);
 
+        Map<Link, String> updatedLinksWithDescription = updateLinksAndGetDescriptions(links);
+        linkService.batchUpdate(links);
+
+        sendLinkUpdateRequests(updatedLinksWithDescription);
+
+        log.info("{}th iteration of link update process finished", currentIteration);
+    }
+
+    private Collection<Link> getLinksToScrap() {
+        return linkService.findLinksToScrapSince(applicationConfiguration.scheduler().checkInterval());
+    }
+
+    private Map<Link, String> updateLinksAndGetDescriptions(Collection<Link> links) throws JsonProcessingException {
         Map<Link, String> updatedLinksWithDescription = new HashMap<>();
         for (Link link : links) {
             String linkString = link.getUrl();
             URI uri = URI.create(linkString);
             String host = uri.getHost();
+            String updateMessage;
+
             if (host.equals("github.com")) {
-                String oldGithubRepoResponseString = link.getJsonProps();
-                GithubRepoResponse oldGithubRepoResponse =
-                    objectMapper.readValue(oldGithubRepoResponseString, GithubRepoResponse.class);
-                Map<String, String> parsedLink = globalLinkParser.parse(uri);
-                String owner = parsedLink.get("owner");
-                String repo = parsedLink.get("repo");
-                GithubRepoResponse githubRepoResponse = gitHubClient.getRepo(owner, repo);
-                if (githubRepoResponse.getUpdatedAt().isAfter(link.getLastUpdated())) {
-                    String updateMessage = oldGithubRepoResponse.getDifferenceMessageBetween(githubRepoResponse);
-                    updatedLinksWithDescription.put(link, updateMessage);
-                }
+                updateMessage = updateGithubLink(link, uri);
             } else if (host.equals("stackoverflow.com")) {
-                String oldStackoverflowQuestionResponseString = link.getJsonProps();
-                StackoverflowQuestionResponse oldStackoverflowQuestionResponse =
-                    objectMapper.readValue(
-                        oldStackoverflowQuestionResponseString,
-                        StackoverflowQuestionResponse.class
-                    );
-                Map<String, String> parsedLink = globalLinkParser.parse(uri);
-                String questionId = parsedLink.get("questionId");
-                Long questionIdLong = Long.parseLong(questionId);
-                StackoverflowQuestionResponse stackoverflowQuestionResponse =
-                    stackoverflowClient.getQuestionById(questionIdLong);
-                if (stackoverflowQuestionResponse.getLastActivityDate().isAfter(link.getLastUpdated())) {
-                    String updateMessage =
-                        oldStackoverflowQuestionResponse.getDifferenceMessageBetween(stackoverflowQuestionResponse);
-                    updatedLinksWithDescription.put(link, updateMessage);
-                }
+                updateMessage = updateStackoverflowLink(link, uri);
             } else {
                 log.warn("Link {} is not supported", linkString);
+                continue;
             }
 
+            if (updateMessage != null) {
+                updatedLinksWithDescription.put(link, updateMessage);
+            }
         }
+        return updatedLinksWithDescription;
+    }
 
+    private String updateGithubLink(Link link, URI uri) throws JsonProcessingException {
+        String oldGithubRepoResponseString = link.getJsonProps();
+        GithubRepoResponse oldGithubRepoResponse =
+            objectMapper.readValue(oldGithubRepoResponseString, GithubRepoResponse.class);
+
+        Map<String, String> parsedLink = globalLinkParser.parse(uri);
+        String owner = parsedLink.get("owner");
+        String repo = parsedLink.get("repo");
+        GithubRepoResponse githubRepoResponse = gitHubClient.getRepo(owner, repo);
+
+        if (githubRepoResponse.getUpdatedAt().isAfter(link.getLastUpdated())) {
+            String newGithubRepoResponseString = objectMapper.writeValueAsString(githubRepoResponse);
+            link.setJsonProps(newGithubRepoResponseString);
+            link.setLastUpdated(githubRepoResponse.getUpdatedAt());
+            link.setLastScrapped(OffsetDateTime.now());
+
+            log.info("link {} was updated", link.getUrl());
+            return oldGithubRepoResponse.getDifferenceMessageBetween(githubRepoResponse);
+        } else {
+            log.info("link {} was not updated", link.getUrl());
+            return null;
+        }
+    }
+
+    private String updateStackoverflowLink(Link link, URI uri) throws JsonProcessingException {
+        String oldStackoverflowQuestionResponseString = link.getJsonProps();
+        StackoverflowQuestionResponse oldStackoverflowQuestionResponse =
+            objectMapper.readValue(oldStackoverflowQuestionResponseString, StackoverflowQuestionResponse.class);
+
+        Map<String, String> parsedLink = globalLinkParser.parse(uri);
+        String questionId = parsedLink.get("questionId");
+        Long questionIdLong = Long.parseLong(questionId);
+        StackoverflowQuestionResponse stackoverflowQuestionResponse =
+            stackoverflowClient.getQuestionById(questionIdLong);
+
+        if (stackoverflowQuestionResponse.getLastActivityDate().isAfter(link.getLastUpdated())) {
+            String newStackoverflowQuestionResponseString =
+                objectMapper.writeValueAsString(stackoverflowQuestionResponse);
+            link.setJsonProps(newStackoverflowQuestionResponseString);
+            link.setLastUpdated(stackoverflowQuestionResponse.getLastActivityDate());
+            link.setLastScrapped(OffsetDateTime.now());
+
+            log.info("link {} was updated", link.getUrl());
+            return oldStackoverflowQuestionResponse.getDifferenceMessageBetween(stackoverflowQuestionResponse);
+        } else {
+            log.info("link {} was not updated", link.getUrl());
+            return null;
+        }
+    }
+
+    private void sendLinkUpdateRequests(Map<Link, String> updatedLinksWithDescription) {
         for (Map.Entry<Link, String> entry : updatedLinksWithDescription.entrySet()) {
             Link link = entry.getKey();
             String description = entry.getValue();
@@ -95,7 +143,6 @@ public class LinkUpdaterScheduler {
                 new LinkUpdateRequest(link.getLinkId(), link.getUrl(), description, tgChatIds);
             linkUpdateSender.send(linkUpdateRequest);
         }
-
-        log.info("{}th iteration of link update process finished", currentIteration);
     }
+
 }

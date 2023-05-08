@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.repo;
 
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.List;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
 
@@ -16,4 +17,6 @@ public interface LinkRepo {
     int removeAll();
 
     List<Link> findLinksByLastScrappedBefore(OffsetDateTime lastScrapped);
+
+    void updateAll(Collection<Link> links);
 }

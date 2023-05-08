@@ -3,6 +3,7 @@ package ru.tinkoff.edu.java.scrapper.repo.jdbc;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -89,5 +90,11 @@ public class JdbcLinkRepo implements LinkRepo {
     @Override
     public List<Link> findLinksByLastScrappedBefore(OffsetDateTime lastScrapped) {
         return jdbcTemplate.query(SQL_FIND_LINKS_TO_SCRAP, new LinkMapper(), lastScrapped);
+    }
+
+    @Override
+    public void updateAll(Collection<Link> links) {
+        // TODO: implement
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }

@@ -39,6 +39,7 @@ public class JpaLinkRepoTest extends IntegrationEnvironment {
         Link link = new Link();
         link.setUrl("https://www.tinkoff.ru");
         link.setLastUpdated(OffsetDateTime.now());
+        link.setLastScrapped(OffsetDateTime.now());
 
         // Act
         linkRepo.save(link);
@@ -54,6 +55,7 @@ public class JpaLinkRepoTest extends IntegrationEnvironment {
         Link link = new Link();
         link.setUrl("https://www.tinkoff.ru");
         link.setLastUpdated(OffsetDateTime.now());
+        link.setLastScrapped(OffsetDateTime.now());
 
         // Act
         linkRepo.save(link);

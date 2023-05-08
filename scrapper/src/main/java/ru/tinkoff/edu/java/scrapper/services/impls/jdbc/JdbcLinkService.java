@@ -111,4 +111,9 @@ public class JdbcLinkService implements LinkService {
         OffsetDateTime lastScrapped = now.minus(checkInterval);
         return linkRepo.findLinksByLastScrappedBefore(lastScrapped);
     }
+
+    @Override
+    public void batchUpdate(Collection<Link> links) {
+        linkRepo.updateAll(links);
+    }
 }
