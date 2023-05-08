@@ -54,8 +54,7 @@ public class Chat extends TableImpl<ChatRecord> {
     /**
      * The column <code>CHAT.REG_DATE</code>. Дата регистрации чата
      */
-    public final TableField<ChatRecord, LocalDateTime> REG_DATE = createField(
-        DSL.name("REG_DATE"),
+    public final TableField<ChatRecord, LocalDateTime> REG_DATE = createField(DSL.name("REG_DATE"),
         SQLDataType.LOCALDATETIME(6).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)),
         this,
         "Дата регистрации чата"

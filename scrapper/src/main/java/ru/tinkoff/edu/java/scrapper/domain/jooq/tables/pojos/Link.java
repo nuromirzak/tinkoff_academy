@@ -50,7 +50,7 @@ public class Link implements Serializable {
         @NotNull Integer linkId,
         @NotNull String url,
         @NotNull LocalDateTime lastUpdated,
-        @Nullable LocalDateTime lastScrapped,
+        @NotNull LocalDateTime lastScrapped,
         @Nullable JSON jsonProps
     ) {
         this.linkId = linkId;
@@ -116,7 +116,8 @@ public class Link implements Serializable {
      * Getter for <code>LINK.LAST_SCRAPPED</code>. Время последнего скрапинга
      * этой ссылки
      */
-    @Nullable
+    @jakarta.validation.constraints.NotNull
+    @NotNull
     public LocalDateTime getLastScrapped() {
         return this.lastScrapped;
     }
@@ -125,7 +126,7 @@ public class Link implements Serializable {
      * Setter for <code>LINK.LAST_SCRAPPED</code>. Время последнего скрапинга
      * этой ссылки
      */
-    public void setLastScrapped(@Nullable LocalDateTime lastScrapped) {
+    public void setLastScrapped(@NotNull LocalDateTime lastScrapped) {
         this.lastScrapped = lastScrapped;
     }
 

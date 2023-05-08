@@ -16,7 +16,7 @@ public interface JpaLinkRepo extends JpaRepository<Link, Long> {
     Link findByLinkId(long linkId);
 
     @Modifying
-    int removeLinkByUrlLike(String url);
+    void removeLinkByUrlLike(String url);
 
     Link findByUrlLike(String url);
 }

@@ -49,7 +49,7 @@ public class LinkRecord extends UpdatableRecordImpl<LinkRecord>
         @NotNull Integer linkId,
         @NotNull String url,
         @NotNull LocalDateTime lastUpdated,
-        @Nullable LocalDateTime lastScrapped,
+        @NotNull LocalDateTime lastScrapped,
         @Nullable JSON jsonProps
     ) {
         super(Link.LINK);
@@ -132,7 +132,8 @@ public class LinkRecord extends UpdatableRecordImpl<LinkRecord>
      * Getter for <code>LINK.LAST_SCRAPPED</code>. Время последнего скрапинга
      * этой ссылки
      */
-    @Nullable
+    @jakarta.validation.constraints.NotNull
+    @NotNull
     public LocalDateTime getLastScrapped() {
         return (LocalDateTime) get(3);
     }
@@ -145,7 +146,7 @@ public class LinkRecord extends UpdatableRecordImpl<LinkRecord>
      * Setter for <code>LINK.LAST_SCRAPPED</code>. Время последнего скрапинга
      * этой ссылки
      */
-    public void setLastScrapped(@Nullable LocalDateTime value) {
+    public void setLastScrapped(@NotNull LocalDateTime value) {
         set(3, value);
     }
 
@@ -237,7 +238,7 @@ public class LinkRecord extends UpdatableRecordImpl<LinkRecord>
     }
 
     @Override
-    @Nullable
+    @NotNull
     public LocalDateTime component4() {
         return getLastScrapped();
     }
@@ -267,7 +268,7 @@ public class LinkRecord extends UpdatableRecordImpl<LinkRecord>
     }
 
     @Override
-    @Nullable
+    @NotNull
     public LocalDateTime value4() {
         return getLastScrapped();
     }
@@ -305,7 +306,7 @@ public class LinkRecord extends UpdatableRecordImpl<LinkRecord>
 
     @Override
     @NotNull
-    public LinkRecord value4(@Nullable LocalDateTime value) {
+    public LinkRecord value4(@NotNull LocalDateTime value) {
         setLastScrapped(value);
         return this;
     }
@@ -323,7 +324,7 @@ public class LinkRecord extends UpdatableRecordImpl<LinkRecord>
         @NotNull Integer value1,
         @NotNull String value2,
         @NotNull LocalDateTime value3,
-        @Nullable LocalDateTime value4,
+        @NotNull LocalDateTime value4,
         @Nullable JSON value5
     ) {
         value1(value1);

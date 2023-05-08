@@ -41,8 +41,7 @@ public class Keys {
         Internal.createUniqueKey(Link.LINK, DSL.name("CONSTRAINT_2"), new TableField[] {Link.LINK.LINK_ID}, true);
     public static final UniqueKey<LinkRecord> CONSTRAINT_23 =
         Internal.createUniqueKey(Link.LINK, DSL.name("CONSTRAINT_23"), new TableField[] {Link.LINK.URL}, true);
-    public static final UniqueKey<LinkChatRecord> CONSTRAINT_4 = Internal.createUniqueKey(
-        LinkChat.LINK_CHAT,
+    public static final UniqueKey<LinkChatRecord> CONSTRAINT_4 = Internal.createUniqueKey(LinkChat.LINK_CHAT,
         DSL.name("CONSTRAINT_4"),
         new TableField[] {LinkChat.LINK_CHAT.CHAT_ID, LinkChat.LINK_CHAT.LINK_ID},
         true
@@ -53,8 +52,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<LinkChatRecord, LinkRecord> CONSTRAINT_47 =
-        Internal.createForeignKey(
-            LinkChat.LINK_CHAT,
+        Internal.createForeignKey(LinkChat.LINK_CHAT,
             DSL.name("CONSTRAINT_47"),
             new TableField[] {LinkChat.LINK_CHAT.LINK_ID},
             Keys.CONSTRAINT_2,

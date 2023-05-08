@@ -30,16 +30,15 @@ import ru.tinkoff.edu.java.scrapper.services.LinkService;
 @RequiredArgsConstructor
 @Log4j2
 public class JpaLinkService implements LinkService {
+    private static final String OWNER = "owner";
+    private static final String REPO = "repo";
+    private static final String QUESTION_ID = "questionId";
     private final JpaLinkRepo linkRepo;
     private final JpaChatRepo chatRepo;
     private final GlobalLinkParser globalLinkParser;
     private final GitHubClient gitHubClient;
     private final StackoverflowClient stackoverflowClient;
     private final ObjectMapper objectMapper;
-
-    private static final String OWNER = "owner";
-    private static final String REPO = "repo";
-    private static final String QUESTION_ID = "questionId";
 
     @Override
     public Optional<Link> add(long tgChatId, String url) {

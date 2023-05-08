@@ -14,7 +14,7 @@ public interface JpaChatRepo extends JpaRepository<Chat, Long> {
     int removeChatByChatId(long chatId);
 
     @Modifying
-    int removeAllBy();
+    void removeAllBy();
 
     List<Chat> findChatsByLinksUrlLike(String url);
 

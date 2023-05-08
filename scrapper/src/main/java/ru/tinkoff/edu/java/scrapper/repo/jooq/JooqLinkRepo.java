@@ -9,6 +9,7 @@ import org.jooq.JSON;
 import org.jooq.Record1;
 import ru.tinkoff.edu.java.scrapper.domain.jooq.Tables;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
+import ru.tinkoff.edu.java.scrapper.dtos.mappers.jooq.LinkMapper;
 import ru.tinkoff.edu.java.scrapper.repo.LinkRepo;
 
 @RequiredArgsConstructor
@@ -51,7 +52,7 @@ public class JooqLinkRepo implements LinkRepo {
     @Override
     public List<Link> findAll() {
         return dslContext.selectFrom(Tables.LINK)
-            .fetchInto(Link.class);
+            .fetch(new LinkMapper());
     }
 
     @Override

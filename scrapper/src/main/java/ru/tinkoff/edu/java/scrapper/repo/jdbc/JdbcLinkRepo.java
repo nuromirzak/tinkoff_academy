@@ -30,8 +30,8 @@ public class JdbcLinkRepo implements LinkRepo {
     private static final String SQL_FIND_LINKS_TO_SCRAP = "SELECT * FROM link WHERE link.last_scrapped <= ?";
     private static final String UPDATE_LINK = "UPDATE link SET url = ?, "
         + "last_updated = ?, last_scrapped = ?, json_props = ? WHERE link_id = ?";
-    private final JdbcTemplate jdbcTemplate;
     private static final String LINK_ID_COLUMN = "link_id";
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public Link saveIfAbsentOrReturnExisting(Link link) {

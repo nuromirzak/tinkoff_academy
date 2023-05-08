@@ -31,8 +31,8 @@ import ru.tinkoff.edu.java.scrapper.services.sender.LinkUpdateSender;
 @RequiredArgsConstructor
 public class LinkUpdaterScheduler {
     public static final String LINK_WAS_UPDATED = "link {} was updated";
-    private static final String LINK_NOT_SUPPORTED = "Link {} is not supported";
     public static final String LINK_WAS_NOT_UPDATED = "link {} was not updated";
+    private static final String LINK_NOT_SUPPORTED = "Link {} is not supported";
     private final LinkService linkService;
     private final GitHubClient gitHubClient;
     private final StackoverflowClient stackoverflowClient;

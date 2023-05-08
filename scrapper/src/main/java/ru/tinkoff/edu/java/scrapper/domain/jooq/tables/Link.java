@@ -54,8 +54,7 @@ public class Link extends TableImpl<LinkRecord> {
      * The column <code>LINK.LINK_ID</code>. Уникальный идентификатор ссылки в
      * базе данных
      */
-    public final TableField<LinkRecord, Integer> LINK_ID = createField(
-        DSL.name("LINK_ID"),
+    public final TableField<LinkRecord, Integer> LINK_ID = createField(DSL.name("LINK_ID"),
         SQLDataType.INTEGER.nullable(false).identity(true),
         this,
         "Уникальный идентификатор ссылки в базе данных"
@@ -69,8 +68,7 @@ public class Link extends TableImpl<LinkRecord> {
      * The column <code>LINK.LAST_UPDATED</code>. Время последнего действия с
      * этой ссылкой
      */
-    public final TableField<LinkRecord, LocalDateTime> LAST_UPDATED = createField(
-        DSL.name("LAST_UPDATED"),
+    public final TableField<LinkRecord, LocalDateTime> LAST_UPDATED = createField(DSL.name("LAST_UPDATED"),
         SQLDataType.LOCALDATETIME(6).nullable(false),
         this,
         "Время последнего действия с этой ссылкой"
@@ -79,9 +77,8 @@ public class Link extends TableImpl<LinkRecord> {
      * The column <code>LINK.LAST_SCRAPPED</code>. Время последнего скрапинга
      * этой ссылки
      */
-    public final TableField<LinkRecord, LocalDateTime> LAST_SCRAPPED = createField(
-        DSL.name("LAST_SCRAPPED"),
-        SQLDataType.LOCALDATETIME(6).defaultValue(DSL.field("CURRENT_TIMESTAMP", SQLDataType.LOCALDATETIME)),
+    public final TableField<LinkRecord, LocalDateTime> LAST_SCRAPPED = createField(DSL.name("LAST_SCRAPPED"),
+        SQLDataType.LOCALDATETIME(6).nullable(false),
         this,
         "Время последнего скрапинга этой ссылки"
     );

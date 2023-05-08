@@ -15,10 +15,17 @@ public class LinkMapper implements RowMapper<Link> {
 
         link.setUrl(resultSet.getString("url"));
 
-        OffsetDateTime offsetDateTime =
+        OffsetDateTime lastUpdated =
             resultSet.getTimestamp("last_updated").toLocalDateTime().atOffset(OffsetDateTime.now().getOffset());
 
-        link.setLastUpdated(offsetDateTime);
+        link.setLastUpdated(lastUpdated);
+
+        OffsetDateTime lastScrapped =
+            resultSet.getTimestamp("last_scrapped").toLocalDateTime().atOffset(OffsetDateTime.now().getOffset());
+
+        link.setLastScrapped(lastScrapped);
+
+        link.setJsonProps(resultSet.getString("json_props"));
 
         return link;
     }
