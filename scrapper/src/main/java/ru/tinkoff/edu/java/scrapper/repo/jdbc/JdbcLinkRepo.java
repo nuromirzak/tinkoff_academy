@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.repo.jdbc;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.OffsetDateTime;
 import java.util.Collection;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
@@ -26,6 +28,8 @@ public class JdbcLinkRepo implements LinkRepo {
     private static final String SQL_FIND_LINKS_BY_CHAT_ID =
         "SELECT * FROM link WHERE link_id IN (SELECT link_id FROM link_chat WHERE chat_id = ?)";
     private static final String SQL_FIND_LINKS_TO_SCRAP = "SELECT * FROM link WHERE link.last_scrapped <= ?";
+    private static final String UPDATE_LINK = "UPDATE link SET url = ?, "
+        + "last_updated = ?, last_scrapped = ?, json_props = ? WHERE link_id = ?";
     private final JdbcTemplate jdbcTemplate;
     private static final String LINK_ID_COLUMN = "link_id";
 
@@ -94,7 +98,30 @@ public class JdbcLinkRepo implements LinkRepo {
 
     @Override
     public void updateAll(Collection<Link> links) {
-        // TODO: implement
-        throw new UnsupportedOperationException("Not implemented yet");
+        final int URL_INDEX = 1;
+        final int LAST_UPDATED_INDEX = 2;
+        final int LAST_SCRAPPED_INDEX = 3;
+        final int JSON_PROPS_INDEX = 4;
+        final int LINK_ID_INDEX = 5;
+
+        jdbcTemplate.batchUpdate(UPDATE_LINK, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
+                Link link = links.stream().skip(i).findFirst().orElse(null);
+
+                if (link != null) {
+                    preparedStatement.setString(URL_INDEX, link.getUrl());
+                    preparedStatement.setObject(LAST_UPDATED_INDEX, link.getLastUpdated());
+                    preparedStatement.setObject(LAST_SCRAPPED_INDEX, link.getLastScrapped());
+                    preparedStatement.setString(JSON_PROPS_INDEX, link.getJsonProps());
+                    preparedStatement.setLong(LINK_ID_INDEX, link.getLinkId());
+                }
+            }
+
+            @Override
+            public int getBatchSize() {
+                return links.size();
+            }
+        });
     }
 }

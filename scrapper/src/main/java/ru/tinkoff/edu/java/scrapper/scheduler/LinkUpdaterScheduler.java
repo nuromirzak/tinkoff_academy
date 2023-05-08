@@ -30,6 +30,9 @@ import ru.tinkoff.edu.java.scrapper.services.sender.LinkUpdateSender;
 @Log4j2
 @RequiredArgsConstructor
 public class LinkUpdaterScheduler {
+    public static final String LINK_WAS_UPDATED = "link {} was updated";
+    private static final String LINK_NOT_SUPPORTED = "Link {} is not supported";
+    public static final String LINK_WAS_NOT_UPDATED = "link {} was not updated";
     private final LinkService linkService;
     private final GitHubClient gitHubClient;
     private final StackoverflowClient stackoverflowClient;
@@ -72,7 +75,7 @@ public class LinkUpdaterScheduler {
             } else if (host.equals("stackoverflow.com")) {
                 updateMessage = updateStackoverflowLink(link, uri);
             } else {
-                log.warn("Link {} is not supported", linkString);
+                log.warn(LINK_NOT_SUPPORTED, linkString);
                 continue;
             }
 
@@ -99,10 +102,10 @@ public class LinkUpdaterScheduler {
             link.setLastUpdated(githubRepoResponse.getUpdatedAt());
             link.setLastScrapped(OffsetDateTime.now());
 
-            log.info("link {} was updated", link.getUrl());
+            log.info(LINK_WAS_UPDATED, link.getUrl());
             return oldGithubRepoResponse.getDifferenceMessageBetween(githubRepoResponse);
         } else {
-            log.info("link {} was not updated", link.getUrl());
+            log.info(LINK_WAS_NOT_UPDATED, link.getUrl());
             return null;
         }
     }
@@ -125,10 +128,10 @@ public class LinkUpdaterScheduler {
             link.setLastUpdated(stackoverflowQuestionResponse.getLastActivityDate());
             link.setLastScrapped(OffsetDateTime.now());
 
-            log.info("link {} was updated", link.getUrl());
+            log.info(LINK_WAS_UPDATED, link.getUrl());
             return oldStackoverflowQuestionResponse.getDifferenceMessageBetween(stackoverflowQuestionResponse);
         } else {
-            log.info("link {} was not updated", link.getUrl());
+            log.info(LINK_WAS_NOT_UPDATED, link.getUrl());
             return null;
         }
     }
