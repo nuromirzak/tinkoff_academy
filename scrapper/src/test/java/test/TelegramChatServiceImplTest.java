@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
+import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 import ru.tinkoff.edu.java.scrapper.dtos.requests.AddLinkRequest;
 import ru.tinkoff.edu.java.scrapper.dtos.requests.RemoveLinkRequest;
 import ru.tinkoff.edu.java.scrapper.dtos.responses.LinkResponse;
@@ -25,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 })
 @Transactional
 @Sql(scripts = "classpath:populateDB.sql")
-public class TelegramChatServiceImplTest {
+public class TelegramChatServiceImplTest extends IntegrationEnvironment {
     @Autowired
     private TelegramChatServiceImpl telegramChatService;
     @Autowired
@@ -87,9 +88,9 @@ public class TelegramChatServiceImplTest {
         // Assert
         assertNotNull(linkResponse);
         assertEquals(addLinkRequest.link(), linkResponse.url());
-        assertTrue(
-            linkRepo.findLinksByChatsChatId(Long.parseLong(chatId)).stream()
-                .anyMatch(l -> l.getUrl().equals(addLinkRequest.link())));
+        Chat chat = chatRepo.findChatByChatId(Long.parseLong(chatId));
+        assertTrue(chat.getLinks().stream()
+            .anyMatch(l -> l.getUrl().equals(addLinkRequest.link())));
     }
 
     @Test
@@ -106,8 +107,9 @@ public class TelegramChatServiceImplTest {
         assertNotNull(linkResponse);
         assertEquals(0, linkResponse.id());
         assertEquals(url, linkResponse.url());
-        assertFalse(linkRepo.findLinksByChatsChatId(Long.parseLong(chatId)).stream()
-            .anyMatch(l -> l.getUrl().equals(url)));
+        Chat chat = chatRepo.findChatByChatId(Long.parseLong(chatId));
+        assertTrue(chat.getLinks().stream()
+            .noneMatch(l -> l.getUrl().equals(url)));
     }
 
     @Test
@@ -122,9 +124,9 @@ public class TelegramChatServiceImplTest {
         // Assert
         assertNotNull(linkResponse);
         assertEquals(addLinkRequest.link(), linkResponse.url());
-        assertTrue(
-            linkRepo.findLinksByChatsChatId(Long.parseLong(chatId)).stream()
-                .anyMatch(l -> l.getUrl().equals(addLinkRequest.link())));
+        Chat chat = chatRepo.findChatByChatId(Long.parseLong(chatId));
+        assertTrue(chat.getLinks().stream()
+            .anyMatch(l -> l.getUrl().equals(addLinkRequest.link())));
         assertTrue(
             chatRepo.existsById(Long.parseLong(chatId)));
     }

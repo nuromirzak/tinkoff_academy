@@ -9,7 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
+import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
+import ru.tinkoff.edu.java.scrapper.repo.jpa.JpaChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jpa.JpaLinkRepo;
 import test.IntegrationEnvironment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class JpaLinkRepoTest extends IntegrationEnvironment {
     @Autowired
     private JpaLinkRepo linkRepo;
+    @Autowired
+    private JpaChatRepo chatRepo;
 
     @Test
     public void findAllAndPrint() {
@@ -68,7 +72,8 @@ public class JpaLinkRepoTest extends IntegrationEnvironment {
         long chatId = 362037700L;
 
         // Act
-        List<Link> subscriptionsByChatId = linkRepo.findLinksByChatsChatId(chatId);
+        Chat chat = chatRepo.findChatByChatId(chatId);
+        List<Link> subscriptionsByChatId = chat.getLinks();
 
         // Assert
         assertEquals(2, subscriptionsByChatId.size());

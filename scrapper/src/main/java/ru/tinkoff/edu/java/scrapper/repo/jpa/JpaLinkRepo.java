@@ -11,11 +11,6 @@ import ru.tinkoff.edu.java.scrapper.dtos.Link;
 @Repository
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
 public interface JpaLinkRepo extends JpaRepository<Link, Long> {
-    List<Link> findLinksByChatsChatId(long chatId);
-
-    @Modifying
-    int removeAllBy();
-
     List<Link> findLinksByLastScrappedBefore(OffsetDateTime lastScrapped);
 
     Link findByLinkId(long linkId);

@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.dtos;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -23,8 +24,8 @@ public final class Chat {
     @Id
     private Long chatId;
     private OffsetDateTime regDate;
-    @ManyToMany
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.EAGER)
+    @Cascade({CascadeType.ALL})
     @JoinTable(
         name = "link_chat",
         joinColumns = @JoinColumn(name = "chat_id"),

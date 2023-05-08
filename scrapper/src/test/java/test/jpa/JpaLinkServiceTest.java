@@ -13,6 +13,7 @@ import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
 import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.services.impls.jpa.JpaLinkService;
+import test.IntegrationEnvironment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -24,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 })
 @Transactional
 @Sql(scripts = "classpath:populateDB.sql")
-public class JpaLinkServiceTest {
+public class JpaLinkServiceTest extends IntegrationEnvironment {
     @Autowired
     private JpaLinkService linkService;
 

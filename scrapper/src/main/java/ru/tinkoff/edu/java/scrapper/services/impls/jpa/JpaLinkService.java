@@ -48,7 +48,6 @@ public class JpaLinkService implements LinkService {
                 link = new Link();
                 link.setLastUpdated(OffsetDateTime.now());
                 link.setUrl(url);
-                link.setChats(new ArrayList<>());
             }
 
             URI uri = URI.create(url);
@@ -74,6 +73,8 @@ public class JpaLinkService implements LinkService {
                 return Optional.empty();
             }
 
+            Link savedLink = linkRepo.save(link);
+
             Chat currentChat = chatRepo.findChatByChatId(tgChatId);
 
             if (currentChat == null) {
@@ -82,10 +83,8 @@ public class JpaLinkService implements LinkService {
                 currentChat.setLinks(new ArrayList<>());
             }
 
-            link.getChats().add(currentChat);
-            currentChat.getLinks().add(link);
-
-            Link savedLink = linkRepo.save(link);
+            currentChat.getLinks().add(savedLink);
+            chatRepo.save(currentChat);
 
             return Optional.of(savedLink);
         } catch (Exception e) {
@@ -96,22 +95,10 @@ public class JpaLinkService implements LinkService {
     @Override
     public boolean remove(long tgChatId, String url) {
         try {
-            URI uri = URI.create(url);
-            List<Link> links = linkRepo.findLinksByChatsChatId(tgChatId);
-            Optional<Link> linkToDelete =
-                links.stream().filter(link -> link.getUrl().equals(uri.toString())).findFirst();
-            if (linkToDelete.isPresent()) {
-                Link link = linkToDelete.get();
-                boolean isLinkUnlinked = link.getChats().removeIf(chat -> chat.getChatId() == tgChatId);
-                linkRepo.save(link);
-
-                Chat chat = chatRepo.findChatByChatId(tgChatId);
-                boolean isChatUnlinked = chat.getLinks().removeIf(l -> l.getUrl().contains(url));
-                chatRepo.save(chat);
-
-                return isLinkUnlinked && isChatUnlinked;
-            }
-            return false;
+            Chat chatToDeleteFrom = chatRepo.findChatByChatId(tgChatId);
+            boolean isLinkDeleted = chatToDeleteFrom.getLinks().removeIf(link -> link.getUrl().contains(url));
+            chatRepo.save(chatToDeleteFrom);
+            return isLinkDeleted;
         } catch (Exception e) {
             throw new RuntimeException("Error while removing link", e);
         }
@@ -119,7 +106,11 @@ public class JpaLinkService implements LinkService {
 
     @Override
     public Collection<Link> listAll(long tgChatId) {
-        return linkRepo.findLinksByChatsChatId(tgChatId);
+        Chat chat = chatRepo.findChatByChatId(tgChatId);
+        if (chat == null) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(chat.getLinks());
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
 import ru.tinkoff.edu.java.scrapper.repo.jpa.JpaChatRepo;
 import ru.tinkoff.edu.java.scrapper.services.impls.jpa.JpaTgChatService;
+import test.IntegrationEnvironment;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 })
 @Transactional
 @Sql(scripts = "classpath:populateDB.sql")
-public class JpaTgChatServiceTest {
+public class JpaTgChatServiceTest extends IntegrationEnvironment {
 
     @Autowired
     private JpaTgChatService tgChatService;

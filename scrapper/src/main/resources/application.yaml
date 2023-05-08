@@ -1,7 +1,7 @@
 app:
   test: Hello from Scrapper Module!
   scheduler:
-    interval: 5000
+    interval: 60000 # 1 minute
     check-interval: 900000 # 15 minutes
   db_url: jdbc:postgresql://localhost:5432/scrapper
   db_username: postgres

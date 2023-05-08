@@ -10,6 +10,7 @@ import ru.tinkoff.edu.java.scrapper.ScrapperApplication;
 import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqChatLinkRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jooq.JooqLinkRepo;
+import test.IntegrationEnvironment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 })
 @Transactional
 @Sql(scripts = "classpath:populateDB.sql")
-public class JooqChatLinkRepoTest {
+public class JooqChatLinkRepoTest extends IntegrationEnvironment {
     private static final int START_INDEX = 100000;
     @Autowired
     private JooqChatLinkRepo chatLinkRepo;

@@ -1,6 +1,5 @@
 package test.jpa;
 
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +11,8 @@ import ru.tinkoff.edu.java.scrapper.dtos.Link;
 import ru.tinkoff.edu.java.scrapper.repo.jpa.JpaChatRepo;
 import ru.tinkoff.edu.java.scrapper.repo.jpa.JpaLinkRepo;
 import test.IntegrationEnvironment;
+import java.util.ArrayList;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -32,16 +33,16 @@ public class JpaChatLinkRepoTest extends IntegrationEnvironment {
         // Arrange
         long chatId = 362037700L;
         long linkId = START_INDEX + 1;
-        Chat chatToDelete = chatRepo.findChatByChatId(chatId);
-        Link linkToDelete = linkRepo.findByLinkId(linkId);
 
         // Act
-        List<Link> linksByChatIdBefore = linkRepo.findLinksByChatsChatId(chatId);
-        chatToDelete.getLinks().removeIf(l -> l.getLinkId() == linkId);
-        linkToDelete.getChats().removeIf(c -> c.getChatId() == chatId);
-        chatRepo.save(chatToDelete);
-        linkRepo.save(linkToDelete);
-        List<Link> linksByChatIdAfter = linkRepo.findLinksByChatsChatId(chatId);
+        Chat chatBefore = chatRepo.findChatByChatId(chatId);
+        List<Link> linksByChatIdBefore = new ArrayList<>(chatBefore.getLinks());
+
+        chatBefore.getLinks().removeIf(l -> l.getLinkId() == linkId);
+        chatRepo.save(chatBefore);
+
+        Chat chatAfter = chatRepo.findChatByChatId(chatId);
+        List<Link> linksByChatIdAfter = new ArrayList<>(chatAfter.getLinks());
 
         // Assert
         assertEquals(linksByChatIdBefore.size() - 1, linksByChatIdAfter.size());
@@ -53,16 +54,17 @@ public class JpaChatLinkRepoTest extends IntegrationEnvironment {
         // Arrange
         long chatId = 362037700L;
         long linkId = START_INDEX + 3;
-        Chat chatToAdd = chatRepo.findChatByChatId(chatId);
         Link linkToAdd = linkRepo.findByLinkId(linkId);
 
         // Act
-        List<Link> linksByChatIdBefore = linkRepo.findLinksByChatsChatId(chatId);
-        chatToAdd.getLinks().add(linkToAdd);
-        linkToAdd.getChats().add(chatToAdd);
-        chatRepo.save(chatToAdd);
-        linkRepo.save(linkToAdd);
-        List<Link> linksByChatIdAfter = linkRepo.findLinksByChatsChatId(chatId);
+        Chat chatBefore = chatRepo.findChatByChatId(chatId);
+        List<Link> linksByChatIdBefore = new ArrayList<>(chatBefore.getLinks());
+
+        chatBefore.getLinks().add(linkToAdd);
+        chatRepo.save(chatBefore);
+
+        Chat chatAfter = chatRepo.findChatByChatId(chatId);
+        List<Link> linksByChatIdAfter = new ArrayList<>(chatAfter.getLinks());
 
         // Assert
         assertEquals(linksByChatIdBefore.size() + 1, linksByChatIdAfter.size());
