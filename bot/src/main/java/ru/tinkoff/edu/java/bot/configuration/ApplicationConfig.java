@@ -9,7 +9,6 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(@NotNull String test,
                                 @NotNull String botToken,
                                 @NotNull String botUsername,
-                                @NotNull Boolean useQueue,
                                 @NotNull String queueName,
                                 @NotNull String exchangeName) {
 }
