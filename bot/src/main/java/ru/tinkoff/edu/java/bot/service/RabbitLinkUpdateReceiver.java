@@ -17,6 +17,7 @@ public class RabbitLinkUpdateReceiver extends LinkUpdateReceiver {
     @RabbitHandler
     @Override
     public void receiveUpdate(LinkUpdateRequest request) {
+        log.info("Got request: {}", request);
         this.sendUpdates(request);
     }
 

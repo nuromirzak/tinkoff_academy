@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.tinkoff.edu.java.bot.dtos.ApiErrorResponse;
 import ru.tinkoff.edu.java.bot.dtos.LinkUpdateRequest;
-import ru.tinkoff.edu.java.bot.service.LinkUpdateReceiver;
+import ru.tinkoff.edu.java.bot.service.HttpLinkUpdateReceiver;
 
 @RestController
 @Log4j2
 @RequiredArgsConstructor
 public class LinksController {
-    private final LinkUpdateReceiver linkUpdateReceiver;
+    private final HttpLinkUpdateReceiver linkUpdateReceiver;
 
     @PostMapping("/updates")
     @ApiResponses(value = {
