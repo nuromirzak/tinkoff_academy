@@ -1,6 +1,7 @@
 package ru.tinkoff.edu.java.scrapper.dtos.responses;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.Data;
@@ -9,11 +10,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class StackoverflowQuestionResponse {
-    public static final String DISCRIMINATOR = "link_properties.stackoverflow_question";
-
-    private static final String TO = "\" to \"";
-    private static final String DOT_NEWLINE = "\".\n";
-
     private Long ownerId;
     private String ownerName;
     private String title;
@@ -25,24 +21,81 @@ public class StackoverflowQuestionResponse {
 
     public String getDifferenceMessageBetween(StackoverflowQuestionResponse newStackoverflowQuestionResponse) {
         StringBuilder updateDescription = new StringBuilder();
-        updateDescription.append("Question ").append(newStackoverflowQuestionResponse.getTitle())
-            .append(" has a new update!\n");
-        if (Objects.equals(newStackoverflowQuestionResponse.getTitle(), title)) {
-            updateDescription.append("Title has been changed from \"").append(title).append(TO)
-                .append(newStackoverflowQuestionResponse.getTitle()).append(DOT_NEWLINE);
-        }
-        if (!Objects.equals(newStackoverflowQuestionResponse.getAnswerCount(), answerCount)) {
-            updateDescription.append("Answer count has been changed from \"").append(answerCount).append(TO)
-                .append(newStackoverflowQuestionResponse.getAnswerCount()).append(DOT_NEWLINE);
-        }
-        if (!Objects.equals(newStackoverflowQuestionResponse.getScore(), score)) {
-            updateDescription.append("Score has been changed from \"").append(score).append(TO)
-                .append(newStackoverflowQuestionResponse.getScore()).append(DOT_NEWLINE);
-        }
-        if (!Objects.equals(newStackoverflowQuestionResponse.getTags(), tags)) {
-            updateDescription.append("Tags has been changed from \"").append(tags).append(TO)
-                .append(newStackoverflowQuestionResponse.getTags()).append(DOT_NEWLINE);
-        }
+        updateDescription.append("Вопрос \"")
+            .append(newStackoverflowQuestionResponse.getTitle())
+            .append("\" обновлен!\n")
+            .append(getTitleDifference(newStackoverflowQuestionResponse))
+            .append(getAnswerCountDifference(newStackoverflowQuestionResponse))
+            .append(getScoreDifference(newStackoverflowQuestionResponse))
+            .append(getTagsDifference(newStackoverflowQuestionResponse));
+
         return updateDescription.toString();
+    }
+
+    private String getTitleDifference(StackoverflowQuestionResponse newStackoverflowQuestionResponse) {
+        if (!Objects.equals(newStackoverflowQuestionResponse.getTitle(), title)) {
+            return new StringBuilder().append("Заголовок изменен с \"")
+                .append(title)
+                .append("\" на \"")
+                .append(newStackoverflowQuestionResponse.getTitle())
+                .append("\"\n")
+                .toString();
+        }
+        return "";
+    }
+
+    private String getAnswerCountDifference(StackoverflowQuestionResponse newStackoverflowQuestionResponse) {
+        if (!Objects.equals(newStackoverflowQuestionResponse.getAnswerCount(), answerCount)) {
+            return getNumericDifferenceMessage("Количество ответов",
+                newStackoverflowQuestionResponse.getAnswerCount(), answerCount);
+        }
+        return "";
+    }
+
+    private String getScoreDifference(StackoverflowQuestionResponse newStackoverflowQuestionResponse) {
+        if (!Objects.equals(newStackoverflowQuestionResponse.getScore(), score)) {
+            return getNumericDifferenceMessage("Оценка", newStackoverflowQuestionResponse.getScore(), score);
+        }
+        return "";
+    }
+
+    private String getTagsDifference(StackoverflowQuestionResponse newStackoverflowQuestionResponse) {
+        if (!Objects.equals(newStackoverflowQuestionResponse.getTags(), tags)) {
+            List<String> addedTags = new ArrayList<>(newStackoverflowQuestionResponse.getTags());
+            addedTags.removeAll(tags);
+            List<String> removedTags = new ArrayList<>(tags);
+            removedTags.removeAll(newStackoverflowQuestionResponse.getTags());
+
+            StringBuilder tagDifference = new StringBuilder();
+
+            if (!addedTags.isEmpty()) {
+                tagDifference.append("Добавлены теги: ").append(addedTags).append("\n");
+            }
+            if (!removedTags.isEmpty()) {
+                tagDifference.append("Удалены теги: ").append(removedTags).append("\n");
+            }
+
+            return tagDifference.toString();
+        }
+        return "";
+    }
+
+    private String getNumericDifferenceMessage(String prefix, int newValue, int oldValue) {
+        String[] words = prefix.split(" ");
+        String firstWord = words[0];
+        boolean isFeminine = firstWord.endsWith("а") || firstWord.endsWith("я") || firstWord.endsWith("ь");
+
+        String increased = isFeminine ? "увеличилась с " : "увеличилось с ";
+        String decreased = isFeminine ? "уменьшилась с " : "уменьшилось с ";
+        String difference = newValue > oldValue ? increased : decreased;
+
+        return new StringBuilder(prefix)
+            .append(" ")
+            .append(difference)
+            .append(oldValue)
+            .append(" до ")
+            .append(newValue)
+            .append("\n")
+            .toString();
     }
 }
