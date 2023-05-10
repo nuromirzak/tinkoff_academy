@@ -4,6 +4,7 @@ import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.tinkoff.edu.java.scrapper.dtos.Chat;
 import ru.tinkoff.edu.java.scrapper.repo.jpa.JpaChatRepo;
 import ru.tinkoff.edu.java.scrapper.services.TgChatService;
@@ -24,6 +25,7 @@ public class JpaTgChatService implements TgChatService {
     }
 
     @Override
+    @Transactional
     public boolean unregister(long tgChatId) {
         return chatRepo.removeChatByChatId(tgChatId) > 0;
     }
