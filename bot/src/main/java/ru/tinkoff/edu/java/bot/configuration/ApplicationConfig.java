@@ -11,5 +11,6 @@ public record ApplicationConfig(@NotNull String test,
                                 @NotNull String botUsername,
                                 @NotNull Boolean useQueue,
                                 @NotNull String queueName,
-                                @NotNull String exchangeName) {
+                                @NotNull String exchangeName,
+                                @NotNull String scrapperUrl) {
 }
