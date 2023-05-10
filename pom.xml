@@ -22,6 +22,8 @@
         <junitt5.version>5.9.2</junitt5.version>
         <testcontainers.version>1.17.6</testcontainers.version>
         <failsafe.version>2.22.2</failsafe.version>
+        <micrometer-registry-prometheus.version>1.10.6</micrometer-registry-prometheus.version>
+        <micrometer-tracing-bridge-brave.version>1.0.4</micrometer-tracing-bridge-brave.version>
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
     </properties>
 
@@ -137,6 +139,18 @@
                 <version>${testcontainers.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-registry-prometheus</artifactId>
+                <version>${micrometer-registry-prometheus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-tracing-bridge-brave</artifactId>
+                <version>${micrometer-tracing-bridge-brave.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

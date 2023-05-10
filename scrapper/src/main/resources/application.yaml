@@ -22,10 +22,10 @@ stackoverflow:
   base-url: https://api.stackexchange.com/2.3
 
 bot:
-  base-url: http://localhost:8080
+  base-url: http://localhost:9000
 
 server:
-  port: 8081
+  port: 8000
 
 spring:
   jpa:
@@ -43,3 +43,27 @@ spring:
     port: 5672
     username: rabbitmq
     password: password
+  application:
+    name: scrapper
+
+management:
+  server:
+    port: 8001
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: info,health,prometheus
+      path-mapping:
+        prometheus: metrics
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: '${spring.application.name}'
