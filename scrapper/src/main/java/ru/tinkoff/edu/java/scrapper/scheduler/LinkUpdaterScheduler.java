@@ -78,6 +78,7 @@ public class LinkUpdaterScheduler {
                 log.warn(LINK_NOT_SUPPORTED, linkString);
                 continue;
             }
+            link.setLastScrapped(OffsetDateTime.now());
 
             if (updateMessage != null) {
                 updatedLinksWithDescription.put(link, updateMessage);
@@ -100,7 +101,6 @@ public class LinkUpdaterScheduler {
             String newGithubRepoResponseString = objectMapper.writeValueAsString(githubRepoResponse);
             link.setJsonProps(newGithubRepoResponseString);
             link.setLastUpdated(githubRepoResponse.getUpdatedAt());
-            link.setLastScrapped(OffsetDateTime.now());
 
             log.info(LINK_WAS_UPDATED, link.getUrl());
             return oldGithubRepoResponse.getDifferenceMessageBetween(githubRepoResponse);
@@ -126,7 +126,6 @@ public class LinkUpdaterScheduler {
                 objectMapper.writeValueAsString(stackoverflowQuestionResponse);
             link.setJsonProps(newStackoverflowQuestionResponseString);
             link.setLastUpdated(stackoverflowQuestionResponse.getLastActivityDate());
-            link.setLastScrapped(OffsetDateTime.now());
 
             log.info(LINK_WAS_UPDATED, link.getUrl());
             return oldStackoverflowQuestionResponse.getDifferenceMessageBetween(stackoverflowQuestionResponse);

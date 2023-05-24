@@ -1,0 +1,7 @@
+scrape_configs:
+  - job_name: metrics
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - localhost:8001
+          - localhost:9001

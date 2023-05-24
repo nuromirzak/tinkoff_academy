@@ -1,5 +1,6 @@
 package ru.tinkoff.edu.java.bot;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,22 +8,23 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.tinkoff.edu.java.bot.components.BotCommands;
 import ru.tinkoff.edu.java.bot.components.CommandRouter;
 import ru.tinkoff.edu.java.bot.configuration.ApplicationConfig;
+import ru.tinkoff.edu.java.bot.metric.HandledMessageMetric;
 
 @Component
 @Log4j2
 public class MyTelegramBot extends TelegramLongPollingBot {
     private final CommandRouter commandRouter;
     private final String botName;
+    private final HandledMessageMetric handledMessageMetric;
 
     @Autowired
-    public MyTelegramBot(ApplicationConfig applicationConfig, CommandRouter commandRouter) {
+    public MyTelegramBot(ApplicationConfig applicationConfig, CommandRouter commandRouter, MeterRegistry registry) {
         super(applicationConfig.botToken());
         this.commandRouter = commandRouter;
         this.botName = applicationConfig.botUsername();
@@ -31,6 +33,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
+        this.handledMessageMetric = new HandledMessageMetric(registry);
         log.info("Bot successfully started");
     }
 
@@ -48,8 +51,8 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         message.setText(answerText);
 
         try {
-            Message result = execute(message);
-            log.info(result.getText());
+            execute(message);
+            handledMessageMetric.increment();
         } catch (TelegramApiException e) {
             log.error(e);
         }
